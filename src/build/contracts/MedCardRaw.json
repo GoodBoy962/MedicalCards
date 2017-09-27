@@ -1,0 +1,103 @@
+{
+  "address": "0xb3786e708cefa1325688e4efcfacc058d8a37a4b",
+  "abi": [{
+    "constant": true,
+    "inputs": [],
+    "name": "owner",
+    "outputs": [{
+      "name": "",
+      "type": "address"
+    }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  }, {
+    "constant": true,
+    "inputs": [{
+      "name": "",
+      "type": "address"
+    }, {
+      "name": "",
+      "type": "uint256"
+    }],
+    "name": "patientRecords",
+    "outputs": [{
+      "name": "value",
+      "type": "string"
+    }, {
+      "name": "doctorAddress",
+      "type": "address"
+    }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  }, {
+    "constant": false,
+    "inputs": [{
+      "name": "_firstName",
+      "type": "string"
+    }, {
+      "name": "_lastName",
+      "type": "string"
+    }, {
+      "name": "_passport",
+      "type": "uint256"
+    }, {
+      "name": "_workPlace",
+      "type": "string"
+    }, {
+      "name": "_category",
+      "type": "string"
+    }],
+    "name": "applyDoctor",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }, {
+    "constant": true,
+    "inputs": [{
+      "name": "",
+      "type": "address"
+    }],
+    "name": "doctors",
+    "outputs": [{
+      "name": "firstName",
+      "type": "string"
+    }, {
+      "name": "lastName",
+      "type": "string"
+    }, {
+      "name": "passport",
+      "type": "uint256"
+    }, {
+      "name": "workPlace",
+      "type": "string"
+    }, {
+      "name": "category",
+      "type": "string"
+    }, {
+      "name": "accepted",
+      "type": "bool"
+    }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  }, {
+    "constant": false,
+    "inputs": [{
+      "name": "newOwner",
+      "type": "address"
+    }],
+    "name": "transferOwnership",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }, {
+    "inputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  }]
+}
