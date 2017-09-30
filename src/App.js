@@ -30,7 +30,7 @@ class App extends Component {
 
   instantiateContract() {
     const contract = require('./build/contracts/MedCardRaw.json');
-    const medCardContract = new this.state.web3.eth.Contract(contract.abi, contract.address);
+    const medCardContract = this.state.web3.eth.contract(contract.abi).at(contract.address);
     this.setState({
       contract: medCardContract
     });
@@ -39,46 +39,46 @@ class App extends Component {
       this.setState({
         etherbase: etherbase
       });
-      console.log(etherbase);
-      this.state.web3.eth.getBalance(etherbase, (err, res) => {
-          console.log(res);
+      medCardContract.doctors.call(etherbase, (err, res) => {
+        if (res[0]) {
+          this.setState({
+            doctor: res
+          })
+        } else {
+          medCardContract.patients.call(etherbase, (err, res) => {
+            if (res[0]) {
+              this.setState({
+                patient: res
+              })
+            } else {
+              console.log("no identity");
+            }
+          });
+        }
       });
-      // medCardContract.methods.applyDoctor.call(
-      //   etherbase,
-      //   "Alexander",
-      //   "Pliskin",
-      //   9216113183,
-      //   "RKB",
-      //   "surgery",
-      //   (err, res) =>{console.log(res)
-      //   });
-
-      console.log(medCardContract.methods.doctors.call(etherbase, (err, res) => {
-
-      }));
-      medCardContract.methods.doctors.call(etherbase, (err, res) => {
-          if (res) {
-            console.log(res);
-          } else {
-            console.log("No doctors");
-          }
-      })
     });
   }
 
   render() {
-    if (this.state.patient) {
-
-    } else if (this.state.doctor) {
+    if (this.state.doctor) {
         return (
           <div className = "App">
-            <DoctorProfile doctor={this.state.dctor}/>
+            <DoctorProfile doctor={this.state.doctor}/>
           </div>
         );
+    } else if (this.state.patient) {
+        return (
+          <div className = "App">
+            Patient page
+          </div>
+        )
     } else {
         return (
           <div className = "App">
-            Nothing
+            Welcome!
+            {/*
+            TODO think about owner page
+            */}
           </div>
       );
     }

@@ -1,6 +1,103 @@
 {
-  "address": "0xb3786e708cefa1325688e4efcfacc058d8a37a4b",
+  "address": "0xc51720Ea763DDe8855F6A64b00628CB0A223c25E",
   "abi": [{
+    "constant": true,
+    "inputs": [{
+      "name": "",
+      "type": "address"
+    }, {
+      "name": "",
+      "type": "uint256"
+    }],
+    "name": "patientsAvailableForDoctor",
+    "outputs": [{
+      "name": "",
+      "type": "address"
+    }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  }, {
+    "constant": true,
+    "inputs": [{
+      "name": "",
+      "type": "address"
+    }],
+    "name": "patients",
+    "outputs": [{
+      "name": "name",
+      "type": "string"
+    }, {
+      "name": "surname",
+      "type": "string"
+    }, {
+      "name": "passport",
+      "type": "uint256"
+    }, {
+      "name": "birthday",
+      "type": "uint256"
+    }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  }, {
+    "constant": true,
+    "inputs": [{
+      "name": "_patientAddress",
+      "type": "address"
+    }],
+    "name": "getPatientRecords",
+    "outputs": [{
+      "components": [{
+        "name": "value",
+        "type": "string"
+      }, {
+        "name": "doctorAddress",
+        "type": "address"
+      }],
+      "name": "",
+      "type": "tuple[]"
+    }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  }, {
+    "constant": false,
+    "inputs": [{
+      "name": "_doctorAddress",
+      "type": "address"
+    }],
+    "name": "acceptDoctorForPatient",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }, {
+    "constant": false,
+    "inputs": [{
+      "name": "_doctorAddress",
+      "type": "address"
+    }],
+    "name": "approveDoctor",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }, {
+    "constant": false,
+    "inputs": [{
+      "name": "_patientAddress",
+      "type": "address"
+    }, {
+      "name": "_value",
+      "type": "string"
+    }],
+    "name": "addRecord",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }, {
     "constant": true,
     "inputs": [],
     "name": "owner",
@@ -34,10 +131,10 @@
   }, {
     "constant": false,
     "inputs": [{
-      "name": "_firstName",
+      "name": "_name",
       "type": "string"
     }, {
-      "name": "_lastName",
+      "name": "_surname",
       "type": "string"
     }, {
       "name": "_passport",
@@ -62,10 +159,10 @@
     }],
     "name": "doctors",
     "outputs": [{
-      "name": "firstName",
+      "name": "name",
       "type": "string"
     }, {
-      "name": "lastName",
+      "name": "surname",
       "type": "string"
     }, {
       "name": "passport",
@@ -82,6 +179,43 @@
     }],
     "payable": false,
     "stateMutability": "view",
+    "type": "function"
+  }, {
+    "constant": true,
+    "inputs": [{
+      "name": "_patientAddress",
+      "type": "address"
+    }, {
+      "name": "_doctorAddress",
+      "type": "address"
+    }],
+    "name": "checkIfPatientAvailableForDoctor",
+    "outputs": [{
+      "name": "",
+      "type": "bool"
+    }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  }, {
+    "constant": false,
+    "inputs": [{
+      "name": "_name",
+      "type": "string"
+    }, {
+      "name": "_surname",
+      "type": "string"
+    }, {
+      "name": "_passport",
+      "type": "uint256"
+    }, {
+      "name": "_birthday",
+      "type": "uint256"
+    }],
+    "name": "applyPatient",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   }, {
     "constant": false,
