@@ -28,7 +28,7 @@ contract MedCard is Owned {
     mapping (address => Patient) public patients;
 
     // address -> All medical card records for that patient
-    mapping (address => Record[]) public patientRecords;
+    mapping (address => Record[]) private patientRecords;
 
     // doctor address -> all available for him patient addresses
     mapping (address => address[]) public patientsAvailableForDoctor;
@@ -103,7 +103,7 @@ contract MedCard is Owned {
 
     // patient accept doctor available to work with patient records;
     function acceptDoctorForPatient(address _doctorAddress) public {
-        require(doctors[_doctorAddress].accepted);
+        require(doctors[_doctorAddress].accepted && patients[msg.sender].passport != 0x0);
 
         patientsAvailableForDoctor[_doctorAddress].push(msg.sender);
     }
@@ -124,6 +124,7 @@ contract MedCard is Owned {
     // add new record in medical card
     function addRecord(address _patientAddress,
                        string _value) public {
+        require(patients[_patientAddress].passport != 0);
         require(doctors[msg.sender].accepted);
         require(checkIfPatientAvailableForDoctor(_patientAddress, msg.sender));
 

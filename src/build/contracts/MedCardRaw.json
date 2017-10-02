@@ -1,5 +1,5 @@
 {
-  "address": "0xc51720Ea763DDe8855F6A64b00628CB0A223c25E",
+  "address": "0xD0Dc29e493e2dc306058E2cB405Dd552aeBD0Be8",
   "abi": [{
     "constant": true,
     "inputs": [{
@@ -103,26 +103,6 @@
     "name": "owner",
     "outputs": [{
       "name": "",
-      "type": "address"
-    }],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  }, {
-    "constant": true,
-    "inputs": [{
-      "name": "",
-      "type": "address"
-    }, {
-      "name": "",
-      "type": "uint256"
-    }],
-    "name": "patientRecords",
-    "outputs": [{
-      "name": "value",
-      "type": "string"
-    }, {
-      "name": "doctorAddress",
       "type": "address"
     }],
     "payable": false,

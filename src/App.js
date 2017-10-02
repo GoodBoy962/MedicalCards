@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import DoctorProfile from './components/DoctorProfile';
+import PatientProfile from './components/PatientProfile';
 import getWeb3 from './utils/getWeb3';
 
 import './App.css';
@@ -10,7 +11,7 @@ class App extends Component {
     super(props)
     this.state = {
       web3: null,
-      doctors: []
+      contract: null
     }
   }
 
@@ -63,13 +64,13 @@ class App extends Component {
     if (this.state.doctor) {
         return (
           <div className = "App">
-            <DoctorProfile doctor={this.state.doctor}/>
+            <DoctorProfile doctor={this.state.doctor} web3={this.state.web3} contract={this.state.contract}/>
           </div>
         );
     } else if (this.state.patient) {
         return (
           <div className = "App">
-            Patient page
+            <PatientProfile patient={this.state.patient} web3={this.state.web3}/>
           </div>
         )
     } else {
@@ -77,7 +78,7 @@ class App extends Component {
           <div className = "App">
             Welcome!
             {/*
-            TODO think about owner page
+            TODO think about owner page and a new user page
             */}
           </div>
       );
