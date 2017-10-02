@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import DoctorProfile from './components/DoctorProfile';
-import PatientProfile from './components/PatientProfile';
+import DoctorPage from './components/DoctorPage';
+import PatientPage from './components/PatientPage';
+import WelcomePage from './components/WelcomePage';
 import getWeb3 from './utils/getWeb3';
 
 import './App.css';
@@ -11,23 +12,21 @@ class App extends Component {
     super(props)
     this.state = {
       web3: null,
-      contract: null
     }
   }
 
   getWeb3() {
     getWeb3.then(results => {
-        this.setState({
-          web3: results.web3
-        });
-        this.instantiateContract();
+      this.setState({
+        web3: results.web3
       });
+      this.instantiateContract();
+    });
   }
 
   componentWillMount() {
     this.getWeb3();
   }
-
 
   instantiateContract() {
     const contract = require('./build/contracts/MedCardRaw.json');
@@ -53,6 +52,9 @@ class App extends Component {
               })
             } else {
               console.log("no identity");
+              this.setState({
+                contract: medCardContract
+              });
             }
           });
         }
@@ -61,28 +63,20 @@ class App extends Component {
   }
 
   render() {
+    let body;
     if (this.state.doctor) {
-        return (
-          <div className = "App">
-            <DoctorProfile doctor={this.state.doctor} web3={this.state.web3} contract={this.state.contract}/>
-          </div>
-        );
+        body = <DoctorPage doctor={this.state.doctor} contract={this.state.contract}/>;
     } else if (this.state.patient) {
-        return (
-          <div className = "App">
-            <PatientProfile patient={this.state.patient} web3={this.state.web3}/>
-          </div>
-        )
+        body = <PatientPage patient={this.state.patient} contract={this.state.contract}/>;
     } else {
-        return (
-          <div className = "App">
-            Welcome!
-            {/*
-            TODO think about owner page and a new user page
-            */}
-          </div>
-      );
+        //TODO contract is not initialized
+        body = <WelcomePage contract={this.state.contract}/>
     }
+    return(
+      <div className = "App">
+      {body}
+      </div>
+    );
   }
 }
 
