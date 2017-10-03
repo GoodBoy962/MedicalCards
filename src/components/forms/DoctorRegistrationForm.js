@@ -7,26 +7,28 @@ class DoctorRegistrationForm extends Component {
     this.state = {
       contract: props.contract
     }
+
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleSubmit(e) {
-    console.log(this.state);
-    // this.state.contract.applyDoctor.call(
-    //   {
-    //     _name: this.refs.name.value,
-    //     _surname: this.refs.surname.value,
-    //     _passport: this.refs.passport.value,
-    //     _medClinic: this.refs.medClinic.value,
-    //     _category: this.refs.category.vaue
-    //   },
-    //   (err, res) => {
-    //   if (err) {
-    //     console.log(err);
-    //   } else {
-    //     console.log(res);
-    //   }
-    // });
+    const name = this.refs.name.value;
+    const surname = this.refs.surname.value;
+    const passport = this.refs.passport.value;
+    const medClinic = this.refs.medClinic.value;
+    const category = this.refs.category.value;
+    const contract = this.state.contract;
+    contract.applyDoctor.call(
+      name, surname, passport, medClinic, category,
+      (err, res) => {}
+    );
+    contract.applyDoctor(
+      name, surname, passport, medClinic, category,
+      (err, res) => {
+        console.log(res);
+      }
+    )
+
     e.preventDefault();
   }
 

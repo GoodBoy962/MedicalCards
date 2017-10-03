@@ -7,25 +7,28 @@ class PatientRegistrationForm extends Component {
     this.state = {
       contract: props.contract
     }
+
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleSubmit(e) {
-    console.log(this.state);
-    // this.state.contract.applyPatient.call(
-    //   {
-    //     _name: this.refs.name.value,
-    //     _surname: this.refs.surname.value,
-    //     _passport: this.refs.passport.value,
-    //     _birthday: new Date(this.refs.birthday.value).getTime()
-    //   },
-    //   (err, res) => {
-    //   if (err) {
-    //     console.log(err);
-    //   } else {
-    //     console.log(res);
-    //   }
-    // });
+    const name = this.refs.name.value;
+    const surname = this.refs.surname.value;
+    const passport = this.refs.passport.value;
+    const birthday = new Date(this.refs.birthday.value).getTime();
+    const contract = this.state.contract;
+    contract.applyPatient.call(
+      name, surname, passport, birthday,
+      {from: this.state.etherbase},
+      (err, res) => {}
+    );
+    contract.applyPatient(
+      name, surname, passport, birthday,
+      {from: this.state.etherbase},
+      (err, res) => {
+        console.log(res);
+      }
+    );
     e.preventDefault();
   }
 
@@ -36,7 +39,7 @@ class PatientRegistrationForm extends Component {
           <label>Name</label><br/>
           <input type='text' ref='name'/><br/>
           <label>Surname</label><br/>
-          <input type='text' ref="surname"/><br/>
+          <input type='text' ref='surname'/><br/>
           <label>Passport</label><br/>
           <input type='number' ref='passport'/><br/>
           <label>Birthday</label><br/>

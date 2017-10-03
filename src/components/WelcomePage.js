@@ -16,10 +16,10 @@ class WelcomePage extends Component {
       <div className = "WelcomePage">
         <h3>Welcome!</h3>
 
-        <p>Registrate as a new patient </p>
+        <h4>Registrate as a new patient </h4>
         <PatientRegistrationForm contract={this.state.contract} />
 
-        <p>Registrate as a new doctor </p>
+        <h4>Registrate as a new doctor </h4>
         <DoctorRegistrationForm contract={this.state.contract} />
       </div>
     )

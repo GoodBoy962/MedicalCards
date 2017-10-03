@@ -43,18 +43,26 @@ class App extends Component {
         if (res[0]) {
           this.setState({
             doctor: res
-          })
+          });
         } else {
           medCardContract.patients.call(etherbase, (err, res) => {
             if (res[0]) {
               this.setState({
                 patient: res
-              })
-            } else {
-              console.log("no identity");
-              this.setState({
-                contract: medCardContract
               });
+            } else {
+              medCardContract.owner.call((err, res) => {
+                //TODO think how to wait for promise end without this
+                //or add here check if etherbase is a contract ctakeholder
+                this.setState({
+                  owner: res
+                });
+              })
+              if (this.state.owner === etherbase) {
+                console.log('This is the contract stakeholder');
+              } else {
+                console.log('no identity');
+              }
             }
           });
         }
@@ -65,16 +73,17 @@ class App extends Component {
   render() {
     let body;
     if (this.state.doctor) {
-        body = <DoctorPage doctor={this.state.doctor} contract={this.state.contract}/>;
+        body = <DoctorPage doctor={this.state.doctor} contract={this.state.contract} />;
     } else if (this.state.patient) {
-        body = <PatientPage patient={this.state.patient} contract={this.state.contract}/>;
+        body = <PatientPage patient={this.state.patient} contract={this.state.contract} />;
     } else {
-        //TODO contract is not initialized
-        body = <WelcomePage contract={this.state.contract}/>
+        if (this.state.owner) {
+          body = <WelcomePage contract={this.state.contract} />;
+        }
     }
     return(
-      <div className = "App">
-      {body}
+      <div className = 'App'>
+        {body}
       </div>
     );
   }
