@@ -52,8 +52,6 @@ class App extends Component {
               });
             } else {
               medCardContract.owner.call((err, res) => {
-                //TODO think how to wait for promise end without this
-                //or add here check if etherbase is a contract ctakeholder
                 this.setState({
                   owner: res
                 });
@@ -75,7 +73,8 @@ class App extends Component {
     if (this.state.doctor) {
         body = <DoctorPage doctor={this.state.doctor} contract={this.state.contract} />;
     } else if (this.state.patient) {
-        body = <PatientPage patient={this.state.patient} contract={this.state.contract} />;
+        body = <PatientPage patient={this.state.patient} contract={this.state.contract}
+                            etherbase={this.state.etherbase} />;
     } else {
         if (this.state.owner) {
           body = <WelcomePage contract={this.state.contract} />;

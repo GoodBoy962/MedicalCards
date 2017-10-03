@@ -39,13 +39,13 @@ class PatientSearchForm extends Component {
       <p>Patients search</p><br/>
       <form onSubmit={this.handleSubmit}>
         <label>
-          Patient address<br/>
+          enter patient address<br/>
           <input type='text' ref='address'/>
         </label>
         <input type='submit' value='search' />
       </form>
 
-      <Patient patient={this.state.patient}/>
+      <Patient patient={this.state.patient} />
       </div>
     );
   }

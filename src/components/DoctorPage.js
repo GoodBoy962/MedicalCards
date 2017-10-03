@@ -18,7 +18,7 @@ class DoctorPage extends Component {
       <div className = "DoctorPage">
         <p>Doctor page</p>
         <p>Hello {doctor[0]} {doctor[1]}</p>
-        <PatientSearchForm contract={this.state.contract}/>
+        <PatientSearchForm contract={this.state.contract} />
       </div>
     )
   }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import DoctorSearchForm from './forms/DoctorSearchForm';
 
 class PatientPage extends Component {
 
@@ -6,7 +7,8 @@ class PatientPage extends Component {
     super(props);
     this.state = {
       patient: props.patient,
-      contract: props.contract
+      contract: props.contract,
+      etherbase: props.etherbase
     }
   }
 
@@ -19,6 +21,7 @@ class PatientPage extends Component {
       <div className = "PatientPage">
         <p>Patient page</p>
         <p> Hello {patient[0]} {patient[1]}</p>
+        <DoctorSearchForm contract={this.state.contract} etherbase={this.state.etherbase}/>
       </div>
     )
   }
