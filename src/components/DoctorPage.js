@@ -8,7 +8,8 @@ class DoctorPage extends Component {
     this.state = {
       patientSearchAddress: '0x0',
       doctor: props.doctor,
-      contract: props.contract
+      contract: props.contract,
+      etherbase: props.etherbase
     };
   }
 
@@ -18,7 +19,7 @@ class DoctorPage extends Component {
       <div className = "DoctorPage">
         <p>Doctor page</p>
         <p>Hello {doctor[0]} {doctor[1]}</p>
-        <PatientSearchForm contract={this.state.contract} />
+        <PatientSearchForm contract={this.state.contract} etherbase={this.state.etherbase} />
       </div>
     )
   }

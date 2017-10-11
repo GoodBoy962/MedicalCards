@@ -71,14 +71,15 @@ class App extends Component {
   render() {
     let body;
     if (this.state.doctor) {
-        body = <DoctorPage doctor={this.state.doctor} contract={this.state.contract} />;
+        body = <DoctorPage doctor={this.state.doctor} contract={this.state.contract}
+                            etherbase={this.state.etherbase} />;
     } else if (this.state.patient) {
         body = <PatientPage patient={this.state.patient} contract={this.state.contract}
                             etherbase={this.state.etherbase} />;
+    } else if (this.state.owner) {
+        body = 'hello owner';
     } else {
-        if (this.state.owner) {
-          body = <WelcomePage contract={this.state.contract} />;
-        }
+      body = <WelcomePage contract={this.state.contract} etherbase={this.state.etherbase}/>;
     }
     return(
       <div className = 'App'>

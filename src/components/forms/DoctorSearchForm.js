@@ -6,9 +6,10 @@ const Doctor = ({doctor, accepted}) => {
     if (doctor[0]) {
       body = doctor[0] + " " + doctor[1];
       if (accepted) {
-        body += " and he can add records";
+        body += ' and he can add records';
       } else {
-        body += " and he can't add records; approve him to add them";
+        body += ' and he can\'t add records; approve him to add them';
+        // body += "<input type='button' value='approve' onclick={this.approveDoctor}/>";
         //TODO add button to approve doctor
       }
     } else {
@@ -30,6 +31,12 @@ class DoctorSearchForm extends Component {
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.approveDoctor = this.approveDoctor.bind(this);
+  }
+
+  approveDoctor(e) {
+    console.log('approving...');
+    e.preventDefault();
   }
 
   handleSubmit(e) {
@@ -39,10 +46,9 @@ class DoctorSearchForm extends Component {
         doctor: res
       });
     });
-    try {
     if (this.state.doctor) {
       contract.checkIfPatientAvailableForDoctor.call(
-        this.state.etherbase+"", this.refs.address.value+"",
+        this.state.etherbase, this.refs.address.value,
         {from: this.state.etherbase},
         (err, res) => {}
       );
@@ -52,13 +58,10 @@ class DoctorSearchForm extends Component {
         (err, res) => {
           this.setState({
             accepted: res
-          })
+          });
         }
       );
     }
-  } catch(err) {
-    console.log(err);
-  }
     e.preventDefault();
   }
 

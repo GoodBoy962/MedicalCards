@@ -1,10 +1,18 @@
 import React, { Component } from 'react';
+import AddRecord from './AddRecord';
 
-const Patient = ({patient}) => {
+const Patient = ({patient, accepted, contract, etherbase}) => {
   let body = null;
   if (patient) {
     if (patient[0]) {
       body = patient[0] + " " + patient[1];
+      if (accepted) {
+        body += ' add records';
+        // form = <AddRecord contract={contract} etherbase={etherbase} patient={patient}>;
+      } else {
+        body += '. You are not accepted';
+        //TODO add buttons to view records
+      }
     } else {
       body = <p>There is no such patient</p>;
     }
@@ -18,18 +26,37 @@ class PatientSearchForm extends Component {
     super(props);
     this.state = {
       contract: props.contract,
-      patient: null
+      patient: null,
+      accepted: null,
+      etherbase: props.etherbase
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleSubmit(e) {
-    this.state.contract.patients.call(this.refs.address.value, (err, res) => {
+    let contract = this.state.contract;
+    contract.patients.call(this.refs.address.value, (err, res) => {
       this.setState({
         patient: res
       });
     });
+    if (this.state.patient) {
+      contract.checkIfPatientAvailableForDoctor.call(
+        this.refs.address.value, this.state.etherbase,
+        {from: this.state.etherbase},
+        (err, res) => {}
+      );
+      contract.checkIfPatientAvailableForDoctor(
+        this.refs.address.value, this.state.etherbase,
+        {from: this.state.etherbase},
+        (err, res) => {
+          this.setState({
+            accepted: res
+          });
+        }
+      )
+    }
     e.preventDefault();
   }
 
@@ -45,7 +72,8 @@ class PatientSearchForm extends Component {
         <input type='submit' value='search' />
       </form>
 
-      <Patient patient={this.state.patient} />
+      <Patient patient={this.state.patient} accepted={this.state.accepted}
+               contract={this.state.contract} etherbase={this.state.etherbase} />
       </div>
     );
   }
