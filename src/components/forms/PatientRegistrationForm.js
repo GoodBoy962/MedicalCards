@@ -5,7 +5,8 @@ class PatientRegistrationForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      contract: props.contract
+      contract: props.contract,
+      etherbase: props.etherbase
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);

@@ -1,5 +1,4 @@
-pragma solidity ^0.4.17;
-
+/* @title Smart contract for ownership */
 contract Owned {
 
     address public owner;
@@ -18,40 +17,75 @@ contract Owned {
     }
 }
 
+/* @title Smart contract for medical cards storing */
 contract MedCard is Owned {
 
+    // address -> doctor profile
     mapping (address => Doctor) public doctors;
 
+    // address -> patient profile
+    mapping (address => Patient) public patients;
+
+    // address -> All medical card records for that patient
     mapping (address => Record[]) private patientRecords;
 
+    // doctor address -> all available for him patient addresses
     mapping (address => address[]) private patientsAvailableForDoctor;
 
+    // This is a type for a single doctor identity
     struct Doctor {
-        string firstName;
-        string lastName;
+        string name;
+        string surname;
         uint passport;
         string workPlace;
         string category;
         bool accepted;
     }
 
+    // This is a type for a simple record
     struct Record {
         string value;         //store full card in IPFS
         address doctorAddress;
+    }
+
+    // This is a type for a single patient identity
+    struct Patient {
+        string name;
+        string surname;
+        uint passport;
+        uint birthday;
     }
 
     function MedCard() {
         owner = msg.sender;
     }
 
-    // apply for a Docotor rights
-    function applyDoctor(string _firstName, string _lastName, uint _passport,
-                       string _workPlace, string _category) public {
-    require(!doctors[msg.sender].accepted);
+    //apply for a Patient
+    function applyPatient(string _name,
+                          string _surname,
+                          uint _passport,
+                          uint _birthday) public {
+        require(patients[msg.sender].passport == 0x0);
 
-    doctors[msg.sender] = Doctor({
-            firstName: _firstName,
-            lastName: _lastName,
+        patients[msg.sender] = Patient({
+            name: _name,
+            surname: _surname,
+            passport: _passport,
+            birthday: _birthday
+        });
+    }
+
+    // apply for a Docotor rights
+    function applyDoctor(string _name,
+                         string _surname,
+                         uint _passport,
+                         string _workPlace,
+                         string _category) public {
+        require(!doctors[msg.sender].accepted);
+
+        doctors[msg.sender] = Doctor({
+            name: _name,
+            surname: _surname,
             passport: _passport,
             workPlace: _workPlace,
             category: _category,
@@ -59,19 +93,23 @@ contract MedCard is Owned {
         });
     }
 
-    // approve the address to work as a Doctor in system
+    // Approve the address to work as a Doctor in system
     function approveDoctor(address _doctorAddress) onlyOwner {
         require(!doctors[_doctorAddress].accepted);
+
         doctors[_doctorAddress].accepted = true;
     }
 
-    // get doctor availability to work with patient records;
-    function acceptDoctor(address _doctorAddress) public {
-        require(doctors[_doctorAddress].accepted);
+    // patient accept doctor available to work with patient records;
+    function acceptDoctorForPatient(address _doctorAddress) public {
+        require(doctors[_doctorAddress].accepted && patients[msg.sender].passport != 0x0);
+
         patientsAvailableForDoctor[_doctorAddress].push(msg.sender);
     }
 
-    function checkIfPatientAvailableForDoctor(address _patientAddress, address _doctorAddress) public constant returns (bool) {
+    // check if doctor can get patient records
+    function checkIfPatientAvailableForDoctor(address _patientAddress,
+                                              address _doctorAddress) public constant returns (bool) {
         address[] memory patients = patientsAvailableForDoctor[_doctorAddress];
         bool availability = false;
         for (uint i = 0; i < patients.length; i++) {
@@ -82,8 +120,10 @@ contract MedCard is Owned {
         return availability;
     }
 
-
-    function addRecord(address _patientAddress, string _value) public {
+    // add new record in medical card
+    function addRecord(address _patientAddress,
+                       string _value) public {
+        require(patients[_patientAddress].passport != 0);
         require(doctors[msg.sender].accepted);
         require(checkIfPatientAvailableForDoctor(_patientAddress, msg.sender));
 
@@ -93,6 +133,7 @@ contract MedCard is Owned {
         }));
     }
 
+    // get length of array with patient records
     function getPatientRecordsLength(address _patientAddress) public constant returns (uint) {
         require(doctors[msg.sender].accepted);
         require(checkIfPatientAvailableForDoctor(_patientAddress, msg.sender));
@@ -100,6 +141,7 @@ contract MedCard is Owned {
         return patientRecords[_patientAddress].length;
     }
 
+    // get patirnt record by it's index
     function getPatientRecord(address _patientAddress, uint _recordIndex) public constant returns (address, string) {
         require(doctors[msg.sender].accepted);
         require(checkIfPatientAvailableForDoctor(_patientAddress, msg.sender));

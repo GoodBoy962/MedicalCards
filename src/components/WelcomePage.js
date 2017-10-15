@@ -8,7 +8,7 @@ class WelcomePage extends Component {
     super(props);
     this.state = {
       contract: props.contract,
-      etherbase: props.etherbase
+      etherbase: props.etherbase,
     }
   }
 

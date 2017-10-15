@@ -6,7 +6,7 @@ class DoctorPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      patientSearchAddress: '0x0',
+      web3: props.web3,
       doctor: props.doctor,
       contract: props.contract,
       etherbase: props.etherbase
@@ -19,7 +19,8 @@ class DoctorPage extends Component {
       <div className = "DoctorPage">
         <p>Doctor page</p>
         <p>Hello {doctor[0]} {doctor[1]}</p>
-        <PatientSearchForm contract={this.state.contract} etherbase={this.state.etherbase} />
+        <PatientSearchForm web3={this.state.web3}
+                           etherbase={this.state.etherbase} />
       </div>
     )
   }

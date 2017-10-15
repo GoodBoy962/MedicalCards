@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ContractService from '../../utils/ContractService';
 
 const Doctor = ({doctor, accepted}) => {
   let body = null;
@@ -8,7 +9,7 @@ const Doctor = ({doctor, accepted}) => {
       if (accepted) {
         body += ' and he can add records';
       } else {
-        body += ' and he can\'t add records; approve him to add them';
+        body += ' and he can\'t add records; approve him to worh with toyr medical records';
         // body += "<input type='button' value='approve' onclick={this.approveDoctor}/>";
         //TODO add button to approve doctor
       }
@@ -24,7 +25,7 @@ class DoctorSearchForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      contract: props.contract,
+      web3: props.web3,
       doctor: null,
       accepted: null,
       etherbase: props.etherbase
@@ -40,28 +41,16 @@ class DoctorSearchForm extends Component {
   }
 
   handleSubmit(e) {
-    let contract = this.state.contract;
-    contract.doctors.call(this.refs.address.value, (err, res) => {
-      this.setState({
-        doctor: res
-      });
+    let doctorAddress = this.refs.address.value;
+    let patientAddress = this.state.etherbase;
+    let web3 = this.state.web3;
+    ContractService.getDoctorProfile(web3, patientAddress, doctorAddress)
+      .then((res, err) => {
+        this.setState({
+          doctor: res.doctor,
+          accepted: res.accepted
+        });
     });
-    if (this.state.doctor) {
-      contract.checkIfPatientAvailableForDoctor.call(
-        this.state.etherbase, this.refs.address.value,
-        {from: this.state.etherbase},
-        (err, res) => {}
-      );
-      contract.checkIfPatientAvailableForDoctor(
-        this.state.etherbase, this.refs.address.value,
-        {from: this.state.etherbase},
-        (err, res) => {
-          this.setState({
-            accepted: res
-          });
-        }
-      );
-    }
     e.preventDefault();
   }
 

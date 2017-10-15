@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import AddRecord from './AddRecord';
+import PatientProfile from '../views/PatientProfile';
+import ContractService from '../../utils/ContractService';
 
-const Patient = ({patient, accepted, contract, etherbase}) => {
+//TODO move to the separate component
+const Patient = ({patient, available}) => {
   let body = null;
   if (patient) {
     if (patient[0]) {
       body = patient[0] + " " + patient[1];
-      if (accepted) {
+      if (available) {
         body += ' add records';
         // form = <AddRecord contract={contract} etherbase={etherbase} patient={patient}>;
       } else {
@@ -25,9 +27,7 @@ class PatientSearchForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      contract: props.contract,
-      patient: null,
-      accepted: null,
+      web3: props.web3,
       etherbase: props.etherbase
     }
 
@@ -36,27 +36,14 @@ class PatientSearchForm extends Component {
 
   handleSubmit(e) {
     let contract = this.state.contract;
-    contract.patients.call(this.refs.address.value, (err, res) => {
+    let address = this.refs.address.value;
+    let web3 = this.state.web3;
+    ContractService.getPatientProfile(web3, this.state.etherbase, address).then((res, err) => {
       this.setState({
-        patient: res
+        patient: res.patient,
+        available: res.available
       });
     });
-    if (this.state.patient) {
-      contract.checkIfPatientAvailableForDoctor.call(
-        this.refs.address.value, this.state.etherbase,
-        {from: this.state.etherbase},
-        (err, res) => {}
-      );
-      contract.checkIfPatientAvailableForDoctor(
-        this.refs.address.value, this.state.etherbase,
-        {from: this.state.etherbase},
-        (err, res) => {
-          this.setState({
-            accepted: res
-          });
-        }
-      )
-    }
     e.preventDefault();
   }
 
@@ -72,8 +59,7 @@ class PatientSearchForm extends Component {
         <input type='submit' value='search' />
       </form>
 
-      <Patient patient={this.state.patient} accepted={this.state.accepted}
-               contract={this.state.contract} etherbase={this.state.etherbase} />
+      <Patient patient={this.state.patient} available={this.state.available} />
       </div>
     );
   }
