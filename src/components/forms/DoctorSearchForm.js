@@ -57,14 +57,12 @@ class DoctorSearchForm extends Component {
   render() {
     return(
       <div className='DoctorSearchForm'>
-      <p>Doctors search</p><br/>
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          enter doctor address<br/>
+        <p>Doctors search</p><br/>
+        <form onSubmit={this.handleSubmit}>
+          <label>enter doctor address</label>
           <input type='text' ref='address'/>
-        </label>
-        <input type='submit' value='search' />
-      </form>
+          <input type='submit' value='search' />
+        </form>
 
       <Doctor doctor={this.state.doctor} accepted={this.state.accepted} />
       </div>

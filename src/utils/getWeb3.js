@@ -25,4 +25,4 @@ let getWeb3 = new Promise((resolve, reject) => {
   })
 })
 
-export default getWeb3
+export default getWeb3;

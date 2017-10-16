@@ -16,13 +16,13 @@ class DoctorPage extends Component {
   render() {
     let doctor = this.state.doctor;
     return (
-      <div className = "DoctorPage">
+      <div className = 'DoctorPage'>
         <p>Doctor page</p>
         <p>Hello {doctor[0]} {doctor[1]}</p>
         <PatientSearchForm web3={this.state.web3}
                            etherbase={this.state.etherbase} />
       </div>
-    )
+    );
   }
 
 }

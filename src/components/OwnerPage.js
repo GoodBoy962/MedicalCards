@@ -13,10 +13,10 @@ class OwnerPage extends Component {
   render() {
     //TODO view the list of doctos to approve
     return (
-      <div className = "OwnerPage">
+      <div className = 'OwnerPage'>
         <p>Hello owner!</p>
       </div>
-    )
+    );
   }
 }
 

@@ -18,13 +18,13 @@ class PatientPage extends Component {
       patient = this.state.patient
     }
     return (
-      <div className = "PatientPage">
+      <div className = 'PatientPage'>
         <p>Patient page</p>
-        <p> Hello {patient[0]} {patient[1]}</p>
+        <p>Hello {patient[0]} {patient[1]}</p>
         <DoctorSearchForm web3={this.state.web3}
                           etherbase={this.state.etherbase} />
-      </div>
-    )
+        </div>
+    );
   }
 }
 

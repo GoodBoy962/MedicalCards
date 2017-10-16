@@ -7,23 +7,22 @@ class WelcomePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      web3: props.web3,
       contract: props.contract,
       etherbase: props.etherbase,
     }
   }
 
   render() {
-    return (
-      <div className = "WelcomePage">
+    return(
+      <div className = 'WelcomePage'>
         <h3>Welcome!</h3>
-
         <h4>Registrate as a new patient </h4>
-        <PatientRegistrationForm contract={this.state.contract} etherbase={this.state.etherbase} />
-
-        <h4>Registrate as a new doctor </h4>
-        <DoctorRegistrationForm contract={this.state.contract} etherbase={this.state.etherbase} />
+        <PatientRegistrationForm web3={this.state.web3} />
+        <h4>Registrate as a new doctor</h4>
+        <DoctorRegistrationForm web3={this.state.web3} />
       </div>
-    )
+    );
   }
 
 }

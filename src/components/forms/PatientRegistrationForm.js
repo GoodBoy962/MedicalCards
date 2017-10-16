@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
+import ContractService from '../../utils/ContractService';
 
 class PatientRegistrationForm extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      contract: props.contract,
-      etherbase: props.etherbase
+      web3: props.web3
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -17,19 +17,9 @@ class PatientRegistrationForm extends Component {
     const surname = this.refs.surname.value;
     const passport = this.refs.passport.value;
     const birthday = new Date(this.refs.birthday.value).getTime();
-    const contract = this.state.contract;
-    contract.applyPatient.call(
-      name, surname, passport, birthday,
-      {from: this.state.etherbase},
-      (err, res) => {}
-    );
-    contract.applyPatient(
-      name, surname, passport, birthday,
-      {from: this.state.etherbase},
-      (err, res) => {
-        console.log(res);
-      }
-    );
+    ContractService
+      .registratePatient(this.state.web3, name, surname, passport, birthday)
+      .then((err, res) => {});
     e.preventDefault();
   }
 

@@ -3,17 +3,19 @@ import PatientProfile from '../views/PatientProfile';
 import ContractService from '../../utils/ContractService';
 
 //TODO move to the separate component
-const Patient = ({patient, available}) => {
+const Patient = ({patient, available, records}) => {
   let body = null;
   if (patient) {
     if (patient[0]) {
       body = patient[0] + " " + patient[1];
-      if (available) {
+      if (available === true) {
         body += ' add records';
+        records.forEach((record) => {
+          body += ('Doctor: ' + record[0] + ' Value: ' + record[1]);
+        });
         // form = <AddRecord contract={contract} etherbase={etherbase} patient={patient}>;
       } else {
         body += '. You are not accepted';
-        //TODO add buttons to view records
       }
     } else {
       body = <p>There is no such patient</p>;
@@ -35,13 +37,13 @@ class PatientSearchForm extends Component {
   }
 
   handleSubmit(e) {
-    let contract = this.state.contract;
     let address = this.refs.address.value;
     let web3 = this.state.web3;
     ContractService.getPatientProfile(web3, this.state.etherbase, address).then((res, err) => {
       this.setState({
         patient: res.patient,
-        available: res.available
+        available: res.available,
+        records: res.records
       });
     });
     e.preventDefault();
@@ -59,7 +61,9 @@ class PatientSearchForm extends Component {
         <input type='submit' value='search' />
       </form>
 
-      <Patient patient={this.state.patient} available={this.state.available} />
+      <Patient patient={this.state.patient}
+               available={this.state.available}
+               records={this.state.records} />
       </div>
     );
   }

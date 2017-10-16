@@ -58,6 +58,7 @@ class App extends Component {
     } else {
       if (this.state.etherbase) {
         body = <WelcomePage contract={this.state.contract}
+                            web3={this.state.web3}
                             etherbase={this.state.etherbase} />;
       }
     }

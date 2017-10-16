@@ -15,7 +15,7 @@ var ContractService = {
     return new Promise((resolve, reject) => {
       this.getEtherbase(web3).then((accounts, err) => {
         const etherbase = accounts[0];
-        return etherbase
+        return etherbase;
       }).then(etherbase => {
         this.getDoctor(web3, etherbase).then((doctor, err) => {
           if (doctor[0]) {
@@ -103,12 +103,24 @@ var ContractService = {
       this.getPatient(web3, patientAddress).then((patient, err) => {
         if (patient) {
           this.isPatientAvailableForDoctor(web3, patientAddress, doctorAddress)
-            .then((res, err) => {
-              resolve({
-                patient: patient,
-                available: res
-              });
-              reject(err);
+            .then((available, err) => {
+              let patientRecords = [];
+              if (available) {
+                this.getPatientRecords(web3, patientAddress).then((records, err) => {
+                  resolve({
+                    patient: patient,
+                    available: available,
+                    records: records
+                  });
+                  reject(err);
+                });
+              } else {
+                resolve({
+                  patient: patient,
+                  available: available,
+                });
+                reject(err);
+              }
             });
         }
       });
@@ -130,8 +142,81 @@ var ContractService = {
         }
       });
     });
-  }
+  },
 
+  registrateDoctor: function(web3, name, surname, passport, medClinic, category) {
+    const medCardContract = web3.eth.contract(contract.abi).at(contract.address);
+    return new Promise((resolve, reject) => {
+      this.getEtherbase(web3).then((etherbase, err) => {
+        medCardContract.applyDoctor(
+          name, surname, passport, medClinic, category, {
+            from: etherbase[0]
+          },
+          (err, res) => {}
+        );
+      });
+    });
+  },
+
+  registratePatient: function(web3, name, surname, passport, birthday) {
+    const medCardContract = web3.eth.contract(contract.abi).at(contract.address);
+    return new Promise((resolve, reject) => {
+      this.getEtherbase(web3).then((etherbase, err) => {
+        medCardContract.applyPatient(
+          name, surname, passport, birthday, {
+            from: etherbase[0]
+          },
+          (err, res) => {}
+        );
+      });
+    });
+  },
+
+  getPatientRecords: function(web3, patientAddress) {
+
+    let getPatientRecordsLength = function(web3, patientAddress) {
+      const medCardContract = web3.eth.contract(contract.abi).at(contract.address);
+      return new Promise((resolve, reject) => {
+        ContractService.getEtherbase(web3).then((etherbase, err) => {
+          medCardContract.getPatientRecordsLength.call(patientAddress, (err, count) => {
+            resolve(count);
+            reject(err);
+          });
+        });
+      });
+    };
+
+    let getPatientRecordByIndex = function(web3, patientAddress, index) {
+        const medCardContract = web3.eth.contract(contract.abi).at(contract.address);
+        return new Promise((resolve, reject) => {
+          ContractService.getEtherbase(web3).then((etherbase, err) => {
+            medCardContract.getPatientRecord
+              .call(patientAddress, index, {
+                  from: etherbase[0]
+                },
+                (err, record) => {
+                  resolve(record);
+                  reject(err);
+                });
+          });
+        });
+      };
+
+      return new Promise((resolve, reject) => {
+        this.getEtherbase(web3).then((etherbase, err) => {
+          getPatientRecordsLength(web3, patientAddress).then((size, err) => {
+            let promises = [];
+            for (let i = 0; i <= size.s; i++) {
+              promises.push(getPatientRecordByIndex(web3, patientAddress, i));
+            }
+            Promise.all(promises).then((records, err) => {
+              resolve(records);
+              reject(err);
+            });
+          });
+        });
+      });
+  }
 }
 
 export default ContractService;
