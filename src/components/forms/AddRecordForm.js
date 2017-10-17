@@ -1,29 +1,30 @@
 import React, { Component } from 'react';
+import ContractService from '../../utils/ContractService';
 
-
-class AddRecord extends Component {
+class AddRecordForm extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      etherbase: props.etherbase,
-      contract: props.contract,
-      patient: props.patient
+      web3: props.web3,
+      patientAddress: props.patientAddress
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSubmit() {
-    console.log('submitting...');
+  handleSubmit(e) {
+    ContractService.addRecord(this.state.web3,
+                              this.state.patientAddress,
+                              this.refs.value.value);
+    e.preventDefault();
   }
 
   render() {
-    let patient = this.state.patient;
     return(
-      <div className = 'AddRecord'>
+      <div className = 'AddRecordForm'>
         <form onSubmit={this.handleSubmit}>
-          <label>For the patient {patient[0]} {patient[1]}</label><br/>
+          <label>New record</label><br/>
           <textarea ref='value'/><br/>
           <input type='submit' value='Submit'/>
         </form>
@@ -32,4 +33,4 @@ class AddRecord extends Component {
   }
 }
 
-export default AddRecord;
+export default AddRecordForm;

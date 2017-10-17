@@ -104,7 +104,6 @@ var ContractService = {
         if (patient) {
           this.isPatientAvailableForDoctor(web3, patientAddress, doctorAddress)
             .then((available, err) => {
-              let patientRecords = [];
               if (available) {
                 this.getPatientRecords(web3, patientAddress).then((records, err) => {
                   resolve({
@@ -178,45 +177,64 @@ var ContractService = {
       const medCardContract = web3.eth.contract(contract.abi).at(contract.address);
       return new Promise((resolve, reject) => {
         ContractService.getEtherbase(web3).then((etherbase, err) => {
-          medCardContract.getPatientRecordsLength.call(patientAddress, (err, count) => {
-            resolve(count);
-            reject(err);
-          });
+          medCardContract.getPatientRecordsLength
+            .call(patientAddress, {
+                from: etherbase[0]
+              },
+              (err, count) => {
+                resolve(count.c[0]);
+                reject(err);
+              });
         });
       });
     };
 
     let getPatientRecordByIndex = function(web3, patientAddress, index) {
-        const medCardContract = web3.eth.contract(contract.abi).at(contract.address);
-        return new Promise((resolve, reject) => {
-          ContractService.getEtherbase(web3).then((etherbase, err) => {
-            medCardContract.getPatientRecord
-              .call(patientAddress, index, {
-                  from: etherbase[0]
-                },
-                (err, record) => {
-                  resolve(record);
-                  reject(err);
-                });
-          });
-        });
-      };
-
+      const medCardContract = web3.eth.contract(contract.abi).at(contract.address);
       return new Promise((resolve, reject) => {
-        this.getEtherbase(web3).then((etherbase, err) => {
-          getPatientRecordsLength(web3, patientAddress).then((size, err) => {
-            let promises = [];
-            for (let i = 0; i <= size.s; i++) {
-              promises.push(getPatientRecordByIndex(web3, patientAddress, i));
-            }
-            Promise.all(promises).then((records, err) => {
-              resolve(records);
-              reject(err);
-            });
+        ContractService.getEtherbase(web3).then((etherbase, err) => {
+          medCardContract.getPatientRecord
+            .call(patientAddress, index, {
+                from: etherbase[0]
+              },
+              (err, record) => {
+                resolve(record);
+                reject(err);
+              });
+        });
+      });
+    };
+
+    return new Promise((resolve, reject) => {
+      this.getEtherbase(web3).then((etherbase, err) => {
+        getPatientRecordsLength(web3, patientAddress).then((size, err) => {
+          let promises = [];
+          for (let i = 0; i < size; i++) {
+            promises.push(getPatientRecordByIndex(web3, patientAddress, i));
+          }
+          Promise.all(promises).then((records, err) => {
+            resolve(records);
+            reject(err);
           });
         });
       });
+    });
+  },
+
+  addRecord: function(web3, patientAddress, value) {
+    return new Promise((resolve, reject) => {
+      const medCardContract = web3.eth.contract(contract.abi).at(contract.address);
+      this.getEtherbase(web3).then((etherbase, err) => {
+        medCardContract.addRecord(
+          patientAddress, value, {
+            from: etherbase[0]
+          },
+          (err, res) => {}
+        );
+      });
+    });
   }
+
 }
 
 export default ContractService;

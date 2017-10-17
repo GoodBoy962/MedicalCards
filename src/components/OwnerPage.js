@@ -5,8 +5,7 @@ class OwnerPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      web3: props.web3,
-      etherbase: props.etherbase
+      web3: props.web3
     }
   }
 

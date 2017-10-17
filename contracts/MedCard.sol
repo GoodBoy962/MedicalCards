@@ -141,7 +141,7 @@ contract MedCard is Owned {
         return patientRecords[_patientAddress].length;
     }
 
-    // get patirnt record by it's index
+    // get patient record by his index
     function getPatientRecord(address _patientAddress, uint _recordIndex) public constant returns (address, string) {
         require(doctors[msg.sender].accepted);
         require(checkIfPatientAvailableForDoctor(_patientAddress, msg.sender));

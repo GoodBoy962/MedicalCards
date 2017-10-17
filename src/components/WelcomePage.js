@@ -8,8 +8,6 @@ class WelcomePage extends Component {
     super(props);
     this.state = {
       web3: props.web3,
-      contract: props.contract,
-      etherbase: props.etherbase,
     }
   }
 

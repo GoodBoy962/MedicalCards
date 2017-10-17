@@ -3,7 +3,7 @@ import DoctorPage from './components/DoctorPage';
 import PatientPage from './components/PatientPage';
 import WelcomePage from './components/WelcomePage';
 import OwnerPage from './components/OwnerPage';
-import getWeb3 from './utils/getWeb3';
+import getWeb3 from './utils/Web3Service';
 import ContractService from './utils/ContractService';
 
 import './App.css';

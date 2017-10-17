@@ -8,7 +8,6 @@ class DoctorPage extends Component {
     this.state = {
       web3: props.web3,
       doctor: props.doctor,
-      contract: props.contract,
       etherbase: props.etherbase
     };
   }

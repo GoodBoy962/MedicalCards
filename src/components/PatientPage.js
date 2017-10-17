@@ -23,6 +23,7 @@ class PatientPage extends Component {
         <p>Hello {patient[0]} {patient[1]}</p>
         <DoctorSearchForm web3={this.state.web3}
                           etherbase={this.state.etherbase} />
+        {/*TODO add list of requests from doctors*/}
         </div>
     );
   }

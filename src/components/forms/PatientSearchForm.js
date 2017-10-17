@@ -1,24 +1,39 @@
 import React, { Component } from 'react';
-import PatientProfile from '../views/PatientProfile';
+import dateFormat from 'dateformat';
 import ContractService from '../../utils/ContractService';
+import AddRecordForm from './AddRecordForm';
+import RequestPatientPermissionForm from './RequestPatientPermissionForm';
 
-//TODO move to the separate component
-const Patient = ({patient, available, records}) => {
+const Patient = ({patient, available, records, web3, patientAddress}) => {
   let body = null;
   if (patient) {
     if (patient[0]) {
-      body = patient[0] + " " + patient[1];
-      if (available === true) {
-        body += ' add records';
-        records.forEach((record) => {
-          body += ('Doctor: ' + record[0] + ' Value: ' + record[1]);
-        });
-        // form = <AddRecord contract={contract} etherbase={etherbase} patient={patient}>;
+      if (available) {
+        body =
+        <div>
+          <p> Patient: {patient[0]} {patient[1]} </p>
+          <p> Passport: {patient[2].c[0]} </p>
+          <p> Birthday: {dateFormat(new Date(patient[3].c[0]), 'dd-mm-yyyy')} </p>
+          <div>
+            <ul>
+              {records.map((record, index) => {
+                return <li key={index}> {record[1]} from {record[0]}</li>;
+              })}
+            </ul>
+          </div>
+          <AddRecordForm patientAddress={patientAddress}
+                         web3={web3} />
+        </div>
+          ;
       } else {
-        body += '. You are not accepted';
+        body =
+          <div>
+          You are not accepted
+          <RequestPatientPermissionForm patientAddress={patientAddress} />
+          </div>
       }
     } else {
-      body = <p>There is no such patient</p>;
+      body = <p> There is no such patient </p>;
     }
   }
   return (body);
@@ -38,13 +53,17 @@ class PatientSearchForm extends Component {
 
   handleSubmit(e) {
     let address = this.refs.address.value;
+    this.setState({
+      patientAddress: address
+    });
     let web3 = this.state.web3;
-    ContractService.getPatientProfile(web3, this.state.etherbase, address).then((res, err) => {
-      this.setState({
-        patient: res.patient,
-        available: res.available,
-        records: res.records
-      });
+    ContractService.getPatientProfile(web3, this.state.etherbase, address)
+      .then((res, err) => {
+        this.setState({
+          patient: res.patient,
+          available: res.available,
+          records: res.records
+        });
     });
     e.preventDefault();
   }
@@ -52,18 +71,20 @@ class PatientSearchForm extends Component {
   render() {
     return(
       <div className='PatientSearchForm'>
-      <p>Patients search</p><br/>
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          enter patient address<br/>
-          <input type='text' ref='address'/>
-        </label>
-        <input type='submit' value='search' />
-      </form>
+        <p>Patients search</p><br/>
+        <form onSubmit={this.handleSubmit}>
+          <label>
+            enter patient address<br/>
+            <input type='text' ref='address'/>
+            </label>
+          <input type='submit' value='search' />
+        </form>
 
-      <Patient patient={this.state.patient}
-               available={this.state.available}
-               records={this.state.records} />
+        <Patient patient={this.state.patient}
+                 available={this.state.available}
+                 records={this.state.records}
+                 web3={this.state.web3}
+                 patientAddress={this.state.patientAddress} />
       </div>
     );
   }
