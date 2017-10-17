@@ -1,17 +1,35 @@
 import React, { Component } from 'react';
 import ContractService from '../../utils/ContractService';
 
-const Doctor = ({doctor, accepted}) => {
+const Doctor = ({doctor, accepted, doctorAddress, web3}) => {
+
+  function acceptDoctor() {
+    ContractService.acceptDoctorForPatient(web3, doctorAddress)
+      .then((err, res) => {
+
+      });
+  }
+
   let body = null;
   if (doctor) {
     if (doctor[0]) {
-      body = doctor[0] + " " + doctor[1];
-      if (accepted) {
-        body += ' and he can add records';
+      let doctorProfile = doctor[0] + " " + doctor[1];
+      if (accepted === true) {
+        body =
+          <div>
+            Doctor: {doctorProfile}
+            <p>approved</p>
+          </div>
+        ;
       } else {
-        body += ' and he can\'t add records; approve him to worh with toyr medical records';
-        // body += "<input type='button' value='approve' onclick={this.approveDoctor}/>";
-        //TODO add button to approve doctor
+        body =
+          <div>
+            Doctor: {doctorProfile}
+            <p>cant add new records</p>
+            {/*TODO add different accepts for patient and contract owner*/}
+            <input type='button' value='approve' onClick={acceptDoctor}/>
+          </div>
+        ;
       }
     } else {
       body = <p>There is no such a doctor</p>;
@@ -32,19 +50,16 @@ class DoctorSearchForm extends Component {
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.approveDoctor = this.approveDoctor.bind(this);
-  }
-
-  approveDoctor(e) {
-    console.log('approving...');
-    e.preventDefault();
   }
 
   handleSubmit(e) {
     let doctorAddress = this.refs.address.value;
+    this.setState({
+      doctorAddress: doctorAddress
+    })
     let patientAddress = this.state.etherbase;
     let web3 = this.state.web3;
-    ContractService.getDoctorProfile(web3, patientAddress, doctorAddress)
+    ContractService.getDoctorProfile(web3, doctorAddress, patientAddress)
       .then((res, err) => {
         this.setState({
           doctor: res.doctor,
@@ -64,7 +79,10 @@ class DoctorSearchForm extends Component {
           <input type='submit' value='search' />
         </form>
 
-      <Doctor doctor={this.state.doctor} accepted={this.state.accepted} />
+      <Doctor doctor={this.state.doctor}
+              accepted={this.state.accepted}
+              doctorAddress={this.state.doctorAddress}
+              web3={this.state.web3} />
       </div>
     );
   }

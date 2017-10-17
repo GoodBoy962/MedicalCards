@@ -128,14 +128,21 @@ var ContractService = {
 
   getDoctorProfile: function(web3, doctorAddress, patientAddress) {
     return new Promise((resolve, reject) => {
-      this.getDoctor(web3, patientAddress).then((doctor, err) => {
+      this.getDoctor(web3, doctorAddress).then((doctor, err) => {
         if (doctor) {
           this.isPatientAvailableForDoctor(web3, patientAddress, doctorAddress)
-            .then((res, err) => {
-              resolve({
-                doctor: doctor,
-                accepted: res
-              });
+            .then((accepted, err) => {
+              if (doctor[5] === true) {
+                resolve({
+                  doctor: doctor,
+                  accepted: accepted
+                });
+              } else {
+                resolve({
+                  doctor: [],
+                  accepted: false
+                })
+              }
               reject(err);
             });
         }
@@ -227,6 +234,20 @@ var ContractService = {
       this.getEtherbase(web3).then((etherbase, err) => {
         medCardContract.addRecord(
           patientAddress, value, {
+            from: etherbase[0]
+          },
+          (err, res) => {}
+        );
+      });
+    });
+  },
+
+  acceptDoctorForPatient: function(web3, doctorAddress) {
+    return new Promise((resolve, reject) => {
+      const medCardContract = web3.eth.contract(contract.abi).at(contract.address);
+      this.getEtherbase(web3).then((etherbase, err) => {
+        medCardContract.acceptDoctorForPatient(
+          doctorAddress, {
             from: etherbase[0]
           },
           (err, res) => {}
