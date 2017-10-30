@@ -6,6 +6,7 @@ const app = express();
 
 const port = 8000;
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 // Add headers
 app.use(function (req, res, next) {
     // Website you wish to allow to connect

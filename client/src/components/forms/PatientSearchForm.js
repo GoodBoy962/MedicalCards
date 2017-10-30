@@ -3,13 +3,9 @@ import dateFormat from 'dateformat';
 import ContractService from '../../utils/ContractService';
 import RequestService from '../../utils/RequestsService';
 import AddRecordForm from './AddRecordForm';
+import RequestPatientPermissionForm from './RequestPatientPermissionForm';
 
-const Patient = ({patient, available, records, web3, patientAddress}) => {
-
-  function requestPatientPermission() {
-    //TODO implement node backend part for this
-    console.log('submitting...', patientAddress);
-  }
+const Patient = ({patient, available, records, web3, patientAddress, doctorAddress, requested}) => {
 
   let body = null;
   if (patient) {
@@ -29,17 +25,14 @@ const Patient = ({patient, available, records, web3, patientAddress}) => {
           </div>
           <AddRecordForm patientAddress={patientAddress}
                          web3={web3} />
-        </div>
-          ;
+        </div>;
       } else {
-        body =
-          <div>
-          You are not accepted
-          <input type='button' value='request' onClick={requestPatientPermission} />
-          </div>
+          body = <RequestPatientPermissionForm requested={requested}
+                                               patientAddress={patientAddress}
+                                               doctorAddress={doctorAddress} />;
       }
     } else {
-      body = <p> There is no such patient </p>;
+      body = <p> There is no such a patient </p>;
     }
   }
   return (body);
@@ -58,12 +51,19 @@ class PatientSearchForm extends Component {
   }
 
   handleSubmit(e) {
-    let address = this.refs.address.value;
+    const patientAddress = this.refs.address.value;
+    const doctorAddress = this.state.etherbase;
+    const web3 = this.state.web3;
+    RequestService.isRequested(doctorAddress, patientAddress)
+      .then((request, err) => {
+        this.setState({
+          requested: request.data
+        })
+      });
     this.setState({
-      patientAddress: address
+      patientAddress: patientAddress
     });
-    let web3 = this.state.web3;
-    ContractService.getPatientProfile(web3, this.state.etherbase, address)
+    ContractService.getPatientProfile(web3, doctorAddress, patientAddress)
       .then((res, err) => {
         this.setState({
           patient: res.patient,
@@ -90,7 +90,9 @@ class PatientSearchForm extends Component {
                  available={this.state.available}
                  records={this.state.records}
                  web3={this.state.web3}
-                 patientAddress={this.state.patientAddress} />
+                 patientAddress={this.state.patientAddress}
+                 doctorAddress={this.state.etherbase}
+                 requested={this.state.requested} />
       </div>
     );
   }

@@ -36,7 +36,7 @@ class PatientPage extends Component {
           <DoctorSearchForm web3={this.state.web3}
                             etherbase={this.state.etherbase} />
 
-          <RequestList requests={this.state.requests} />
+          <RequestList web3={this.state.web3} requests={this.state.requests} />
         </div>
       )
     }

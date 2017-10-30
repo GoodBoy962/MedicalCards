@@ -2,18 +2,40 @@ module.exports = function(app, db) {
 
   const doctorRequests = db.collection('doctorRequests');
 
+  function parseAddress(address) {
+    return new RegExp(["^", address, "$"].join(""), "i")
+  }
+
+  app.get('/doctorRequests', (req, res) => {
+    const doctorAddress = req.query.doctorAddress;
+    const patientAddress = req.query.patientAddress;
+    const details = {
+      'patientAddress': parseAddress(patientAddress),
+      'doctorAddress': parseAddress(doctorAddress)
+    };
+    doctorRequests.findOne(details, (err, request) => {
+      if (err) {
+        res.send({
+          'error': 'An error has occured'
+        });
+      } else {
+        res.send(request);
+      }
+    });
+  });
+
   app.get('/doctorRequests/doctor', (req, res) => {
     const doctorAddress = req.query.doctorAddress;
     const details = {
-      'doctorAddress': doctorAddress
+      'doctorAddress': parseAddress(doctorAddress)
     };
-    doctorRequests.find(details, (err, items) => {
+    doctorRequests.find(details).toArray((err, requests) => {
       if (err) {
         res.send({
           'error': 'An error has occurred'
         });
       } else {
-        res.send(items);
+        res.send(requests);
       }
     });
   });
@@ -21,7 +43,7 @@ module.exports = function(app, db) {
   app.get('/doctorRequests/patient', (req, res) => {
     const patientAddress = req.query.patientAddress;
     const details = {
-      'patientAddress': patientAddress
+      'patientAddress': parseAddress(patientAddress)
     };
     doctorRequests.find(details).toArray((err, requests) => {
       if (err) {
@@ -35,7 +57,6 @@ module.exports = function(app, db) {
   });
 
   app.post('/doctorRequests', (req, res) => {
-    console.log('insert');
     doctorRequests.insert(req.body, (err, result) => {
       if (err) {
         res.send({
@@ -51,8 +72,8 @@ module.exports = function(app, db) {
     const doctorAddress = req.query.doctorAddress;
     const patientAddress = req.query.patientAddress;
     const details = {
-      'doctorAddress': doctorAddress,
-      'patientAddress': patientAddress
+      'doctorAddress': parseAddress(doctorAddress),
+      'patientAddress': parseAddress(patientAddress)
     }
     doctorRequests.remove(details, (err, result) => {
       if (err) {
