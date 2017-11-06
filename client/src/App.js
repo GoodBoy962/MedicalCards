@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
+
 import DoctorPage from './components/DoctorPage';
 import PatientPage from './components/PatientPage';
 import WelcomePage from './components/WelcomePage';
 import OwnerPage from './components/OwnerPage';
+import store from './store';
+
 import getWeb3 from './utils/Web3Service';
 import ContractService from './utils/ContractService';
 
-import './App.css';
+const DOCTOR = 'doctor';
+const PATIENT = 'patient';
+const OWNER = 'owner';
 
 class App extends Component {
 
@@ -22,39 +27,38 @@ class App extends Component {
       this.setState({
         web3: results.web3
       });
-    this.instantiateContract();
+    this.getUser();
     });
   }
 
-  instantiateContract() {
+  getUser() {
     let web3 = this.state.web3;
-    ContractService.getAccount(web3).then((res, err) => {
+    ContractService.getAccount(web3).then((user, err) => {
+      store.dispatch({
+        type: user.type,
+        payload: {
+          account: user.account,
+          etherbase: user.etherbase
+        }
+      });
       this.setState({
-        account: res.account,
-        type: res.type,
-        etherbase: res.etherbase
-      })
+        type: user.type
+      });
     });
   }
 
   render() {
     let body;
     let type = this.state.type;
-    if (type === 'doctor') {
-      body = <DoctorPage doctor={this.state.account}
-                         etherbase={this.state.etherbase}
-                         web3={this.state.web3} />;
-    } else if (type === 'patient') {
-      body = <PatientPage patient={this.state.account}
-                          etherbase={this.state.etherbase}
-                          web3={this.state.web3} />;
-    } else if (type === 'owner') {
-        body = <OwnerPage etherbase={this.state.etherbase}
-                          web3={this.state.web3} />;
+    if (type === DOCTOR) {
+      body = <DoctorPage web3={this.state.web3} />;
+    } else if (type === PATIENT) {
+      body = <PatientPage web3={this.state.web3} />;
+    } else if (type === OWNER) {
+        body = <OwnerPage web3={this.state.web3} />;
     } else {
       if (this.state.etherbase) {
-        body = <WelcomePage web3={this.state.web3}
-                            etherbase={this.state.etherbase} />;
+        body = <WelcomePage web3={this.state.web3} />;
       }
     }
     return(

@@ -56,9 +56,9 @@ var ContractService = {
   },
 
   getDoctor: function(web3, address) {
-    const medCardContract = web3.eth.contract(contract.abi).at(contract.address);
+    const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
     return new Promise((resolve, reject) => {
-      medCardContract.doctors.call(address, (err, res) => {
+      medCardContract.methods.doctors(address).call((err, res) => {
         resolve(res);
         reject(err);
       });
@@ -66,9 +66,9 @@ var ContractService = {
   },
 
   getPatient: function(web3, address) {
-    const medCardContract = web3.eth.contract(contract.abi).at(contract.address);
+    const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
     return new Promise((resolve, reject) => {
-      medCardContract.patients.call(address, (err, res) => {
+      medCardContract.methods.patients(address).call((err, res) => {
         resolve(res);
         reject(err);
       });
@@ -76,9 +76,9 @@ var ContractService = {
   },
 
   getOwner: function(web3, address) {
-    const medCardContract = web3.eth.contract(contract.abi).at(contract.address);
+    const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
     return new Promise((resolve, reject) => {
-      medCardContract.owner.call((err, res) => {
+      medCardContract.methods.owner.call((err, res) => {
         resolve(res);
         reject(err);
       });
@@ -86,15 +86,13 @@ var ContractService = {
   },
 
   isPatientAvailableForDoctor: function(web3, patientAddress, doctorAddress) {
-    const medCardContract = web3.eth.contract(contract.abi).at(contract.address);
+    const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
     return new Promise((resolve, reject) => {
-      medCardContract.checkIfPatientAvailableForDoctor.call(
-        patientAddress, doctorAddress,
-        (err, res) => {
+      medCardContract.methods.checkIfPatientAvailableForDoctor(patientAddress, doctorAddress)
+        .call((err, res) => {
           resolve(res);
           reject(err);
-        }
-      );
+        });
     })
   },
 
@@ -151,10 +149,10 @@ var ContractService = {
   },
 
   registrateDoctor: function(web3, name, surname, passport, medClinic, category) {
-    const medCardContract = web3.eth.contract(contract.abi).at(contract.address);
+    const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
     return new Promise((resolve, reject) => {
       this.getEtherbase(web3).then((etherbase, err) => {
-        medCardContract.applyDoctor(
+        medCardContract.methods.applyDoctor.send(
           name, surname, passport, medClinic, category, {
             from: etherbase[0]
           },
@@ -165,10 +163,10 @@ var ContractService = {
   },
 
   registratePatient: function(web3, name, surname, passport, birthday) {
-    const medCardContract = web3.eth.contract(contract.abi).at(contract.address);
+    const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
     return new Promise((resolve, reject) => {
       this.getEtherbase(web3).then((etherbase, err) => {
-        medCardContract.applyPatient(
+        medCardContract.methods.applyPatient.send(
           name, surname, passport, birthday, {
             from: etherbase[0]
           },
@@ -181,27 +179,26 @@ var ContractService = {
   getPatientRecords: function(web3, patientAddress) {
 
     let getPatientRecordsLength = function(web3, patientAddress) {
-      const medCardContract = web3.eth.contract(contract.abi).at(contract.address);
+      const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
       return new Promise((resolve, reject) => {
         ContractService.getEtherbase(web3).then((etherbase, err) => {
-          medCardContract.getPatientRecordsLength
-            .call(patientAddress, {
-                from: etherbase[0]
-              },
-              (err, count) => {
-                resolve(count.c[0]);
-                reject(err);
-              });
+          medCardContract.methods.getPatientRecordsLength(patientAddress).call({
+              from: etherbase[0]
+            },
+            (err, count) => {
+              resolve(count);
+              reject(err);
+            });
         });
       });
     };
 
     let getPatientRecordByIndex = function(web3, patientAddress, index) {
-      const medCardContract = web3.eth.contract(contract.abi).at(contract.address);
+      const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
       return new Promise((resolve, reject) => {
         ContractService.getEtherbase(web3).then((etherbase, err) => {
-          medCardContract.getPatientRecord
-            .call(patientAddress, index, {
+          medCardContract.methods.getPatientRecord(patientAddress, index)
+            .call({
                 from: etherbase[0]
               },
               (err, record) => {
@@ -230,7 +227,7 @@ var ContractService = {
 
   addRecord: function(web3, patientAddress, value) {
     return new Promise((resolve, reject) => {
-      const medCardContract = web3.eth.contract(contract.abi).at(contract.address);
+      const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
       this.getEtherbase(web3).then((etherbase, err) => {
         medCardContract.addRecord(
           patientAddress, value, {
@@ -244,7 +241,7 @@ var ContractService = {
 
   acceptDoctorForPatient: function(web3, doctorAddress) {
     return new Promise((resolve, reject) => {
-      const medCardContract = web3.eth.contract(contract.abi).at(contract.address);
+      const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
       this.getEtherbase(web3).then((etherbase, err) => {
         medCardContract.acceptDoctorForPatient(
           doctorAddress, {

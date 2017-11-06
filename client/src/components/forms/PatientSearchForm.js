@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+
 import dateFormat from 'dateformat';
 import ContractService from '../../utils/ContractService';
 import RequestService from '../../utils/RequestsService';
 import AddRecordForm from './AddRecordForm';
 import RequestPatientPermissionForm from './RequestPatientPermissionForm';
+import store from '../../store';
 
 const Patient = ({patient, available, records, web3, patientAddress, doctorAddress, requested}) => {
 
@@ -13,9 +15,9 @@ const Patient = ({patient, available, records, web3, patientAddress, doctorAddre
       if (available) {
         body =
         <div>
-          <p> Patient: {patient[0]} {patient[1]} </p>
-          <p> Passport: {patient[2].c[0]} </p>
-          <p> Birthday: {dateFormat(new Date(patient[3].c[0]), 'dd-mm-yyyy')} </p>
+          <p> Patient: {patient.name} {patient.surname} </p>
+          <p> Passport: {patient.passport} </p>
+          <p> Birthday: {dateFormat(new Date(Number.parseInt(patient.birthday)), 'dd-mm-yyyy')} </p>
           <div>
             <ul>
               {records.map((record, index) => {
@@ -43,8 +45,7 @@ class PatientSearchForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      web3: props.web3,
-      etherbase: props.etherbase
+      web3: props.web3
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -52,7 +53,7 @@ class PatientSearchForm extends Component {
 
   handleSubmit(e) {
     const patientAddress = this.refs.address.value;
-    const doctorAddress = this.state.etherbase;
+    const doctorAddress = store.getState().user.etherbase;
     const web3 = this.state.web3;
     RequestService.isRequested(doctorAddress, patientAddress)
       .then((request, err) => {
@@ -75,6 +76,7 @@ class PatientSearchForm extends Component {
   }
 
   render() {
+    const etherbase = store.getState().user.etherbase;
     return(
       <div className='PatientSearchForm'>
         <p>Patients search</p><br/>
@@ -91,7 +93,7 @@ class PatientSearchForm extends Component {
                  records={this.state.records}
                  web3={this.state.web3}
                  patientAddress={this.state.patientAddress}
-                 doctorAddress={this.state.etherbase}
+                 doctorAddress={etherbase}
                  requested={this.state.requested} />
       </div>
     );

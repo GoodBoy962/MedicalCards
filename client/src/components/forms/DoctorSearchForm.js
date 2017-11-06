@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+
 import ContractService from '../../utils/ContractService';
+import store from '../../store';
 
 const Doctor = ({doctor, accepted, doctorAddress, web3}) => {
 
@@ -43,10 +45,7 @@ class DoctorSearchForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      web3: props.web3,
-      doctor: null,
-      accepted: null,
-      etherbase: props.etherbase
+      web3: props.web3
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -57,7 +56,7 @@ class DoctorSearchForm extends Component {
     this.setState({
       doctorAddress: doctorAddress
     })
-    let patientAddress = this.state.etherbase;
+    let patientAddress = store.getState().user.etherbase;
     let web3 = this.state.web3;
     ContractService.getDoctorProfile(web3, doctorAddress, patientAddress)
       .then((res, err) => {
