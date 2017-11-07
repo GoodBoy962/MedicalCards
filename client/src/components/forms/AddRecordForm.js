@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ContractService from '../../utils/ContractService';
+import ipfsAPI from 'ipfs-api';
 
 class AddRecordForm extends Component {
 
@@ -9,15 +10,27 @@ class AddRecordForm extends Component {
       web3: props.web3,
       patientAddress: props.patientAddress
     }
+    this.ipfs = ipfsAPI('localhost', '5001');
+    this.reader = new FileReader();
 
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.captureFile = this.captureFile.bind(this);
   }
 
-  handleSubmit(e) {
-    ContractService.addRecord(this.state.web3,
-                              this.state.patientAddress,
-                              this.refs.value.value);
-    e.preventDefault();
+  componentWillMount() {
+     this.reader.onload = event => {
+       const record = event.target.result;
+       const recordBuf = Buffer.from(record, 'utf8');
+       this.ipfs.files.add(recordBuf).then((res, err) => {
+         ContractService.addRecord(this.state.web3,
+                                   this.state.patientAddress,
+                                   res[0].hash);
+       });
+     };
+  }
+
+  captureFile(e) {
+    const file = e.target.files[0];
+    this.reader.readAsText(file);
   }
 
   render() {
@@ -25,7 +38,7 @@ class AddRecordForm extends Component {
       <div className = 'AddRecordForm'>
         <form onSubmit={this.handleSubmit}>
           <label>New record</label><br/>
-          <textarea ref='value'/><br/>
+          <input type='file' onChange={this.captureFile} /><br/>
           <input type='submit' value='Submit'/>
         </form>
       </div>
