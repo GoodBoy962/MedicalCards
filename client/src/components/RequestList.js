@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ContractService from '../utils/ContractService';
-import RequestService from '../utils/RequestsService';
+// import RequestService from '../utils/RequestsService';
 
 class RequestList extends Component {
 

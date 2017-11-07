@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import DoctorSearchForm from './forms/DoctorSearchForm';
 import RequestsService from '../utils/RequestsService';
-import ContractService from '../utils/ContractService';
 import RequestList from './RequestList';
 import store from '../store';
 
@@ -30,24 +29,19 @@ class PatientPage extends Component {
     const state = store.getState();
     const patient = state.user.account;
     const etherbase = state.user.etherbase;
-    if (this.state.requests) {
-      return (
-        <div className = 'PatientPage'>
-          <p>Patient page</p>
-          <p>Hello {patient[0]} {patient[1]}</p>
-          <DoctorSearchForm web3={this.state.web3}
-                            etherbase={etherbase} />
-
-          <RequestList web3={this.state.web3} requests={this.state.requests} />
-        </div>
-      )
-    }
-    return (
-      <div className = 'PatientPage'>
+    let body =
+      <div>
         <p>Patient page</p>
         <p>Hello {patient[0]} {patient[1]}</p>
         <DoctorSearchForm web3={this.state.web3}
                           etherbase={etherbase} />
+      </div>;
+    if (this.state.requests) {
+      body += <RequestList web3={this.state.web3} requests={this.state.requests} />;
+    }
+    return (
+      <div className = 'PatientPage'>
+        {body}
       </div>
     );
   }
