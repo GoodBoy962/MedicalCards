@@ -50,7 +50,7 @@ const ContractService = {
             });
           }
         });
-      });
+      }).catch(reject);
     });
   },
 
@@ -155,6 +155,8 @@ const ContractService = {
           .applyDoctor(name, surname, passport, medClinic, category).send({
           from: etherbase[0]
         }, (err, res) => {
+          resolve(res);
+          reject(err);
         });
       });
     });
@@ -163,11 +165,13 @@ const ContractService = {
   registratePatient: function (web3, name, surname, passport, birthday) {
     const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
     return new Promise((resolve, reject) => {
-      this.getEtherbase(web3).then((etherbase, err) => {
+      this.getEtherbase(web3).then((etherbase) => {
         medCardContract.methods
           .applyPatient(name, surname, passport, birthday).send({
           from: etherbase[0]
         }, (err, res) => {
+          resolve(res);
+          reject(err);
         });
       });
     });
@@ -175,10 +179,10 @@ const ContractService = {
 
   getPatientRecords: function (web3, patientAddress) {
 
-    let getPatientRecordsLength = function (web3, patientAddress) {
+    const getPatientRecordsLength = function (web3, patientAddress) {
       const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
       return new Promise((resolve, reject) => {
-        ContractService.getEtherbase(web3).then((etherbase, err) => {
+        ContractService.getEtherbase(web3).then((etherbase) => {
           medCardContract.methods.getPatientRecordsLength(patientAddress).call({
               from: etherbase[0]
             },
@@ -190,7 +194,7 @@ const ContractService = {
       });
     };
 
-    let getPatientRecordByIndex = function (web3, patientAddress, index) {
+    const getPatientRecordByIndex = function (web3, patientAddress, index) {
       const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
       return new Promise((resolve, reject) => {
         ContractService.getEtherbase(web3).then((etherbase, err) => {
@@ -227,6 +231,8 @@ const ContractService = {
         medCardContract.methods.addRecord(patientAddress, value).send({
           from: etherbase[0]
         }, (err, res) => {
+          resolve(res);
+          reject(err);
         });
       });
     });

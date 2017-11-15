@@ -1,11 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Screen from '../lib/screen';
-import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
-import Menu from '../components/patient/Menu';
 
 import { withStyles } from 'material-ui/styles';
 
@@ -15,19 +13,10 @@ const Welcome = ({classes, children}) => (
       <AppBar className={ classes.appBar }>
         <Toolbar>
           <Typography type="title" color="inherit" noWrap>
-            Система хранения медицинских паспортов
+            Система хранения медицинских книжек
           </Typography>
         </Toolbar>
       </AppBar>
-      <Drawer
-        type="permanent"
-        classes={ {
-          paper: classes.drawerPaper,
-        } }
-      >
-        <div className={ classes.drawerHeader }/>
-        <Menu/>
-      </Drawer>
       <main className={ classes.content }>
         { children }
       </main>
@@ -54,15 +43,10 @@ const styleSheet = theme => ({
   },
   appBar: {
     position: 'absolute',
-    width: `calc(100% - ${drawerWidth}px)`,
+    width: `100%`,
     marginLeft: drawerWidth,
+    justifyContent: 'center',
   },
-  drawerPaper: {
-    position: 'relative',
-    height: '100%',
-    width: drawerWidth,
-  },
-  drawerHeader: theme.mixins.toolbar,
   content: {
     backgroundColor: theme.palette.background.default,
     display: 'flex',

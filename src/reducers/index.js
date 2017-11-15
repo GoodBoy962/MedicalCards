@@ -8,6 +8,8 @@ import approveDoctor from './patient/approveDoctor';
 import patientSearch from './doctor/patientSearch';
 import requestPatient from './doctor/requestPatient';
 import addRecord from './doctor/addRecord';
+import registerPatient from './welcome/registerPatient';
+import registerDoctor from './welcome/registerDoctor';
 
 export default {
   routing: routerReducer,
@@ -18,5 +20,7 @@ export default {
   approveDoctor,
   patientSearch,
   requestPatient,
-  addRecord
+  addRecord,
+  registerPatient,
+  registerDoctor
 }

@@ -1,5 +1,7 @@
 import React from 'react';
-import ContractService from '../../utils/ContractService';
+import { connect } from 'react-redux';
+import { register } from "../../actions/welcome/registerDoctor";
+import { CircularProgress } from 'material-ui/Progress';
 
 class DoctorRegistrationForm extends React.Component {
 
@@ -9,32 +11,51 @@ class DoctorRegistrationForm extends React.Component {
     const passport = this.refs.passport.value;
     const medClinic = this.refs.medClinic.value;
     const category = this.refs.category.value;
-    //TODO move to action
-    ContractService
-      .registrateDoctor(this.state.web3, name, surname, passport, medClinic, category)
-      .then((err, res) => {});
+    this.props.register(name, surname, passport, medClinic, category);
     e.preventDefault();
   };
 
   render() {
-    return (
-      <div className = 'DoctorRegistrationForm'>
-        <form onSubmit={this.handleSubmit}>
-          <label>Name</label><br/>
-          <input type='text' ref='name'/><br/>
-          <label>Surname</label><br/>
-          <input type='text' ref="surname"/><br/>
-          <label>Passport</label><br/>
-          <input type='number' ref='passport'/><br/>
-          <label>Medical clinic</label><br/>
-          <input type='text' ref='medClinic'/><br/>
-          <label>Category</label><br/>
-          <input type='text' ref='category'/><br/>
-          <input type='submit' value='Зарегестрироваться' />
-        </form>
-      </div>
-    );
+    if (!this.props.pendingDoctor) {
+      if (this.props.successDoctor) {
+        return (
+          <div>Регистрация завершена! Менее чем через минуту пациент появится в системе</div>
+        )
+      } else {
+        return (
+          <div className='DoctorRegistrationForm'>
+            <form onSubmit={ this.handleSubmit }>
+              <label>Имя</label><br/>
+              <input type='text' ref='name'/><br/>
+              <label>Фамилия</label><br/>
+              <input type='text' ref="surname"/><br/>
+              <label>Серия и номер паспорта</label><br/>
+              <input type='number' ref='passport'/><br/>
+              <label>Место работы</label><br/>
+              <input type='text' ref='medClinic'/><br/>
+              <label>Специальность</label><br/>
+              <input type='text' ref='category'/><br/>
+              <input type='submit' value='Зарегестрироваться'/>
+            </form>
+          </div>
+        );
+      }
+    } else {
+      return (
+        <CircularProgress/>
+      )
+    }
   }
 }
 
-export default DoctorRegistrationForm;
+const mapStateToProps = state => ({
+  pendingDoctor: state.registerDoctor.pending,
+  successDoctor: state.registerDoctor.success
+});
+
+const mapDispatchToProps = dispatch => ({
+  register: (name, surname, passport, medClinic, category) =>
+    dispatch(register(name, surname, passport, medClinic, category))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DoctorRegistrationForm);
