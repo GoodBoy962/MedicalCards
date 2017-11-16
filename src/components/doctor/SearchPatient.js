@@ -26,7 +26,7 @@ class SearchForm extends React.Component {
   }
 }
 
-const PatientSearchForm = ({ patientProfile, address, find, load }) => {
+const SearchPatient = ({ patientProfile, address, find, load }) => {
   !!!address && load();
   return (
     <div>
@@ -52,4 +52,4 @@ const mapDispatchToProps = dispatch => ({
   load: () => dispatch(load())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PatientSearchForm);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchPatient);

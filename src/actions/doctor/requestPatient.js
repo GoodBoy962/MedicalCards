@@ -15,5 +15,5 @@ export const request = (doctorAddress, patientAddress) =>
       type: REQUEST_PATIENT_PERMISSION_REQUEST
     });
 
-    //TODO realize request logic
+    //TODO realize request logic in SC
   };

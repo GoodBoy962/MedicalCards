@@ -2,7 +2,7 @@ import React from 'react';
 import { add } from "../../actions/doctor/addRecord";
 import { connect } from "react-redux";
 
-class AddRecordForm extends React.Component {
+class AddRecord extends React.Component {
 
   constructor(props) {
     super(props);
@@ -12,11 +12,11 @@ class AddRecordForm extends React.Component {
   componentWillMount() {
     this.reader.onload = event => {
       const record = event.target.result;
-      add(this.props.patientAddress, record);
+      this.props.add(this.props.patientAddress, record);
     };
   }
 
-  captureFile = (e) => {
+  handleUpload = (e) => {
     const file = e.target.files[0];
     this.reader.readAsText(file);
   };
@@ -25,7 +25,7 @@ class AddRecordForm extends React.Component {
     return (
       <div className='AddRecordForm'>
         <p>Добавьте файл с записью</p>
-        <input type='file' onChange={ this.captureFile }/><br/>
+        <input type='file' onChange={ this.handleUpload }/><br/>
       </div>
     );
   }
@@ -39,4 +39,4 @@ const mapDispatchToProps = dispatch => ({
   add: (patientAddress, file) => dispatch(add(patientAddress, file))
 });
 
-export default connect(mapStateToProp, mapDispatchToProps)(AddRecordForm);
+export default connect(mapStateToProp, mapDispatchToProps)(AddRecord);

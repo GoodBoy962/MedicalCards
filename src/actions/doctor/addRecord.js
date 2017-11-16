@@ -11,8 +11,6 @@ export const update = () => ({
 export const add = (patientAddress, record) =>
   (dispatch, getState) => {
 
-    console.log('....****....');
-
     dispatch({
       type: ADD_RECORD_REQUEST
     });
@@ -22,8 +20,8 @@ export const add = (patientAddress, record) =>
 
     const recordBuffer = Buffer.from(record, 'utf8');
 
-    ipfs.files.add(recordBuffer).then((res) => {
-      ContractService.addRecord(web3, patientAddress, res[0].hash).then((err, res) => dispatch(update()));
+    ipfs.files.add(recordBuffer, (err, files) => {
+      ContractService.addRecord(web3, patientAddress, files[0].hash).then((err, res) => dispatch(update()));
     }).catch(console.log);
 
   };

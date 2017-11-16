@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from "react-redux";
 import { find } from '../../actions/doctor/patientSearch';
 import dateFormat from 'dateformat'
-import RequestPatientPermissionForm from './RequestPatientPermissionForm';
-import AddRecordForm from './AddRecordForm';
+import RequestPatientPermission from './RequestPatientPermission';
+import AddRecord from './AddRecord';
 
 class PatientView extends React.Component {
 
@@ -25,14 +25,14 @@ class PatientView extends React.Component {
                 }) }
               </ul>
             </div>
-            <AddRecordForm/>
+            <AddRecord/>
           </div>
         )
       } else {
         return (
           <div>
             <p>Запросить доступ</p>
-            <RequestPatientPermissionForm/>
+            <RequestPatientPermission/>
           </div>
         )
       }

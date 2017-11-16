@@ -17,7 +17,7 @@ import Welcome from './containers/Welcome';
 import PatientProfile from './components/patient/Profile';
 import DoctorProfile from './components/doctor/Profile';
 import DoctorSearchForm from './components/patient/DoctorSearchForm';
-import PatientSearchForm from './components/doctor/PatientSearchForm';
+import SearchPatient from './components/doctor/SearchPatient';
 import ContractService from './utils/ContractService';
 import WelcomePage from "./components/welcome/WelcomePage";
 
@@ -47,7 +47,7 @@ ContractService.getAccount(web3).then(account => {
             <Route path='/' component={Doctor}>
               <IndexRoute component={DoctorProfile}/>
               <Route path='profile' component={DoctorProfile}/>
-              <Route path='searchPatient' component={PatientSearchForm}/>
+              <Route path='searchPatient' component={SearchPatient}/>
             </Route>
           </Router>
         </Provider>,
