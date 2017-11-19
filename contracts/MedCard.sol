@@ -3,7 +3,7 @@ contract Owned {
 
     address public owner;
 
-    function Owned() {
+    function Owned() public {
         owner = msg.sender;
     }
 
@@ -12,7 +12,7 @@ contract Owned {
         _;
     }
 
-    function transferOwnership(address newOwner) onlyOwner {
+    function transferOwnership(address newOwner) public onlyOwner {
         owner = newOwner;
     }
 }
@@ -83,7 +83,7 @@ contract MedCard is Owned {
         uint birthday;
     }
 
-    function MedCard() {
+    function MedCard() public {
         owner = msg.sender;
     }
 
@@ -117,23 +117,26 @@ contract MedCard is Owned {
     }
 
     // Approve the address to work as a Doctor in system
-    function approveDoctor(address _doctorAddress) onlyOwner {
-        require(!doctors[_doctorAddress].accepted);
-
+    function approveDoctor(address _doctorAddress) public isNotDoctor(_doctorAddress) onlyOwner {
         doctors[_doctorAddress].accepted = true;
     }
 
     // check if doctor can get patient records
     function checkIfPatientAvailableForDoctor(address _patientAddress,
                                               address _doctorAddress) public constant returns (bool) {
-        address[] memory patients = patientsAvailableForDoctor[_doctorAddress];
+        address[] memory doctorPatients = patientsAvailableForDoctor[_doctorAddress];
         bool availability = false;
-        for (uint i = 0; i < patients.length; i++) {
-            if (patients[i] == _patientAddress) {
+        for (uint i = 0; i < doctorPatients.length; i++) {
+            if (doctorPatients[i] == _patientAddress) {
                 availability = true;
             }
         }
         return availability;
+    }
+
+    // patient accept doctor available to work with patient records;
+    function acceptDoctorForPatient(address _doctorAddress) public isDoctor(_doctorAddress) isPatient(msg.sender) {
+        patientsAvailableForDoctor[_doctorAddress].push(msg.sender);
     }
 
     // add new record in medical card

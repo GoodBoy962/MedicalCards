@@ -297,11 +297,11 @@ const ContractService = {
     });
   },
 
-  acceptDoctorForPatient: function (web3, doctorAddress) {
+  considerRequest: function (web3, index, decision) {
     return new Promise((resolve, reject) => {
       const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
-      this.getEtherbase(web3).then((etherbase) => {
-        medCardContract.methods.acceptDoctorForPatient(doctorAddress).send({
+      this.getEtherbase(web3).then((etherbase, err) => {
+        medCardContract.methods.considerRequest(index, decision).send({
           from: etherbase[0]
         }, (err, res) => {
           resolve(res);

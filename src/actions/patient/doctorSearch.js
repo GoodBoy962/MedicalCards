@@ -4,7 +4,7 @@ import {
 } from "../../constants/patient/action";
 import ContractService from '../../utils/ContractService';
 
-export const update = (doctorAddress, doctor, accepted) => ({
+const update = (doctorAddress, doctor, accepted) => ({
   type: FIND_DOCTOR_SUCCESS,
   doctorAddress: doctorAddress,
   doctor: doctor,
@@ -22,10 +22,11 @@ export const find = (doctorAddress, patientAddress) =>
     });
 
     const web3 = getState().web3.instance;
-    ContractService.getDoctor(web3, doctorAddress).then((doctor) => {
-      ContractService.isPatientAvailableForDoctor(web3, patientAddress, doctorAddress)
-        .then(accepted => {
-          setTimeout(() => dispatch(update(doctorAddress, doctor, accepted)), 1000);
-        }).catch(console.log);
-    }).catch(console.log)
+    ContractService.getDoctor(web3, doctorAddress)
+      .then((doctor) => {
+        ContractService.isPatientAvailableForDoctor(web3, patientAddress, doctorAddress)
+          .then(accepted => {
+            setTimeout(() => dispatch(update(doctorAddress, doctor, accepted)), 1000);
+          }).catch(console.log);
+      }).catch(console.log)
   };

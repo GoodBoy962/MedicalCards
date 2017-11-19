@@ -4,7 +4,7 @@ import {
   REGISTER_DOCTOR_REQUEST
 } from "../../constants/welcome/actions";
 
-export const update = () => ({
+const update = () => ({
   type: REGISTER_DOCTOR_SUCCESS
 });
 
@@ -17,11 +17,7 @@ export const register = (name, surname, passport, medClinic, category) =>
 
     const web3 = getState().web3.instance;
     ContractService.registrateDoctor(web3, name, surname, passport, medClinic, category)
-      .then((res, err) => {
-        console.log(res);
-        console.log(err);
-        dispatch(update())
-      })
+      .then((res, err) => dispatch(update()))
       .catch(console.log)
 
   };

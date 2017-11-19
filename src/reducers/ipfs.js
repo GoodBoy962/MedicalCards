@@ -5,7 +5,7 @@ import {
 } from "../properties/properties";
 
 const initialState = {
-  ipfs: ipfsAPI(IPFS_HOST, IPFS_PORT)
+  instance: ipfsAPI(IPFS_HOST, IPFS_PORT)
 };
 
 export default function (state = initialState) {

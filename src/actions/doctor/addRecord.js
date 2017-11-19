@@ -4,7 +4,7 @@ import {
 } from "../../constants/doctor/action";
 import ContractService from '../../utils/ContractService';
 
-export const update = () => ({
+const update = () => ({
   type: ADD_RECORD_SUCCESS
 });
 
@@ -16,12 +16,15 @@ export const add = (patientAddress, record) =>
     });
 
     const web3 = getState().web3.instance;
-    const ipfs = getState().ipfs.api;
+    const ipfs = getState().ipfs.instance;
 
     const recordBuffer = Buffer.from(record, 'utf8');
 
     ipfs.files.add(recordBuffer, (err, files) => {
-      ContractService.addRecord(web3, patientAddress, files[0].hash).then((err, res) => dispatch(update()));
-    }).catch(console.log);
+      ContractService
+        .addRecord(web3, patientAddress, files[0].hash)
+        .then((err, res) => dispatch(update()))
+        .catch(console.log);
+    })
 
   };

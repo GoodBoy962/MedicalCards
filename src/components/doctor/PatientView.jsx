@@ -21,7 +21,8 @@ class PatientView extends React.Component {
               <p>Записи</p>
               <ul>
                 { patientProfile.records.map((record, index) => {
-                  return <li key={ index }> { record[1] } from { record[0] }</li>;
+                  console.log(record);
+                  return <li key={ index }> { record.value } от { record.address }</li>;
                 }) }
               </ul>
             </div>

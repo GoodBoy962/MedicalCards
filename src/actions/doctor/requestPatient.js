@@ -4,7 +4,7 @@ import {
 } from "../../constants/doctor/action";
 import ContractService from '../../utils/ContractService';
 
-export const update = () => ({
+const update = () => ({
   type: REQUEST_PATIENT_PERMISSION_SUCCESS
 });
 

@@ -4,7 +4,7 @@ import {
 } from "../../constants/patient/action";
 import ContractService from '../../utils/ContractService';
 
-export const update = () => ({
+const update = () => ({
   type: APPROVE_DOCTOR_SUCCESS
 });
 
@@ -17,9 +17,6 @@ export const approve = (doctorAddress) =>
 
     ContractService
       .acceptDoctorForPatient(getState().web3.instance, doctorAddress)
-      .then((err, res) => {
-        console.log(err);
-        console.log(res);
-        dispatch(update())
-      });
+      .then((err, res) => dispatch(update()))
+      .catch(console.log)
   };

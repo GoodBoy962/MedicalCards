@@ -1,5 +1,5 @@
 {
-  "address": "0x3d58c11adf5b25ff9fa38dfecce9cb0ce73c2797",
+  "address": "0xc5dbdaa9779d2b75a0f2e3838af1b07730f3ccb9",
   "abi": [
     {
       "constant": true,
@@ -30,6 +30,20 @@
       ],
       "payable": false,
       "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_doctorAddress",
+          "type": "address"
+        }
+      ],
+      "name": "acceptDoctorForPatient",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {

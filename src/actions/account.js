@@ -4,7 +4,7 @@ import {
 } from '../constants/actions';
 import ContractService from '../utils/ContractService';
 
-export const update = (account, address, accountType) => {
+const update = (account, address, accountType) => {
   return {
     type: GET_ACCOUNT_SUCCESS,
     account,
@@ -21,8 +21,9 @@ export const load = () => {
     });
 
     const web3 = getState().web3.instance;
-    ContractService.getAccount(web3).then((user) => {
-      dispatch(update(user.account, user.etherbase, user.type));
-    }).catch(console.log);
+
+    ContractService.getAccount(web3)
+      .then(user => dispatch(update(user.account, user.etherbase, user.type)))
+      .catch(console.log);
   }
 };

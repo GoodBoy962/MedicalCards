@@ -4,7 +4,7 @@ import {
 } from "../../constants/patient/action";
 import ContractService from '../../utils/ContractService';
 
-export const update = (list) => ({
+const update = (list) => ({
   type: GET_INCOMING_REQUESTS_SUCCESS,
   list
 });
@@ -18,6 +18,6 @@ export const load = () =>
 
     const web3 = getState().web3.instance;
     ContractService.getRequests(web3)
-      .then(requests => setTimeout(() => dispatch(update(requests)), 1000))
+      .then(requests => setTimeout(() => dispatch(update(requests)), 200))
       .catch(console.log);
   };
