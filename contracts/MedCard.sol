@@ -32,6 +32,33 @@ contract MedCard is Owned {
     // doctor address -> all available for him patient addresses
     mapping (address => address[]) private patientsAvailableForDoctor;
 
+    // patient address -> requests list with doctors addresses
+    mapping (address => address[]) private requests;
+
+    // check if _address corresponds to any Doctor
+    modifier isDoctor(address _address) {
+        require(doctors[_address].accepted);
+        _;
+    }
+
+    // check if _address doesn't correspond to any Doctor
+    modifier isNotDoctor(address _address) {
+        require(!doctors[_address].accepted);
+        _;
+    }
+
+    // check if _address corresponds to any Patient
+    modifier isPatient(address _address) {
+        require(bytes(patients[_address].name).length != 0);
+        _;
+    }
+
+    // check if _address doesn't correspond to any Patient
+    modifier isNotPatient(address _address) {
+        require(bytes(patients[_address].name).length == 0);
+        _;
+    }
+
     // This is a type for a single doctor identity
     struct Doctor {
         string name;
@@ -64,9 +91,7 @@ contract MedCard is Owned {
     function applyPatient(string _name,
                           string _surname,
                           uint _passport,
-                          uint _birthday) public {
-        require(patients[msg.sender].passport == 0x0);
-
+                          uint _birthday) public isNotPatient(msg.sender) {
         patients[msg.sender] = Patient({
             name: _name,
             surname: _surname,
@@ -80,9 +105,7 @@ contract MedCard is Owned {
                          string _surname,
                          uint _passport,
                          string _workPlace,
-                         string _category) public {
-        require(!doctors[msg.sender].accepted);
-
+                         string _category) public isNotDoctor(msg.sender) {
         doctors[msg.sender] = Doctor({
             name: _name,
             surname: _surname,
@@ -100,13 +123,6 @@ contract MedCard is Owned {
         doctors[_doctorAddress].accepted = true;
     }
 
-    // patient accept doctor available to work with patient records;
-    function acceptDoctorForPatient(address _doctorAddress) public {
-        require(doctors[_doctorAddress].accepted && patients[msg.sender].passport != 0x0);
-
-        patientsAvailableForDoctor[_doctorAddress].push(msg.sender);
-    }
-
     // check if doctor can get patient records
     function checkIfPatientAvailableForDoctor(address _patientAddress,
                                               address _doctorAddress) public constant returns (bool) {
@@ -122,9 +138,7 @@ contract MedCard is Owned {
 
     // add new record in medical card
     function addRecord(address _patientAddress,
-                       string _value) public {
-        require(patients[_patientAddress].passport != 0);
-        require(doctors[msg.sender].accepted);
+                       string _value) public isPatient(_patientAddress) isDoctor(msg.sender) {
         require(checkIfPatientAvailableForDoctor(_patientAddress, msg.sender));
 
         patientRecords[_patientAddress].push(Record({
@@ -135,18 +149,34 @@ contract MedCard is Owned {
 
     // get length of array with patient records
     function getPatientRecordsLength(address _patientAddress) public constant returns (uint) {
-        require(doctors[msg.sender].accepted);
-        require(checkIfPatientAvailableForDoctor(_patientAddress, msg.sender));
-
         return patientRecords[_patientAddress].length;
     }
 
     // get patient record by his index
     function getPatientRecord(address _patientAddress, uint _recordIndex) public constant returns (address, string) {
-        require(doctors[msg.sender].accepted);
-        require(checkIfPatientAvailableForDoctor(_patientAddress, msg.sender));
-
         Record memory record = patientRecords[_patientAddress][_recordIndex];
         return (record.doctorAddress, record.value);
     }
+
+    // request permission from patient
+    function request(address _patientAddress) public isDoctor(msg.sender) {
+        requests[_patientAddress].push(msg.sender);
+    }
+
+    // get patient requests length
+    function getRequestsLength() public constant returns (uint) {
+        return requests[msg.sender].length;
+    }
+
+    function getRequest(uint index) public constant returns (address) {
+        return requests[msg.sender][index];
+    }
+
+    function considerRequest(uint index, bool decision) public {
+        if (decision) {
+            patientsAvailableForDoctor[requests[msg.sender][index]].push(msg.sender);
+        }
+        delete requests[msg.sender][index];
+    }
+
 }

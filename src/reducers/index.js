@@ -5,6 +5,7 @@ import ipfs from './ipfs';
 import account from './account';
 import doctorSearch from './patient/doctorSearch';
 import approveDoctor from './patient/approveDoctor';
+import requests from './patient/requests';
 import patientSearch from './doctor/patientSearch';
 import requestPatient from './doctor/requestPatient';
 import addRecord from './doctor/addRecord';
@@ -22,5 +23,6 @@ export default {
   requestPatient,
   addRecord,
   registerPatient,
-  registerDoctor
+  registerDoctor,
+  requests
 }

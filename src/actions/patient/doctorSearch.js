@@ -11,8 +11,8 @@ export const update = (doctorAddress, doctor, accepted) => ({
   accepted: accepted
 });
 
-export const find = (doctorAddress, patientAddress) => {
-  return (dispatch, getState) => {
+export const find = (doctorAddress, patientAddress) =>
+  (dispatch, getState) => {
 
     dispatch({
       type: FIND_DOCTOR_REQUEST,
@@ -23,9 +23,9 @@ export const find = (doctorAddress, patientAddress) => {
 
     const web3 = getState().web3.instance;
     ContractService.getDoctor(web3, doctorAddress).then((doctor) => {
-      ContractService.isPatientAvailableForDoctor(web3, patientAddress, doctorAddress).then((accepted) => {
-        setTimeout(() => dispatch(update(doctorAddress, doctor, accepted)), 1000);
-      }).catch(console.log);
+      ContractService.isPatientAvailableForDoctor(web3, patientAddress, doctorAddress)
+        .then(accepted => {
+          setTimeout(() => dispatch(update(doctorAddress, doctor, accepted)), 1000);
+        }).catch(console.log);
     }).catch(console.log)
-  }
-};
+  };

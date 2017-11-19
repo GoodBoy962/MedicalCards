@@ -5,27 +5,35 @@ import { request } from '../../actions/doctor/requestPatient';
 class RequestPatientPermission extends React.Component {
 
   handleSubmit = (e) => {
-    console.log(this.props);
+    this.props.request(this.props.patientAddress);
     e.preventDefault();
   };
 
   render() {
-    return (
-      <form onSubmit={ this.handleSubmit }>
-        <input type='submit' value='запросить'/>
-      </form>
-    );
+    if (!this.props.fetching) {
+      return (
+        <form onSubmit={ this.handleSubmit }>
+          <input type='submit' value='запросить'/>
+        </form>
+      );
+    } else {
+      return (
+        <div>
+          <p>Доступ запрошен!</p>
+        </div>
+      )
+    }
   }
 
 }
 
 const mapStateToProps = state => ({
-  doctorAddress: state.account.address,
-  patientAddress: state.patientSearch.patientAddress
+  patientAddress: state.patientSearch.patientAddress,
+  fetching: state.patientSearch.fetching
 });
 
 const mapDispatchToProps = dispatch => ({
-  request: (doctorAddress, patientAddress) => dispatch(request(doctorAddress, patientAddress))
+  request: (patientAddress) => dispatch(request(patientAddress))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RequestPatientPermission);

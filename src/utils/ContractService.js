@@ -238,6 +238,65 @@ const ContractService = {
     });
   },
 
+  request: function (web3, patientAddress) {
+    return new Promise((resolve, reject) => {
+      const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
+      this.getEtherbase(web3).then((etherbase, err) => {
+        medCardContract.methods.request(patientAddress).send({
+          from: etherbase[0]
+        }, (err, res) => {
+          resolve(res);
+          reject(err);
+        })
+      })
+    })
+  },
+
+  getRequests: function (web3) {
+
+    const getRequestsLength = function (web3) {
+      const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
+      return new Promise((resolve, reject) => {
+        ContractService.getEtherbase(web3).then((etherbase) => {
+          medCardContract.methods.getRequestsLength().call({
+              from: etherbase[0]
+            },
+            (err, count) => {
+              resolve(count);
+              reject(err);
+            });
+        });
+      });
+    };
+
+    const getRequestByIndex = function (web3, index) {
+      const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
+      return new Promise((resolve, reject) => {
+        ContractService.getEtherbase(web3).then((etherbase, err) => {
+          medCardContract.methods.getRequest(index).call({
+            from: etherbase[0]
+          }, (err, record) => {
+            resolve(record);
+            reject(err);
+          });
+        });
+      });
+    };
+
+    return new Promise((resolve, reject) => {
+      getRequestsLength(web3).then((size, err) => {
+        let promises = [];
+        for (let i = 0; i < size; i++) {
+          promises.push(getRequestByIndex(web3, i));
+        }
+        Promise.all(promises).then((requests, err) => {
+          resolve(requests);
+          reject(err);
+        });
+      });
+    });
+  },
+
   acceptDoctorForPatient: function (web3, doctorAddress) {
     return new Promise((resolve, reject) => {
       const medCardContract = new web3.eth.Contract(contract.abi, contract.address);

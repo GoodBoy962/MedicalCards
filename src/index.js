@@ -18,6 +18,7 @@ import PatientProfile from './components/patient/Profile';
 import DoctorProfile from './components/doctor/Profile';
 import DoctorSearchForm from './components/patient/DoctorSearchForm';
 import SearchPatient from './components/doctor/SearchPatient';
+import IncomingRequests from './components/patient/IncomingRequests';
 import ContractService from './utils/ContractService';
 import WelcomePage from "./components/welcome/WelcomePage";
 
@@ -33,6 +34,7 @@ ContractService.getAccount(web3).then(account => {
               <IndexRoute component={PatientProfile}/>
               <Route path='profile' component={PatientProfile}/>
               <Route path='searchDoctor' component={DoctorSearchForm}/>
+              <Route path='requests' component={IncomingRequests}/>
             </Route>
           </Router>
         </Provider>,
@@ -71,6 +73,7 @@ ContractService.getAccount(web3).then(account => {
       break;
     default:
 
+      registerServiceWorker();
       break;
   }
 });

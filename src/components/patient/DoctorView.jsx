@@ -42,12 +42,8 @@ class DoctorView extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  web3: state.web3.instance
-});
-
 const mapDispatchToProps = dispatch => ({
   approve: (doctorAddress) => dispatch(approve(doctorAddress))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DoctorView);
+export default connect(mapDispatchToProps)(DoctorView);

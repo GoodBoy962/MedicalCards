@@ -19,7 +19,7 @@ class DoctorRegistrationForm extends React.Component {
     if (!this.props.pendingDoctor) {
       if (this.props.successDoctor) {
         return (
-          <div>Регистрация завершена! Менее чем через минуту пациент появится в системе</div>
+          <div>Регистрация завершена! Менее чем через минуту врач появится в системе</div>
         )
       } else {
         return (

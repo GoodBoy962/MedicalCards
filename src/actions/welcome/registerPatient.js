@@ -18,8 +18,6 @@ export const register = (name, surname, passport, birthday) =>
     const web3 = getState().web3.instance;
     ContractService.registratePatient(web3, name, surname, passport, birthday)
       .then((res, err) => {
-        console.log(res);
-        console.log(err);
         dispatch(update())
       })
       .catch(console.log)
