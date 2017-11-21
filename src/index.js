@@ -28,13 +28,14 @@ ContractService.getAccount(web3).then(account => {
   switch (account.type) {
     case 'patient':
       ReactDOM.render(
-        <Provider store={Store}>
-          <Router history={History}>
-            <Route path='/' component={Patient}>
-              <IndexRoute component={PatientProfile}/>
-              <Route path='profile' component={PatientProfile}/>
-              <Route path='searchDoctor' component={DoctorSearchForm}/>
-              <Route path='requests' component={IncomingRequests}/>
+        <Provider store={ Store }>
+          <Router history={ History }>
+            <Route path='/' component={ Patient }>
+              <IndexRoute component={ PatientProfile }/>
+              <Route path='profile' component={ PatientProfile }/>
+              <Route path='searchDoctor' component={ DoctorSearchForm }/>
+              <Route path='requests' component={ IncomingRequests }/>
+              <Route path='*' component={ PatientProfile }/>
             </Route>
           </Router>
         </Provider>,
@@ -42,14 +43,16 @@ ContractService.getAccount(web3).then(account => {
       );
       registerServiceWorker();
       break;
+    //TODO if accepted then =>  ..., otherwise return page with message that account is not accepted
     case 'doctor':
       ReactDOM.render(
-        <Provider store={Store}>
-          <Router history={History}>
-            <Route path='/' component={Doctor}>
-              <IndexRoute component={DoctorProfile}/>
-              <Route path='profile' component={DoctorProfile}/>
-              <Route path='searchPatient' component={SearchPatient}/>
+        <Provider store={ Store }>
+          <Router history={ History }>
+            <Route path='/' component={ Doctor }>
+              <IndexRoute component={ DoctorProfile }/>
+              <Route path='profile' component={ DoctorProfile }/>
+              <Route path='searchPatient' component={ SearchPatient }/>
+              <Route path='*' component={ DoctorProfile }/>
             </Route>
           </Router>
         </Provider>,
@@ -59,11 +62,11 @@ ContractService.getAccount(web3).then(account => {
       break;
     case 'new' :
       ReactDOM.render(
-        <Provider store={Store}>
-          <Router history={History}>
-            <Route path='/' component={Welcome}>
-              <IndexRoute component={WelcomePage}/>
-              <Route path='profile' component={DoctorProfile}/>
+        <Provider store={ Store }>
+          <Router history={ History }>
+            <Route path='/' component={ Welcome }>
+              <IndexRoute component={ WelcomePage }/>
+              <Route path='*' component={ Welcome }/>
             </Route>
           </Router>
         </Provider>,
