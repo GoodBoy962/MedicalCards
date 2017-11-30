@@ -1,3 +1,5 @@
+pragma solidity ^0.4.18;
+
 /* @title Smart contract for ownership */
 contract Owned {
 
@@ -12,8 +14,8 @@ contract Owned {
         _;
     }
 
-    function transferOwnership(address newOwner) public onlyOwner {
-        owner = newOwner;
+    function transferOwnership(address _newOwner) public onlyOwner {
+        owner = _newOwner;
     }
 }
 
@@ -27,10 +29,10 @@ contract MedCard is Owned {
     mapping (address => Patient) public patients;
 
     // address -> All medical card records for that patient
-    mapping (address => Record[]) private patientRecords;
+    mapping (address => string[]) private patientRecords;
 
     // doctor address -> all available for him patient addresses
-    mapping (address => address[]) private patientsAvailableForDoctor;
+    mapping (address => mapping(address => string)) private patientsAvailableForDoctor;
 
     // patient address -> requests list with doctors addresses
     mapping (address => address[]) private requests;
@@ -67,12 +69,7 @@ contract MedCard is Owned {
         string workPlace;
         string category;
         bool accepted;
-    }
-
-    // This is a type for a simple record
-    struct Record {
-        string value;         //store full card in IPFS
-        address doctorAddress;
+        string publicKey;
     }
 
     // This is a type for a single patient identity
@@ -81,38 +78,42 @@ contract MedCard is Owned {
         string surname;
         uint passport;
         uint birthday;
-    }
-
-    function MedCard() public {
-        owner = msg.sender;
+        string publicKey;
+        string passphrase;
     }
 
     //apply for a Patient
     function applyPatient(string _name,
-                          string _surname,
-                          uint _passport,
-                          uint _birthday) public isNotPatient(msg.sender) {
+    string _surname,
+    uint _passport,
+    uint _birthday,
+    string _publicKey,
+    string _passphrase) public isNotPatient(msg.sender) {
         patients[msg.sender] = Patient({
             name: _name,
             surname: _surname,
             passport: _passport,
-            birthday: _birthday
+            birthday: _birthday,
+            publicKey: _publicKey,
+            passphrase: _passphrase
         });
     }
 
     // apply for a Docotor rights
     function applyDoctor(string _name,
-                         string _surname,
-                         uint _passport,
-                         string _workPlace,
-                         string _category) public isNotDoctor(msg.sender) {
+    string _surname,
+    uint _passport,
+    string _workPlace,
+    string _category,
+    string _publicKey) public isNotDoctor(msg.sender) {
         doctors[msg.sender] = Doctor({
             name: _name,
             surname: _surname,
             passport: _passport,
             workPlace: _workPlace,
             category: _category,
-            accepted: false
+            accepted: false,
+            publicKey: _publicKey
         });
     }
 
@@ -121,33 +122,21 @@ contract MedCard is Owned {
         doctors[_doctorAddress].accepted = true;
     }
 
-    // check if doctor can get patient records
-    function checkIfPatientAvailableForDoctor(address _patientAddress,
-                                              address _doctorAddress) public constant returns (bool) {
-        address[] memory doctorPatients = patientsAvailableForDoctor[_doctorAddress];
-        bool availability = false;
-        for (uint i = 0; i < doctorPatients.length; i++) {
-            if (doctorPatients[i] == _patientAddress) {
-                availability = true;
-            }
-        }
-        return availability;
+    function isPatientAvailableForDoctor(address _patientAddress, address _doctorAddress) public constant returns(bool) {
+        string memory passphrase = patientsAvailableForDoctor[_doctorAddress][_patientAddress];
+        return bytes(passphrase).length != 0;
     }
 
-    // patient accept doctor available to work with patient records;
-    function acceptDoctorForPatient(address _doctorAddress) public isDoctor(_doctorAddress) isPatient(msg.sender) {
-        patientsAvailableForDoctor[_doctorAddress].push(msg.sender);
+    // check if doctor can get patient records
+    function getPatientPassphrase(address _patientAddress, address _doctorAddress) public constant returns (string) {
+        return patientsAvailableForDoctor[_doctorAddress][_patientAddress];
     }
 
     // add new record in medical card
-    function addRecord(address _patientAddress,
-                       string _value) public isPatient(_patientAddress) isDoctor(msg.sender) {
-        require(checkIfPatientAvailableForDoctor(_patientAddress, msg.sender));
+    function addRecord(address _patientAddress, string _value) public isPatient(_patientAddress) isDoctor(msg.sender) {
+        require(isPatientAvailableForDoctor(_patientAddress, msg.sender));
 
-        patientRecords[_patientAddress].push(Record({
-            value: _value,
-            doctorAddress: msg.sender
-        }));
+        patientRecords[_patientAddress].push(_value);
     }
 
     // get length of array with patient records
@@ -156,9 +145,8 @@ contract MedCard is Owned {
     }
 
     // get patient record by his index
-    function getPatientRecord(address _patientAddress, uint _recordIndex) public constant returns (address, string) {
-        Record memory record = patientRecords[_patientAddress][_recordIndex];
-        return (record.doctorAddress, record.value);
+    function getPatientRecord(address _patientAddress, uint _index) public constant returns (string) {
+        return patientRecords[_patientAddress][_index];
     }
 
     // request permission from patient
@@ -171,15 +159,22 @@ contract MedCard is Owned {
         return requests[msg.sender].length;
     }
 
-    function getRequest(uint index) public constant returns (address) {
-        return requests[msg.sender][index];
+    // get request by index
+    function getRequest(uint _index) public constant returns (address) {
+        return requests[msg.sender][_index];
     }
 
-    function considerRequest(uint index, bool decision) public {
-        if (decision) {
-            patientsAvailableForDoctor[requests[msg.sender][index]].push(msg.sender);
+    // patient consider request from doctor by its index and his decision (and passphrase for the doctor to encrypt records)
+    function considerRequest(uint _index, bool _decision, string _passphrase) public {
+        if (_decision) {
+            patientsAvailableForDoctor[requests[msg.sender][_index]][msg.sender] = _passphrase;
         }
-        delete requests[msg.sender][index];
+        delete requests[msg.sender][_index];
+    }
+
+    //patient can give doctor access
+    function acceptDoctor(address _doctorAddress, string _passphrase) public isDoctor(_doctorAddress) {
+        patientsAvailableForDoctor[_doctorAddress][msg.sender] = _passphrase;
     }
 
 }

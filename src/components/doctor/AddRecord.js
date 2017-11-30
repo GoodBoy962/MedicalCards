@@ -1,6 +1,7 @@
 import React from 'react';
-import { add } from "../../actions/doctor/addRecord";
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
+
+import { add } from '../../actions/doctor/addRecord';
 
 class AddRecord extends React.Component {
 
@@ -12,7 +13,7 @@ class AddRecord extends React.Component {
   componentWillMount() {
     this.reader.onload = event => {
       const record = event.target.result;
-      this.props.add(this.props.patientAddress, record);
+      this.props.add(this.props.patientAddress, this.props.patientPublicKey, record);
     };
   }
 
@@ -32,11 +33,12 @@ class AddRecord extends React.Component {
 }
 
 const mapStateToProp = state => ({
-  patientAddress: state.patientSearch.patientAddress
+  patientAddress: state.patientSearch.patientAddress,
+  patientPublicKey: state.patientSearch.patient.publicKey
 });
 
 const mapDispatchToProps = dispatch => ({
-  add: (patientAddress, file) => dispatch(add(patientAddress, file))
+  add: (patientAddress, patientPublicKey, file,) => dispatch(add(patientAddress, patientPublicKey, file))
 });
 
 export default connect(mapStateToProp, mapDispatchToProps)(AddRecord);

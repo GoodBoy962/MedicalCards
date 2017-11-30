@@ -1,5 +1,6 @@
 import React from 'react';
 import { CircularProgress } from 'material-ui/Progress';
+
 import DoctorView from './DoctorView';
 
 import { connect } from 'react-redux';

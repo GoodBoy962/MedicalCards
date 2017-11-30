@@ -1,7 +1,9 @@
 import React from 'react';
-import { connect } from "react-redux";
-import { find } from '../../actions/doctor/patientSearch';
+import { connect } from 'react-redux';
 import dateFormat from 'dateformat'
+
+import { find } from '../../actions/doctor/patientSearch';
+
 import RequestPatientPermission from './RequestPatientPermission';
 import AddRecord from './AddRecord';
 
@@ -21,8 +23,7 @@ class PatientView extends React.Component {
               <p>Записи</p>
               <ul>
                 { patientProfile.records.map((record, index) => {
-                  console.log(record);
-                  return <li key={ index }> { record.value } от { record.address }</li>;
+                  return <li key={ index }> { record.value } </li>;
                 }) }
               </ul>
             </div>

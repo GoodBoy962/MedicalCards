@@ -1,7 +1,8 @@
 import React from 'react';
-import { connect } from "react-redux";
-import { load } from "../../actions/patient/requests";
-import { consider } from "../../actions/patient/considerRequest";
+import { connect } from 'react-redux';
+
+import { consider } from '../../actions/patient/considerRequest';
+import { load } from '../../actions/patient/requests';
 
 import List, { ListItem, ListItemText } from 'material-ui/List';
 import Button from 'material-ui/Button';
@@ -15,13 +16,13 @@ class IncomingRequests extends React.Component {
     this.props.load();
   }
 
-  handleAccept = (index, e) => {
-    this.props.consider(index, true);
+  handleAccept = (index, address, e) => {
+    this.props.consider(index, address, true);
     e.preventDefault();
   };
 
-  handleDecline = (index, e) => {
-    this.props.consider(index, false);
+  handleDecline = (index, address, e) => {
+    this.props.consider(index, address, false);
     e.preventDefault();
   };
 
@@ -37,11 +38,11 @@ class IncomingRequests extends React.Component {
                   return (
                     <ListItem button key={ i }>
                       <ListItemText inset primary={ request }/>
-                      <Button raised color="contrast" onClick={ this.handleAccept.bind(this, i) }>
+                      <Button raised color="contrast" onClick={ this.handleAccept.bind(this, i, request) }>
                         <Send/>
                         Принять
                       </Button>
-                      <Button raised color="accent" onClick={ this.handleDecline.bind(this, i) }>
+                      <Button raised color="accent" onClick={ this.handleDecline.bind(this, i, request) }>
                         Отказать
                         <Delete/>
                       </Button>
@@ -70,8 +71,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  load: () => dispatch(load()),
-  consider: (index, decision) => dispatch(consider(index, decision))
+  consider: (index, address, decision) => dispatch(consider(index, address, decision)),
+  load: () => dispatch(load())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(IncomingRequests);

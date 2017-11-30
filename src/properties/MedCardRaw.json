@@ -1,6 +1,28 @@
 {
-  "address": "0xc5dbdaa9779d2b75a0f2e3838af1b07730f3ccb9",
+  "address": "0x3a267920e986846fa764b8709cb783bce325f717",
   "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_index",
+          "type": "uint256"
+        },
+        {
+          "name": "_decision",
+          "type": "bool"
+        },
+        {
+          "name": "_passphrase",
+          "type": "string"
+        }
+      ],
+      "name": "considerRequest",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
     {
       "constant": true,
       "inputs": [
@@ -26,6 +48,14 @@
         {
           "name": "birthday",
           "type": "uint256"
+        },
+        {
+          "name": "publicKey",
+          "type": "string"
+        },
+        {
+          "name": "passphrase",
+          "type": "string"
         }
       ],
       "payable": false,
@@ -38,9 +68,13 @@
         {
           "name": "_doctorAddress",
           "type": "address"
+        },
+        {
+          "name": "_passphrase",
+          "type": "string"
         }
       ],
-      "name": "acceptDoctorForPatient",
+      "name": "acceptDoctor",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -61,21 +95,26 @@
       "type": "function"
     },
     {
-      "constant": false,
+      "constant": true,
       "inputs": [
         {
-          "name": "index",
-          "type": "uint256"
+          "name": "_patientAddress",
+          "type": "address"
         },
         {
-          "name": "decision",
+          "name": "_doctorAddress",
+          "type": "address"
+        }
+      ],
+      "name": "isPatientAvailableForDoctor",
+      "outputs": [
+        {
+          "name": "",
           "type": "bool"
         }
       ],
-      "name": "considerRequest",
-      "outputs": [],
       "payable": false,
-      "stateMutability": "nonpayable",
+      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -118,7 +157,7 @@
           "type": "address"
         },
         {
-          "name": "_recordIndex",
+          "name": "_index",
           "type": "uint256"
         }
       ],
@@ -126,8 +165,27 @@
       "outputs": [
         {
           "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_patientAddress",
           "type": "address"
         },
+        {
+          "name": "_doctorAddress",
+          "type": "address"
+        }
+      ],
+      "name": "getPatientPassphrase",
+      "outputs": [
         {
           "name": "",
           "type": "string"
@@ -173,6 +231,10 @@
         {
           "name": "_category",
           "type": "string"
+        },
+        {
+          "name": "_publicKey",
+          "type": "string"
         }
       ],
       "name": "applyDoctor",
@@ -214,6 +276,10 @@
         {
           "name": "accepted",
           "type": "bool"
+        },
+        {
+          "name": "publicKey",
+          "type": "string"
         }
       ],
       "payable": false,
@@ -221,10 +287,44 @@
       "type": "function"
     },
     {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_name",
+          "type": "string"
+        },
+        {
+          "name": "_surname",
+          "type": "string"
+        },
+        {
+          "name": "_passport",
+          "type": "uint256"
+        },
+        {
+          "name": "_birthday",
+          "type": "uint256"
+        },
+        {
+          "name": "_publicKey",
+          "type": "string"
+        },
+        {
+          "name": "_passphrase",
+          "type": "string"
+        }
+      ],
+      "name": "applyPatient",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
       "constant": true,
       "inputs": [
         {
-          "name": "index",
+          "name": "_index",
           "type": "uint256"
         }
       ],
@@ -254,59 +354,10 @@
       "type": "function"
     },
     {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "_patientAddress",
-          "type": "address"
-        },
-        {
-          "name": "_doctorAddress",
-          "type": "address"
-        }
-      ],
-      "name": "checkIfPatientAvailableForDoctor",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
       "constant": false,
       "inputs": [
         {
-          "name": "_name",
-          "type": "string"
-        },
-        {
-          "name": "_surname",
-          "type": "string"
-        },
-        {
-          "name": "_passport",
-          "type": "uint256"
-        },
-        {
-          "name": "_birthday",
-          "type": "uint256"
-        }
-      ],
-      "name": "applyPatient",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "newOwner",
+          "name": "_newOwner",
           "type": "address"
         }
       ],
@@ -334,12 +385,6 @@
       "payable": false,
       "stateMutability": "view",
       "type": "function"
-    },
-    {
-      "inputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "constructor"
     }
   ]
 }

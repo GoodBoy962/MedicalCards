@@ -1,5 +1,6 @@
 import React from 'react';
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
+
 import { approve } from "../../actions/patient/approveDoctor";
 
 class DoctorView extends React.Component {

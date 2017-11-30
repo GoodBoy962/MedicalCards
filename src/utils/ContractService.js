@@ -1,316 +1,373 @@
-const contract = require('../properties/MedCardRaw.json');
+const contractAddress = require('../properties/MedCardRaw.json').address;
 
 const ContractService = {
 
-  getEtherbase: function (web3) {
-    return new Promise((resolve, reject) => {
-      web3.eth.getAccounts((err, res) => {
-        resolve(res);
-        reject(err);
-      });
-    });
-  },
-
-  getAccount: function (web3) {
-    return new Promise((resolve, reject) => {
-      this.getEtherbase(web3).then((accounts, err) => {
-        return accounts[0];
-      }).then(etherbase => {
-        this.getDoctor(web3, etherbase).then((doctor, err) => {
-          if (doctor[0]) {
-            resolve({
-              type: 'doctor',
-              account: doctor,
-              etherbase: etherbase
-            });
-          } else {
-            this.getPatient(web3, etherbase).then((patient, err) => {
-              if (patient[0]) {
+    getAccount: (web3, contract, account) => {
+      return new Promise((resolve, reject) => {
+        const address = account.address;
+        ContractService.getDoctor(web3, contract, address)
+          .then(
+            (doctor, err) => {
+              if (doctor[0]) {
                 resolve({
-                  type: 'patient',
-                  account: patient,
-                  etherbase: etherbase
+                  type: 'doctor',
+                  account: doctor,
+                  etherbase: address
                 });
               } else {
-                this.getOwner(web3).then((owner) => {
-                  if (owner === etherbase) {
-                    resolve({
-                      type: 'owner',
-                      account: owner,
-                      etherbase: etherbase
+                ContractService.getPatient(web3, contract, address)
+                  .then(
+                    (patient, err) => {
+                      if (patient[0]) {
+                        resolve({
+                          type: 'patient',
+                          account: patient,
+                          etherbase: address
+                        });
+                      } else {
+                        ContractService.getOwner(web3, contract)
+                          .then(
+                            owner => {
+                              if (owner === address) {
+                                resolve({
+                                  type: 'owner',
+                                  account: owner,
+                                  etherbase: address
+                                });
+                              } else {
+                                resolve({
+                                  type: 'new',
+                                  account: null,
+                                  etherbase: address
+                                })
+                              }
+                            }).catch(console.log);
+                      }
+                    });
+              }
+            });
+      });
+    },
+
+    getDoctor: (web3, contract, address) =>
+      new Promise((resolve, reject) => {
+        contract.methods.doctors(address)
+          .call(
+            (err, res) => {
+              resolve(res);
+              reject(err);
+            });
+      }),
+
+    getPatient: (web3, contract, address) =>
+      new Promise((resolve, reject) => {
+        contract.methods.patients(address)
+          .call(
+            (err, res) => {
+              resolve(res);
+              reject(err);
+            });
+      }),
+
+    getOwner: (web3, contract) =>
+      new Promise((resolve, reject) => {
+        contract.methods.owner()
+          .call(
+            (err, res) => {
+              resolve(res);
+              reject(err);
+            });
+      }),
+
+    isPatientAvailableForDoctor: (web3, contract, patientAddress, doctorAddress) =>
+      new Promise((resolve, reject) => {
+        contract.methods.isPatientAvailableForDoctor(patientAddress, doctorAddress)
+          .call(
+            (err, res) => {
+              resolve(res);
+              reject(err);
+            });
+      }),
+
+    getPatientProfile: (web3, account, contract, doctorAddress, patientAddress) =>
+      new Promise((resolve, reject) => {
+        ContractService.getPatient(web3, contract, patientAddress).then((patient, err) => {
+          if (patient) {
+            ContractService.isPatientAvailableForDoctor(web3, contract, patientAddress, doctorAddress)
+              .then(
+                (available, err) => {
+                  if (available) {
+                    ContractService.getPatientRecords(web3, account, contract, patientAddress).then((records, err) => {
+                      resolve({
+                        patient: patient,
+                        available: available,
+                        records: records
+                      });
+                      reject(err);
                     });
                   } else {
                     resolve({
-                      type: 'new',
-                      etherbase: etherbase
+                      patient: patient,
+                      available: available,
+                    });
+                    reject(err);
+                  }
+                });
+          }
+        });
+      }),
+
+    getDoctorProfile: (web3, account, contract, doctorAddress, patientAddress) =>
+      new Promise((resolve, reject) => {
+        ContractService.getDoctor(web3, contract, doctorAddress).then((doctor) => {
+          if (doctor) {
+            ContractService.isPatientAvailableForDoctor(web3, contract, patientAddress, doctorAddress)
+              .then(
+                (accepted, err) => {
+                  if (doctor[5]) {
+                    resolve({
+                      doctor: doctor,
+                      accepted: accepted
+                    });
+                  } else {
+                    resolve({
+                      doctor: [],
+                      accepted: false
                     })
                   }
-                }).catch(console.log);
-              }
-            });
-          }
-        });
-      }).catch(reject);
-    });
-  },
-
-  getDoctor: function (web3, address) {
-    const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
-    return new Promise((resolve, reject) => {
-      medCardContract.methods.doctors(address).call((err, res) => {
-        resolve(res);
-        reject(err);
-      });
-    });
-  },
-
-  getPatient: function (web3, address) {
-    const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
-    return new Promise((resolve, reject) => {
-      medCardContract.methods.patients(address).call((err, res) => {
-        resolve(res);
-        reject(err);
-      });
-    });
-  },
-
-  getOwner: function (web3) {
-    const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
-    return new Promise((resolve, reject) => {
-      medCardContract.methods.owner().call((err, res) => {
-        resolve(res);
-        reject(err);
-      });
-    });
-  },
-
-  isPatientAvailableForDoctor: function (web3, patientAddress, doctorAddress) {
-    const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
-    return new Promise((resolve, reject) => {
-      medCardContract.methods
-        .checkIfPatientAvailableForDoctor(patientAddress, doctorAddress).call((err, res) => {
-        resolve(res);
-        reject(err);
-      });
-    })
-  },
-
-  getPatientProfile: function (web3, doctorAddress, patientAddress) {
-    return new Promise((resolve, reject) => {
-      this.getPatient(web3, patientAddress).then((patient, err) => {
-        if (patient) {
-          this.isPatientAvailableForDoctor(web3, patientAddress, doctorAddress)
-            .then((available, err) => {
-              if (available) {
-                this.getPatientRecords(web3, patientAddress).then((records, err) => {
-                  resolve({
-                    patient: patient,
-                    available: available,
-                    records: records
-                  });
                   reject(err);
                 });
-              } else {
-                resolve({
-                  patient: patient,
-                  available: available,
-                });
-                reject(err);
-              }
-            });
-        }
-      });
-    });
-  },
-
-  getDoctorProfile: function (web3, doctorAddress, patientAddress) {
-    return new Promise((resolve, reject) => {
-      this.getDoctor(web3, doctorAddress).then((doctor) => {
-        if (doctor) {
-          this.isPatientAvailableForDoctor(web3, patientAddress, doctorAddress)
-            .then((accepted, err) => {
-              if (doctor[5] === true) {
-                resolve({
-                  doctor: doctor,
-                  accepted: accepted
-                });
-              } else {
-                resolve({
-                  doctor: [],
-                  accepted: false
-                })
-              }
-              reject(err);
-            });
-        }
-      });
-    });
-  },
-
-  registrateDoctor: function (web3, name, surname, passport, medClinic, category) {
-    const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
-    return new Promise((resolve, reject) => {
-      this.getEtherbase(web3).then((etherbase, err) => {
-        medCardContract.methods
-          .applyDoctor(name, surname, passport, medClinic, category).send({
-          from: etherbase[0]
-        }, (err, res) => {
-          resolve(res);
-          reject(err);
-        });
-      });
-    });
-  },
-
-  registratePatient: function (web3, name, surname, passport, birthday) {
-    const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
-    return new Promise((resolve, reject) => {
-      this.getEtherbase(web3).then((etherbase) => {
-        medCardContract.methods
-          .applyPatient(name, surname, passport, birthday).send({
-          from: etherbase[0]
-        }, (err, res) => {
-          resolve(res);
-          reject(err);
-        });
-      });
-    });
-  },
-
-  getPatientRecords: function (web3, patientAddress) {
-
-    const getPatientRecordsLength = function (web3, patientAddress) {
-      const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
-      return new Promise((resolve, reject) => {
-        ContractService.getEtherbase(web3).then((etherbase) => {
-          medCardContract.methods.getPatientRecordsLength(patientAddress).call({
-              from: etherbase[0]
-            },
-            (err, count) => {
-              resolve(count);
-              reject(err);
-            });
-        });
-      });
-    };
-
-    const getPatientRecordByIndex = function (web3, patientAddress, index) {
-      const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
-      return new Promise((resolve, reject) => {
-        ContractService.getEtherbase(web3).then((etherbase, err) => {
-          medCardContract.methods.getPatientRecord(patientAddress, index).call({
-            from: etherbase[0]
-          }, (err, record) => {
-            resolve(record);
-            reject(err);
-          });
-        });
-      });
-    };
-
-    return new Promise((resolve, reject) => {
-      this.getEtherbase(web3).then((etherbase, err) => {
-        getPatientRecordsLength(web3, patientAddress).then((size, err) => {
-          let promises = [];
-          for (let i = 0; i < size; i++) {
-            promises.push(getPatientRecordByIndex(web3, patientAddress, i));
           }
-          Promise.all(promises).then((records, err) => {
-            resolve(records);
-            reject(err);
-          });
         });
-      });
-    });
-  },
+      }),
 
-  addRecord: function (web3, patientAddress, value) {
-    return new Promise((resolve, reject) => {
-      const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
-      this.getEtherbase(web3).then((etherbase, err) => {
-        medCardContract.methods.addRecord(patientAddress, value).send({
-          from: etherbase[0]
-        }, (err, res) => {
-          resolve(res);
-          reject(err);
+    registerDoctor: (web3, account, contract, name, surname, passport, medClinic, category, publicKey) =>
+      new Promise((resolve, reject) => {
+
+        const method = contract.methods.applyDoctor(name, surname, passport, medClinic, category, publicKey);
+
+        const tx = {
+          to: contractAddress,
+          data: method.encodeABI(),
+          gasLimit: 1000000
+        };
+
+        account.signTransaction(tx)
+          .then(
+            ({rawTransaction}) =>
+              web3.eth.sendSignedTransaction(rawTransaction))
+          .then(
+            receipt =>
+              resolve(receipt))
+          .catch(
+            err =>
+              reject(err)
+          );
+
+      }),
+
+    registerPatient: (web3, account, contract, name, surname, passport, birthday, publicKey, passphrase) =>
+      new Promise((resolve, reject) => {
+
+        const method = contract.methods.applyPatient(name, surname, passport, birthday, publicKey, passphrase);
+
+        const tx = {
+          to: contractAddress,
+          data: method.encodeABI(),
+          gasLimit: 1000000
+        };
+
+        account.signTransaction(tx)
+          .then(
+            ({rawTransaction}) =>
+              web3.eth.sendSignedTransaction(rawTransaction))
+          .then(
+            receipt =>
+              resolve(receipt))
+          .catch(
+            err =>
+              reject(err)
+          );
+
+      }),
+
+    getPatientRecords: (web3, account, contract, patientAddress) => {
+
+      const getPatientRecordsLength = (web3, account, contract, patientAddress) => {
+        return new Promise((resolve, reject) => {
+          contract.methods.getPatientRecordsLength(patientAddress)
+            .call({
+                from: account.address
+              },
+              (err, count) => {
+                resolve(count);
+                reject(err);
+              });
         });
-      });
-    });
-  },
+      };
 
-  request: function (web3, patientAddress) {
-    return new Promise((resolve, reject) => {
-      const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
-      this.getEtherbase(web3).then((etherbase, err) => {
-        medCardContract.methods.request(patientAddress).send({
-          from: etherbase[0]
-        }, (err, res) => {
-          resolve(res);
-          reject(err);
-        })
-      })
-    })
-  },
-
-  getRequests: function (web3) {
-
-    const getRequestsLength = function (web3) {
-      const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
-      return new Promise((resolve, reject) => {
-        ContractService.getEtherbase(web3).then((etherbase) => {
-          medCardContract.methods.getRequestsLength().call({
-              from: etherbase[0]
-            },
-            (err, count) => {
-              resolve(count);
+      const getPatientRecordByIndex = (web3, account, contract, patientAddress, index) => {
+        return new Promise((resolve, reject) => {
+          contract.methods.getPatientRecord(patientAddress, index)
+            .call({
+              from: account.address
+            }, (err, record) => {
+              resolve(record);
               reject(err);
             });
         });
-      });
-    };
+      };
 
-    const getRequestByIndex = function (web3, index) {
-      const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
       return new Promise((resolve, reject) => {
-        ContractService.getEtherbase(web3).then((etherbase, err) => {
-          medCardContract.methods.getRequest(index).call({
-            from: etherbase[0]
-          }, (err, record) => {
-            resolve(record);
-            reject(err);
+        getPatientRecordsLength(web3, account, contract, patientAddress)
+          .then(
+            size => {
+              let promises = [];
+              for (let i = 0; i < size; i++) {
+                promises.push(getPatientRecordByIndex(web3, account, contract, patientAddress, i));
+              }
+              Promise.all(promises).then(
+                (records, err) => {
+                  resolve(records);
+                  reject(err);
+                });
+            })
+          .catch(console.log);
+      });
+    },
+
+    addRecord: (web3, account, contract, patientAddress, value) =>
+      new Promise((resolve, reject) => {
+
+        const method = contract.methods.addRecord(patientAddress, value);
+
+        const tx = {
+          to: contractAddress,
+          data: method.encodeABI(),
+          gasLimit: 1000000
+        };
+
+        account.signTransaction(tx)
+          .then(
+            ({rawTransaction}) =>
+              web3.eth.sendSignedTransaction(rawTransaction))
+          .then(
+            receipt =>
+              resolve(receipt))
+          .catch(
+            err =>
+              reject(err));
+      }),
+
+    request: (web3, account, contract, patientAddress) =>
+      new Promise((resolve, reject) => {
+
+        const method = contract.methods.request(patientAddress);
+
+        const tx = {
+          to: contractAddress,
+          data: method.encodeABI(),
+          gasLimit: 1000000
+        };
+
+        account.signTransaction(tx)
+          .then(
+            ({rawTransaction}) =>
+              web3.eth.sendSignedTransaction(rawTransaction))
+          .then(
+            receipt => {
+              console.log(receipt);
+              resolve(receipt)
+            })
+          .catch(
+            err =>
+              reject(err)
+          );
+      }),
+
+    getRequests: (web3, account, contract) => {
+
+      const getRequestsLength =
+        (web3, account, contract) =>
+          new Promise((resolve, reject) => {
+            contract.methods.getRequestsLength()
+              .call({
+                  from: account.address
+                },
+                (err, count) => {
+                  resolve(count);
+                  reject(err);
+                });
           });
-        });
-      });
-    };
 
-    return new Promise((resolve, reject) => {
-      getRequestsLength(web3).then((size, err) => {
-        let promises = [];
-        for (let i = 0; i < size; i++) {
-          promises.push(getRequestByIndex(web3, i));
-        }
-        Promise.all(promises).then((requests, err) => {
-          resolve(requests);
+      const getRequestByIndex =
+        (web3, account, contract, index) =>
+          new Promise(
+            (resolve, reject) => {
+              contract.methods.getRequest(index)
+                .call({
+                    from: account.address
+                  },
+                  (err, record) => {
+                    resolve(record);
+                    reject(err);
+                  });
+            });
+
+      return new Promise((resolve, reject) => {
+        getRequestsLength(web3, account, contract)
+          .then(
+            size => {
+              let promises = [];
+              for (let i = 0; i < size; i++) {
+                promises.push(getRequestByIndex(web3, account, contract, i));
+              }
+              Promise.all(promises)
+                .then(
+                  (requests, err) => {
+                    resolve(requests);
+                    reject(err);
+                  });
+            })
+          .catch(console.log);
+      });
+    },
+
+    considerRequest: (web3, account, contract, index, decision, passphrase) =>
+      new Promise((resolve, reject) => {
+
+        const method = contract.methods.considerRequest(index, decision, passphrase);
+
+        const tx = {
+          to: contractAddress,
+          data: method.encodeABI(),
+          gasLimit: 1000000
+        };
+
+        account.signTransaction(tx)
+          .then(
+            ({rawTransaction}) =>
+              web3.eth.sendSignedTransaction(rawTransaction))
+          .then(
+            receipt =>
+              resolve(receipt))
+          .catch(
+            err =>
+              reject(err));
+      }),
+
+    getPatientPassphrase: (web3, account, contract, patientAddress) =>
+      new Promise((resolve, reject) => {
+        contract.methods
+          .getPatientPassphrase(patientAddress, account.address).call({
+          from: account.address
+        }, (err, passphrase) => {
+          resolve(passphrase);
           reject(err);
         });
-      });
-    });
-  },
+      })
 
-  considerRequest: function (web3, index, decision) {
-    return new Promise((resolve, reject) => {
-      const medCardContract = new web3.eth.Contract(contract.abi, contract.address);
-      this.getEtherbase(web3).then((etherbase, err) => {
-        medCardContract.methods.considerRequest(index, decision).send({
-          from: etherbase[0]
-        }, (err, res) => {
-          resolve(res);
-          reject(err);
-        });
-      });
-    });
   }
-
-};
+;
 
 export default ContractService;

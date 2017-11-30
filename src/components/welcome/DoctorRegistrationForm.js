@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { register } from "../../actions/welcome/registerDoctor";
+import { register } from '../../actions/welcome/registerDoctor';
 import { CircularProgress } from 'material-ui/Progress';
 
 class DoctorRegistrationForm extends React.Component {

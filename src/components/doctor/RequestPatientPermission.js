@@ -1,5 +1,6 @@
 import React from 'react';
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
+
 import { request } from '../../actions/doctor/requestPatient';
 
 class RequestPatientPermission extends React.Component {
@@ -10,13 +11,14 @@ class RequestPatientPermission extends React.Component {
   };
 
   render() {
-    if (!this.props.fetching) {
+    if (!this.props.fetchingReq) {
       return (
         <form onSubmit={ this.handleSubmit }>
           <input type='submit' value='запросить'/>
         </form>
       );
     } else {
+      console.log('..requesting');
       return (
         <div>
           <p>Доступ запрошен!</p>
@@ -29,7 +31,7 @@ class RequestPatientPermission extends React.Component {
 
 const mapStateToProps = state => ({
   patientAddress: state.patientSearch.patientAddress,
-  fetching: state.patientSearch.fetching
+  fetchingReq: state.patientSearch.fetchingReq
 });
 
 const mapDispatchToProps = dispatch => ({

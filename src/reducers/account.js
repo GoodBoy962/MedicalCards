@@ -7,14 +7,24 @@ import {
 const DState = {
   account: null,
   address: null,
+  privateKey: null,
+  publicKey: null,
   accountType: null,
   fetching: false
 };
 
 const Actions = {
 
-  [GET_ACCOUNT_SUCCESS]: (state, {account, address, accountType}) =>
-    ({...state, account: account, address: address, accountType: accountType, fetching: false}),
+  [GET_ACCOUNT_SUCCESS]: (state, {account, address, accountType, privateKey, publicKey}) =>
+    ({
+      ...state,
+      account: account,
+      address: address,
+      accountType: accountType,
+      privateKey: privateKey,
+      publicKey: publicKey,
+      fetching: false
+    }),
 
   [GET_ACCOUNT_REQUEST]: state =>
     ({...state, fetching: true})

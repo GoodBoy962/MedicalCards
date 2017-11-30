@@ -14,25 +14,23 @@ const DState = {
 
 const Actions = {
 
-  [FIND_PATIENT_REQUEST]: (state = DState, { patient, patientAddress, available, records }) =>
-    ({
-      ...state,
-      patient: patient,
-      patientAddress: patientAddress,
-      available: available,
-      records: records,
-      fetching: true
-    }),
+  [FIND_PATIENT_REQUEST]:
+    (state = DState) =>
+      ({
+        ...state,
+        fetching: true
+      }),
 
-  [FIND_PATIENT_SUCCESS]: (state = DState, { patient, patientAddress, available, records }) =>
-    ({
-      ...state,
-      patient: patient,
-      patientAddress: patientAddress,
-      available: available,
-      records: records,
-      fetching: false
-    })
+  [FIND_PATIENT_SUCCESS]:
+    (state = DState, {patient, patientAddress, available, records}) =>
+      ({
+        ...state,
+        patient: patient,
+        patientAddress: patientAddress,
+        available: available,
+        records: records,
+        fetching: false
+      })
 
 };
 

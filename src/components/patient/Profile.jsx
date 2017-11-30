@@ -1,13 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { CircularProgress } from 'material-ui/Progress';
-import { load } from '../../actions/account';
 
 class Profile extends React.Component {
-
-  componentWillMount() {
-    this.props.load();
-  }
 
   render() {
     if (!this.props.fetching) {
@@ -34,14 +29,9 @@ class Profile extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  web3: state.web3.instance,
   account: state.account.account,
   address: state.account.address,
   fetching: state.account.fetching
 });
 
-const mapDispatchToProps = dispatch => ({
-  load: () => dispatch(load())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+export default connect(mapStateToProps)(Profile);

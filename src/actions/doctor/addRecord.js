@@ -1,30 +1,76 @@
 import {
   ADD_RECORD_REQUEST,
   ADD_RECORD_SUCCESS
-} from "../../constants/doctor/action";
+} from '../../constants/doctor/action';
 import ContractService from '../../utils/ContractService';
 
-const update = () => ({
-  type: ADD_RECORD_SUCCESS
-});
+import AES from 'crypto-js/aes';
 
-export const add = (patientAddress, record) =>
-  (dispatch, getState) => {
+const bitcore = require('bitcore-lib');
+const ECIES = require('bitcore-ecies');
 
-    dispatch({
-      type: ADD_RECORD_REQUEST
+const update =
+  () =>
+    ({
+      type: ADD_RECORD_SUCCESS
     });
 
-    const web3 = getState().web3.instance;
-    const ipfs = getState().ipfs.instance;
+export const add =
+  (patientAddress, patientPublicKey, record) =>
+    (dispatch, getState) => {
 
-    const recordBuffer = Buffer.from(record, 'utf8');
+      dispatch({
+        type: ADD_RECORD_REQUEST
+      });
 
-    ipfs.files.add(recordBuffer, (err, files) => {
+      const web3 = getState().web3.instance;
+      const privateKey = getState().account.privateKey;
+      const account = web3.eth.accounts.privateKeyToAccount(privateKey);
+      const contract = getState().web3.contract;
+      const ipfs = getState().ipfs.instance;
+
       ContractService
-        .addRecord(web3, patientAddress, files[0].hash)
-        .then((err, res) => dispatch(update()))
+        .getPatientPassphrase(web3, account, contract, patientAddress)
+        .then(
+          encPassphrase => {
+            const passphrase = decryptPassphrase(privateKey, patientPublicKey, encPassphrase);
+            console.log(passphrase);
+
+            //TODO add doctorAddress inside the record
+            // record.doctorAddress = account.address;
+            const encryptedRecord = AES.encrypt(record, passphrase).toString();
+            const encryptedRecordBuf = Buffer.from(encryptedRecord, 'hex');
+
+            ipfs.files.add(encryptedRecordBuf, (err, files) => {
+              console.log(files[0].hash);
+              ContractService
+                .addRecord(web3, account, contract, patientAddress, files[0].hash)
+                .then((err, res) => dispatch(update()))
+                .catch(console.log);
+            })
+
+          }
+        )
         .catch(console.log);
-    })
+
+    };
+
+//TODO move in utils
+const getBitPublicKey =
+  publicKey =>
+    '04' + publicKey.substring(2);
+
+const decryptPassphrase =
+  (privateKey, publicKey, encPassphrase) => {
+
+    const passphrase = new Buffer(encPassphrase, 'hex');
+
+    const cypherPrivateKey = new bitcore.PrivateKey(privateKey.substring(2));
+    const cypherPublicKey = new bitcore.PublicKey(getBitPublicKey(publicKey));
+
+    // Decrypt data
+    const deCypher = ECIES().privateKey(cypherPrivateKey).publicKey(cypherPublicKey);
+
+    return deCypher.decrypt(passphrase).toString('hex');
 
   };
