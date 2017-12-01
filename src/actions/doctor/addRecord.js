@@ -35,11 +35,13 @@ export const add =
           encPassphrase => {
             const passphrase = decryptPassphrase(privateKey, patientPublicKey, encPassphrase);
             console.log(passphrase);
-
+            console.log(record);
             //TODO add doctorAddress inside the record
             // record.doctorAddress = account.address;
             const encryptedRecord = AES.encrypt(record, passphrase).toString();
-            const encryptedRecordBuf = Buffer.from(encryptedRecord, 'hex');
+            console.log(encryptedRecord);
+            const encryptedRecordBuf = Buffer.from(encryptedRecord);
+            console.log(encryptedRecordBuf);
 
             ipfs.files.add(encryptedRecordBuf, (err, files) => {
               console.log(files[0].hash);

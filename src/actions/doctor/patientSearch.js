@@ -57,6 +57,8 @@ const getValue =
   (ipfs, hash, web3, account, contract, patientAddress, patientPublicKey) =>
     new Promise((resolve, reject) => {
 
+      console.log(hash);
+
       ipfs.files.cat(hash, (e, file) => {
         const chunks = [];
 
@@ -64,6 +66,7 @@ const getValue =
 
         file.on('end', () => {
           const value = Buffer.concat(chunks).toString();
+          console.log(value);
           ContractService
             .getPatientPassphrase(web3, account, contract, patientAddress)
             .then(
@@ -73,7 +76,7 @@ const getValue =
 
                 //TODO add doctorAddress inside the record
                 // record.doctorAddress = account.address;
-                const bytes = CryptoJS.AES.decrypt(value, passphrase).toString();
+                const bytes = CryptoJS.AES.decrypt(value.toString(), passphrase);
                 console.log(bytes);
                 const record = CryptoJS.enc.Utf8.stringify(bytes);
                 console.log(record);

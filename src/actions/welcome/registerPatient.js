@@ -49,6 +49,7 @@ const getBitPublicKey =
 
 const generatePassphrase =
   () =>
+    // "key" + Math.floor(Math.random() * 100000000000000000000000000000);
     crypto.randomBytes(64).toString('hex');
 
 const encryptedPassphrase =
