@@ -1,26 +1,9 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.19;
 
-/* @title Smart contract for ownership */
-contract Owned {
-
-    address public owner;
-
-    function Owned() public {
-        owner = msg.sender;
-    }
-
-    modifier onlyOwner {
-        require(msg.sender == owner);
-        _;
-    }
-
-    function transferOwnership(address _newOwner) public onlyOwner {
-        owner = _newOwner;
-    }
-}
+import './lib/Ownable.sol';
 
 /* @title Smart contract for medical cards storing */
-contract MedCard is Owned {
+contract MedCard is Ownable {
 
     // address -> doctor profile
     mapping (address => Doctor) public doctors;

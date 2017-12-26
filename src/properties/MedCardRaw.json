@@ -1,10 +1,8 @@
 {
-  "address": "0x4f5ac51fc6f14ee0445cd870db0abd52abf8265f",
-  "abi": [
-    {
+  "address": "0xc1f572e35f6e2f9dd1c1bd81189b4653d0775f67",
+  "abi": [{
       "constant": false,
-      "inputs": [
-        {
+      "inputs": [{
           "name": "_index",
           "type": "uint256"
         },
@@ -25,15 +23,12 @@
     },
     {
       "constant": true,
-      "inputs": [
-        {
-          "name": "",
-          "type": "address"
-        }
-      ],
+      "inputs": [{
+        "name": "",
+        "type": "address"
+      }],
       "name": "patients",
-      "outputs": [
-        {
+      "outputs": [{
           "name": "name",
           "type": "string"
         },
@@ -64,8 +59,7 @@
     },
     {
       "constant": false,
-      "inputs": [
-        {
+      "inputs": [{
           "name": "_doctorAddress",
           "type": "address"
         },
@@ -82,12 +76,10 @@
     },
     {
       "constant": false,
-      "inputs": [
-        {
-          "name": "_patientAddress",
-          "type": "address"
-        }
-      ],
+      "inputs": [{
+        "name": "_patientAddress",
+        "type": "address"
+      }],
       "name": "request",
       "outputs": [],
       "payable": false,
@@ -96,8 +88,7 @@
     },
     {
       "constant": true,
-      "inputs": [
-        {
+      "inputs": [{
           "name": "_patientAddress",
           "type": "address"
         },
@@ -107,24 +98,20 @@
         }
       ],
       "name": "isPatientAvailableForDoctor",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "name": "",
+        "type": "bool"
+      }],
       "payable": false,
       "stateMutability": "view",
       "type": "function"
     },
     {
       "constant": false,
-      "inputs": [
-        {
-          "name": "_doctorAddress",
-          "type": "address"
-        }
-      ],
+      "inputs": [{
+        "name": "_doctorAddress",
+        "type": "address"
+      }],
       "name": "approveDoctor",
       "outputs": [],
       "payable": false,
@@ -133,8 +120,7 @@
     },
     {
       "constant": false,
-      "inputs": [
-        {
+      "inputs": [{
           "name": "_patientAddress",
           "type": "address"
         },
@@ -151,8 +137,7 @@
     },
     {
       "constant": true,
-      "inputs": [
-        {
+      "inputs": [{
           "name": "_patientAddress",
           "type": "address"
         },
@@ -162,20 +147,17 @@
         }
       ],
       "name": "getPatientRecord",
-      "outputs": [
-        {
-          "name": "",
-          "type": "string"
-        }
-      ],
+      "outputs": [{
+        "name": "",
+        "type": "string"
+      }],
       "payable": false,
       "stateMutability": "view",
       "type": "function"
     },
     {
       "constant": true,
-      "inputs": [
-        {
+      "inputs": [{
           "name": "_patientAddress",
           "type": "address"
         },
@@ -185,12 +167,10 @@
         }
       ],
       "name": "getPatientPassphrase",
-      "outputs": [
-        {
-          "name": "",
-          "type": "string"
-        }
-      ],
+      "outputs": [{
+        "name": "",
+        "type": "string"
+      }],
       "payable": false,
       "stateMutability": "view",
       "type": "function"
@@ -199,20 +179,17 @@
       "constant": true,
       "inputs": [],
       "name": "owner",
-      "outputs": [
-        {
-          "name": "",
-          "type": "address"
-        }
-      ],
+      "outputs": [{
+        "name": "",
+        "type": "address"
+      }],
       "payable": false,
       "stateMutability": "view",
       "type": "function"
     },
     {
       "constant": false,
-      "inputs": [
-        {
+      "inputs": [{
           "name": "_name",
           "type": "string"
         },
@@ -245,15 +222,12 @@
     },
     {
       "constant": true,
-      "inputs": [
-        {
-          "name": "",
-          "type": "address"
-        }
-      ],
+      "inputs": [{
+        "name": "",
+        "type": "address"
+      }],
       "name": "doctors",
-      "outputs": [
-        {
+      "outputs": [{
           "name": "name",
           "type": "string"
         },
@@ -288,8 +262,7 @@
     },
     {
       "constant": false,
-      "inputs": [
-        {
+      "inputs": [{
           "name": "_name",
           "type": "string"
         },
@@ -322,19 +295,15 @@
     },
     {
       "constant": true,
-      "inputs": [
-        {
-          "name": "_index",
-          "type": "uint256"
-        }
-      ],
+      "inputs": [{
+        "name": "_index",
+        "type": "uint256"
+      }],
       "name": "getRequest",
-      "outputs": [
-        {
-          "name": "",
-          "type": "address"
-        }
-      ],
+      "outputs": [{
+        "name": "",
+        "type": "address"
+      }],
       "payable": false,
       "stateMutability": "view",
       "type": "function"
@@ -343,24 +312,20 @@
       "constant": true,
       "inputs": [],
       "name": "getRequestsLength",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
+      "outputs": [{
+        "name": "",
+        "type": "uint256"
+      }],
       "payable": false,
       "stateMutability": "view",
       "type": "function"
     },
     {
       "constant": false,
-      "inputs": [
-        {
-          "name": "_newOwner",
-          "type": "address"
-        }
-      ],
+      "inputs": [{
+        "name": "newOwner",
+        "type": "address"
+      }],
       "name": "transferOwnership",
       "outputs": [],
       "payable": false,
@@ -369,22 +334,34 @@
     },
     {
       "constant": true,
-      "inputs": [
-        {
-          "name": "_patientAddress",
-          "type": "address"
-        }
-      ],
+      "inputs": [{
+        "name": "_patientAddress",
+        "type": "address"
+      }],
       "name": "getPatientRecordsLength",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
+      "outputs": [{
+        "name": "",
+        "type": "uint256"
+      }],
       "payable": false,
       "stateMutability": "view",
       "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [{
+          "indexed": true,
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
     }
   ]
 }
