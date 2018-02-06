@@ -2,7 +2,7 @@ import {
   GET_ACCOUNT_REQUEST,
   GET_ACCOUNT_SUCCESS
 } from '../constants/actions';
-import ContractService from '../utils/ContractService';
+import getAccount from '../rpc/medCardStorage';
 
 import utils from "ethereumjs-util";
 
@@ -18,15 +18,13 @@ const update =
     }
   };
 
-export const load =
-  file => (dispatch, getState) => {
+export const load = file =>
+
+  (dispatch) => {
 
     dispatch({
       type: GET_ACCOUNT_REQUEST
     });
-
-    const web3 = getState().web3.instance;
-    const contract = getState().web3.contract;
 
     const privateKey = JSON.parse(file).pkey;
     const account = web3.eth.accounts.privateKeyToAccount(privateKey);

@@ -14,7 +14,7 @@ contract MedRecStorage is Ownable {
 
     mapping (address => Patient) public patients;
 
-    mapping (address => string[]) private records;
+    mapping (bytes => string[]) private records;
 
     // check if _address corresponds to any Doctor
     modifier isDoctor(address _address) {
@@ -51,17 +51,20 @@ contract MedRecStorage is Ownable {
     struct Patient {
         string profile;
         bytes32 passphrases;
+        string permissions;
     }
 
     //apply for a Patient
     function applyPatient (
         string _profile,
-        bytes32 _passphrases
+        bytes32 _passphrases,
+        string _permissions
     ) public isNotPatient(msg.sender) {
         patients[msg.sender] = Patient({
-        profile: _profile,
-        passphrases: _passphrases
-        });
+                profile: _profile,
+                passphrases: _passphrases,
+                permissions: _permissions
+            });
     }
 
     // apply for a Docotor rights
@@ -70,10 +73,10 @@ contract MedRecStorage is Ownable {
         string _publicKey
     ) public isNotDoctor(msg.sender) {
         doctors[msg.sender] = Doctor({
-        profile: _profile,
-        accepted: false,
-        publicKey: _publicKey
-        });
+                profile: _profile,
+                accepted: false,
+                publicKey: _publicKey
+            });
     }
 
     // Approve the address to work as a Doctor in system
@@ -86,33 +89,38 @@ contract MedRecStorage is Ownable {
     // check if doctor can get patient records
     function getPatient (
         address _address
-    ) public constant returns (string, bytes32) {
+    ) public constant returns (string, bytes32, string) {
         Patient memory patient = patients[_address];
-        return (patient.profile, patient.passphrases);
+        return (patient.profile, patient.passphrases, patient.permissions);
     }
 
     // add new record in medical card
     function addRecord(
-        address _patientAddress,
+        bytes _patientEncAddress,
         string _value
-    ) public isPatient(_patientAddress) isDoctor(msg.sender) {
-        //TODO require(isPatientAvailableForDoctor(_patientAddress, msg.sender));
-        records[_patientAddress].push(_value);
+    ) public isDoctor(msg.sender) {
+        records[_patientEncAddress].push(_value);
     }
 
     // get length of array with patient records
     function getRecordsLength (
-        address _patientAddress
+        bytes _patientEncAddress
     ) public constant returns (uint) {
-        return records[_patientAddress].length;
+        return records[_patientEncAddress].length;
     }
 
     // get patient record by his index
     function getRecord (
-        address _patientAddress,
+        bytes _patientEncAddress,
         uint _index
     ) public constant returns (string) {
-        return records[_patientAddress][_index];
+        return records[_patientEncAddress][_index];
+    }
+
+    function updatePermissions (
+        string _permissions
+    ) public isPatient(msg.sender) {
+        patients[msg.sender].permissions = _permissions;
     }
 
 }

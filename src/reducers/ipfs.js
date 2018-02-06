@@ -1,13 +1,12 @@
 import ipfsAPI from 'ipfs-api';
 import {
-  IPFS_HOST,
-  IPFS_PORT
-} from '../properties/properties';
+  ReducerFactory
+} from '../lib/util';
 
-const initialState = {
-  instance: ipfsAPI(IPFS_HOST, IPFS_PORT)
+const ipfs = require('../config').ipfs;
+
+const DState = {
+  instance: ipfsAPI(ipfs.ipfsUrl, ipfs.ipfsPort)
 };
 
-export default (state = initialState) => {
-  return state;
-}
+export default ReducerFactory(DState, {});
