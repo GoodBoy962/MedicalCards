@@ -11,8 +11,8 @@ const update =
     });
 
 export const register =
-  (name, surname, passport, medClinic, category) =>
-    (dispatch, getState) => {
+  (name, surname, passport, medClinic, category) => {
+    return async function (dispatch, getState) {
 
       dispatch({
         type: REGISTER_DOCTOR_REQUEST
@@ -23,10 +23,18 @@ export const register =
       const publicKey = getState().account.publicKey;
       const account = web3.eth.accounts.privateKeyToAccount(privateKey);
       const contract = getState().web3.contract;
+      const ipfs = getState().ipfs.instance;
 
 
-      ContractService.registerDoctor(web3, account, contract, name, surname, passport, medClinic, category, publicKey)
-        .then((res, err) => dispatch(update()))
-        .catch(console.log)
+      const profile = await ipfs.files.add(JSON.stringify({
+          name,
+          surname,
+          passport,
+          medClinic,
+          category
+        }));
+      await ContractService.registerDoctor(web3, account, contract, profile, publicKey)
+      dispatch(update());
 
-    };
+    }
+  };

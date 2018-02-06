@@ -15,7 +15,7 @@ const Doctor = ({classes, children}) => (
       <AppBar className={ classes.appBar }>
         <Toolbar>
           <Typography type="title" color="inherit" noWrap>
-            Кабинет врача
+            Медицинский цифровой паспорт
           </Typography>
         </Toolbar>
       </AppBar>

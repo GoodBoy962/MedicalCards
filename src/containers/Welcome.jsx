@@ -13,7 +13,7 @@ const Welcome = ({classes, children}) => (
       <AppBar className={ classes.appBar }>
         <Toolbar>
           <Typography type="title" color="inherit" noWrap>
-            Система хранения медицинских книжек
+            Медицинский цифровой паспорт
           </Typography>
         </Toolbar>
       </AppBar>
