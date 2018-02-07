@@ -2,7 +2,7 @@
 
 const web3 = require('./web3');
 
-const acc = (function(account){
+export default function(account){
 
   return Object.assign(account, {
 
@@ -22,6 +22,4 @@ const acc = (function(account){
 
   });
 
-})();
-
-module.exports = { acc };
+};

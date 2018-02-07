@@ -2,7 +2,7 @@ import {
   GET_INCOMING_REQUESTS_SUCCESS,
   GET_INCOMING_REQUESTS_REQUEST
 } from '../../constants/patient/action';
-import ContractService from '../../utils/ContractService';
+// import ContractService from '../../utils/ContractService';
 
 const update =
   list =>
@@ -24,9 +24,9 @@ export const load =
       const contract = getState().web3.contract;
       const account = web3.eth.accounts.privateKeyToAccount(privateKey);
 
-      ContractService.getRequests(web3, account, contract)
-        .then(
-          requests =>
-            setTimeout(() => dispatch(update(requests)), 100))
-        .catch(console.log);
+      // ContractService.getRequests(web3, account, contract)
+      //   .then(
+      //     requests =>
+      //       setTimeout(() => dispatch(update(requests)), 100))
+      //   .catch(console.log);
     };

@@ -1,88 +1,99 @@
-'use strict';
-
 const web3 = require('./web3');
-const acc = require('./accounts').acc;
+const utils = require('ethereumjs-util');
+const acc = require('./accounts');
 const address = require('../config').contract.address;
 const abi = require('../config/MedRecStorage.json');
 
-const contract = new web3.eth.Contract(abi, address);
-const methods = contract.methods;
+class MedCardStorage {
 
-function fromAccount(name, account, ...args){
-  const method = methods[name](...args);
-  return function(gasLimit){
-    return acc.psend({
-      to: address,
-      gasLimit,
-      data: method.encodeABI()
-    });
-  };
-}
+  constructor(contract) {
+    this.contract = contract;
+  }
 
-Object.assign(exports, {
+  fromAccount(name, account, ...args) {
+    const method = this.contract.methods[name](...args);
+    return function (gasLimit) {
+      return acc.psend({
+        to: address,
+        gasLimit,
+        data: method.encodeABI()
+      });
+    };
+  }
 
-  async getDoctor(address){
-    return await contract.methods.doctors(address).call();
-  },
+  async getDoctor(address) {
+    return await this.contract.methods.doctors(address).call();
+  }
 
-  async getPatient(address){
-    return await contract.methods.patients(address).call();
-  },
+  async getPatient(address) {
+    return await this.contract.methods.patients(address).call();
+  }
 
-  async getOwner(){
-    return await contract.methods.owner().call();
-  },
+  async getOwner() {
+    return await this.contract.methods.owner().call();
+  }
 
-  async getAccount(account){
+  async getAccount(privateKey) {
+    const account = web3.eth.accounts.privateKeyToAccount(privateKey);
     const address = account.address;
-    const doctor = await getDoctor(address);
-    if(doctor[0]){
+    const publicKey = utils.bufferToHex(utils.privateToPublic(privateKey));
+    const doctor = await this.getDoctor(address);
+    if (doctor[0]) {
       return {
         type: 'doctor',
         account: doctor,
-        etherbase: address
+        etherbase: address,
+        publicKey
       }
     }
-    const patient = await getPatient(address);
-    if(patient[0]){
+    const patient = await this.getPatient(address);
+    if (patient[0]) {
       return {
         type: 'patient',
         account: patient,
-        etherbase: address
+        etherbase: address,
+        publicKey
       }
     }
-    const owner = await getOwner();
-    if(owner === address){
+    const owner = await this.getOwner();
+    if (owner === address) {
       return {
         type: 'owner',
         account: owner,
-        etherbase: address
+        etherbase: address,
+        publicKey
       }
     }
     return {
       type: 'new',
       account: null,
       etherbase: address
-    }
-  },
+    };
+  }
 
-  applyDoctor(account, profile, publicKey){
-    return fromAccount('applyDoctor', account,
+  applyDoctor(account, profile, publicKey) {
+    return this.fromAccount('applyDoctor', account,
       profile,
       publicKey
     )(1000000);
-  },
+  }
 
-  applyPatient(account, profile, passphrase, permissions){
-    return fromAccount('applyPatient', account,
+  applyPatient(account, profile, passphrase, permissions) {
+    return this.fromAccount('applyPatient', account,
       profile,
       web3.utils.fromAscii(passphrase),
       permissions
     )(1000000);
   }
 
-  //TODO
-  //add record
-  //get records
 
-});
+//TODO
+//add record
+//get records
+
+}
+
+const contract = new web3.eth.Contract(abi, address);
+const medCardStorage = new MedCardStorage(contract);
+
+export default medCardStorage;

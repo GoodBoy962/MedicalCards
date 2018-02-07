@@ -2,7 +2,7 @@ import {
   APPROVE_DOCTOR_SUCCESS,
   APPROVE_DOCTOR_REQUEST
 } from "../../constants/patient/action";
-import ContractService from '../../utils/ContractService';
+// import ContractService from '../../utils/ContractService';
 
 const update =
   () =>
@@ -18,8 +18,8 @@ export const approve =
         type: APPROVE_DOCTOR_REQUEST
       });
 
-      ContractService
-        .acceptDoctorForPatient(getState().web3.instance, doctorAddress)
-        .then((err, res) => dispatch(update()))
-        .catch(console.log)
+      // ContractService
+      //   .acceptDoctorForPatient(getState().web3.instance, doctorAddress)
+      //   .then((err, res) => dispatch(update()))
+      //   .catch(console.log)
     };

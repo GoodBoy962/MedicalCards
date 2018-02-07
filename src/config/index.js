@@ -3,12 +3,12 @@
 const {
   NODE_ENV = 'development',
 
-  CONTRACT_ADDR = '',
+  CONTRACT_ADDR = '0xa2bf6884343523306d6c03ff0a75b041b427fce5',
 
-  ETHEREUM_RPC = '',
+  ETHEREUM_RPC = 'https://ropsten.infura.io/oI5puXL7bMnaY7Dv9AzF',
 
-  IPFS_URL = '',
-  IPFS_PORT = ''
+  IPFS_URL = 'localhost',
+  IPFS_PORT = '5001'
 
 } = process.env;
 

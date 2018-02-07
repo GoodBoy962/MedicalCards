@@ -1,4 +1,4 @@
-import ContractService from '../../utils/ContractService';
+// import ContractService from '../../utils/ContractService';
 import {
   REGISTER_PATIENT_SUCCESS,
   REGISTER_PATIENT_REQUEST
@@ -32,13 +32,13 @@ export const register =
       console.log(passphrase);
       const encPassphrase = encryptedPassphrase(privateKey, publicKey, passphrase);
 
-      ContractService
-        .registerPatient(web3, account, contract, name, surname, passport, birthday, publicKey, encPassphrase)
-        .then(
-          res =>
-            dispatch(update())
-        )
-        .catch(console.log);
+      // ContractService
+      //   .registerPatient(web3, account, contract, name, surname, passport, birthday, publicKey, encPassphrase)
+      //   .then(
+      //     res =>
+      //       dispatch(update())
+      //   )
+      //   .catch(console.log);
 
     };
 

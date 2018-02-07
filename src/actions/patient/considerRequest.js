@@ -2,7 +2,7 @@ import {
   CONSIDER_REQUEST,
   CONSIDER_SUCCESS
 } from '../../constants/patient/action';
-import ContractService from '../../utils/ContractService';
+// import ContractService from '../../utils/ContractService';
 
 const bitcore = require('bitcore-lib');
 const ECIES = require('bitcore-ecies');
@@ -28,24 +28,24 @@ export const consider =
       const contract = getState().web3.contract;
       const account = web3.eth.accounts.privateKeyToAccount(privateKey);
 
-      ContractService.getDoctor(web3, contract, doctorAddress)
-        .then(
-          doctor => {
-            const doctorPublicKey = doctor.publicKey;
-
-            const patientPassphrase = decryptPassphrase(privateKey, publicKey, passphrase);
-            const doctorPassphrase = encryptPassphrase(privateKey, doctorPublicKey, patientPassphrase);
-
-            ContractService.considerRequest(web3, account, contract, index, decision, doctorPassphrase)
-              .then(
-                (res) => {
-                  console.log(res);
-                  dispatch(update())
-                }
-              )
-              .catch(console.log);
-          }
-        ).catch(console.log);
+      // ContractService.getDoctor(web3, contract, doctorAddress)
+      //   .then(
+      //     doctor => {
+      //       const doctorPublicKey = doctor.publicKey;
+      //
+      //       const patientPassphrase = decryptPassphrase(privateKey, publicKey, passphrase);
+      //       const doctorPassphrase = encryptPassphrase(privateKey, doctorPublicKey, patientPassphrase);
+      //
+      //       ContractService.considerRequest(web3, account, contract, index, decision, doctorPassphrase)
+      //         .then(
+      //           (res) => {
+      //             console.log(res);
+      //             dispatch(update())
+      //           }
+      //         )
+      //         .catch(console.log);
+      //     }
+      //   ).catch(console.log);
 
     };
 

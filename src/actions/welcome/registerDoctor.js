@@ -1,4 +1,4 @@
-import ContractService from '../../utils/ContractService';
+// import ContractService from '../../utils/ContractService';
 import {
   REGISTER_DOCTOR_SUCCESS,
   REGISTER_DOCTOR_REQUEST
@@ -33,8 +33,8 @@ export const register =
           medClinic,
           category
         }));
-      await ContractService.registerDoctor(web3, account, contract, profile, publicKey)
-      dispatch(update());
+      // await ContractService.registerDoctor(web3, account, contract, profile, publicKey)
+      // dispatch(update());
 
     }
   };

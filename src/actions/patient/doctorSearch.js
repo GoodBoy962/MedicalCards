@@ -2,7 +2,7 @@ import {
   FIND_DOCTOR_REQUEST,
   FIND_DOCTOR_SUCCESS
 } from "../../constants/patient/action";
-import ContractService from '../../utils/ContractService';
+// import ContractService from '../../utils/ContractService';
 
 const update =
   (doctorAddress, doctor, accepted) =>
@@ -27,17 +27,17 @@ export const find =
       const web3 = getState().web3.instance;
       const contract = getState().web3.contract;
 
-      ContractService.getDoctor(web3, contract, doctorAddress)
-        .then(
-          doctor =>
-            Promise.all([
-              Promise.resolve(ContractService.isPatientAvailableForDoctor(web3, contract, patientAddress, doctorAddress)),
-              Promise.resolve(doctor)
-            ]))
-        .then(
-          ([accepted, doctor]) => {
-            setTimeout(() =>
-              dispatch(update(doctorAddress, doctor, accepted)), 1000);
-          })
-        .catch(console.log);
+      // ContractService.getDoctor(web3, contract, doctorAddress)
+      //   .then(
+      //     doctor =>
+      //       Promise.all([
+      //         Promise.resolve(ContractService.isPatientAvailableForDoctor(web3, contract, patientAddress, doctorAddress)),
+      //         Promise.resolve(doctor)
+      //       ]))
+      //   .then(
+      //     ([accepted, doctor]) => {
+      //       setTimeout(() =>
+      //         dispatch(update(doctorAddress, doctor, accepted)), 1000);
+      //     })
+      //   .catch(console.log);
     };
