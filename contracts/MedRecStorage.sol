@@ -50,14 +50,14 @@ contract MedRecStorage is Ownable {
     // This is a type for a single patient identity
     struct Patient {
         string profile;
-        bytes32 passphrases;
+        string passphrases;
         string permissions;
     }
 
     //apply for a Patient
     function applyPatient (
         string _profile,
-        bytes32 _passphrases,
+        string _passphrases,
         string _permissions
     ) public isNotPatient(msg.sender) {
         patients[msg.sender] = Patient({
@@ -89,7 +89,7 @@ contract MedRecStorage is Ownable {
     // check if doctor can get patient records
     function getPatient (
         address _address
-    ) public constant returns (string, bytes32, string) {
+    ) public constant returns (string, string, string) {
         Patient memory patient = patients[_address];
         return (patient.profile, patient.passphrases, patient.permissions);
     }

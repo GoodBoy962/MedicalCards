@@ -1,40 +1,34 @@
-// import ContractService from '../../utils/ContractService';
 import {
   REGISTER_DOCTOR_SUCCESS,
   REGISTER_DOCTOR_REQUEST
 } from '../../constants/welcome/actions';
+import medCardStorage from '../../rpc/medCardStorage';
 
-const update =
-  () =>
-    ({
-      type: REGISTER_DOCTOR_SUCCESS
+const update = () => ({
+  type: REGISTER_DOCTOR_SUCCESS
+});
+
+export const register = (name, surname, passport, medClinic, category) =>
+  async function (dispatch, getState) {
+
+    dispatch({
+      type: REGISTER_DOCTOR_REQUEST
     });
 
-export const register =
-  (name, surname, passport, medClinic, category) => {
-    return async function (dispatch, getState) {
+    const privateKey = getState().account.privateKey;
+    const ipfs = getState().ipfs.instance;
 
-      dispatch({
-        type: REGISTER_DOCTOR_REQUEST
-      });
-
-      const web3 = getState().web3.instance;
-      const privateKey = getState().account.privateKey;
-      const publicKey = getState().account.publicKey;
-      const account = web3.eth.accounts.privateKeyToAccount(privateKey);
-      const contract = getState().web3.contract;
-      const ipfs = getState().ipfs.instance;
-
-
-      const profile = await ipfs.files.add(JSON.stringify({
+    const files =
+      await ipfs.files.add(Buffer
+        .from(JSON.stringify({
           name,
           surname,
           passport,
           medClinic,
           category
-        }));
-      // await ContractService.registerDoctor(web3, account, contract, profile, publicKey)
-      // dispatch(update());
-
-    }
-  };
+        })));
+    const profile = files[0].hash;
+    await medCardStorage.applyDoctor(profile, privateKey);
+    dispatch(update());
+  }
+;

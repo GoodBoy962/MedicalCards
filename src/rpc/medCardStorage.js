@@ -1,6 +1,5 @@
 const web3 = require('./web3');
 const utils = require('ethereumjs-util');
-const acc = require('./accounts');
 const address = require('../config').contract.address;
 const abi = require('../config/MedRecStorage.json');
 
@@ -12,11 +11,17 @@ class MedCardStorage {
 
   fromAccount(name, account, ...args) {
     const method = this.contract.methods[name](...args);
-    return function (gasLimit) {
-      return acc.psend({
+    return async function (gasLimit) {
+      const tx = {
         to: address,
         gasLimit,
         data: method.encodeABI()
+      };
+      const {rawTransaction} = await account.signTransaction(tx);
+      return await new Promise((resolve, reject) => {
+        web3.eth.sendSignedTransaction(rawTransaction)
+          .once('transactionHash', resolve)
+          .catch(reject);
       });
     };
   }
@@ -67,21 +72,25 @@ class MedCardStorage {
     return {
       type: 'new',
       account: null,
-      etherbase: address
+      etherbase: address,
+      publicKey
     };
   }
 
-  applyDoctor(account, profile, publicKey) {
+  applyDoctor(profile, privateKey) {
+    const account = web3.eth.accounts.privateKeyToAccount(privateKey);
+    const publicKey = utils.bufferToHex(utils.privateToPublic(privateKey));
     return this.fromAccount('applyDoctor', account,
       profile,
       publicKey
     )(1000000);
   }
 
-  applyPatient(account, profile, passphrase, permissions) {
+  applyPatient(profile, passphrase, permissions, privateKey) {
+    const account = web3.eth.accounts.privateKeyToAccount(privateKey);
     return this.fromAccount('applyPatient', account,
       profile,
-      web3.utils.fromAscii(passphrase),
+      passphrase,
       permissions
     )(1000000);
   }

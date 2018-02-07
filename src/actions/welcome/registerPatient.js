@@ -1,65 +1,57 @@
-// import ContractService from '../../utils/ContractService';
 import {
   REGISTER_PATIENT_SUCCESS,
   REGISTER_PATIENT_REQUEST
 } from '../../constants/welcome/actions';
+import medCardStorage from '../../rpc/medCardStorage';
 
 const crypto = require('crypto');
 const bitcore = require('bitcore-lib');
 const ECIES = require('bitcore-ecies');
 
-const update =
-  () =>
-    ({
-      type: REGISTER_PATIENT_SUCCESS
+const update = () => ({
+  type: REGISTER_PATIENT_SUCCESS
+});
+
+export const register = (name, surname, passport, birthday) =>
+  async function (dispatch, getState) {
+
+    dispatch({
+      type: REGISTER_PATIENT_REQUEST
     });
 
-export const register =
-  (name, surname, passport, birthday) =>
-    (dispatch, getState) => {
+    const privateKey = getState().account.privateKey;
+    const publicKey = getState().account.publicKey;
+    const address = getState().account.address;
+    const ipfs = getState().ipfs.instance;
 
-      dispatch({
-        type: REGISTER_PATIENT_REQUEST
-      });
+    const passphrase = generatePassphrase(address);
+    const encPassphrase = encrypt(privateKey, publicKey, passphrase);
 
-      const web3 = getState().web3.instance;
-      const privateKey = getState().account.privateKey;
-      const publicKey = getState().account.publicKey;
-      const account = web3.eth.accounts.privateKeyToAccount(privateKey);
-      const contract = getState().web3.contract;
+    const profile = JSON.stringify({
+      name, surname, passport, birthday
+    });
+    const encProfile = encrypt(privateKey, publicKey, profile);
+    const files = await ipfs.files.add(Buffer.from(encProfile));
+    const encProfileHash = files[0].hash;
 
-      const passphrase = generatePassphrase();
-      console.log(passphrase);
-      const encPassphrase = encryptedPassphrase(privateKey, publicKey, passphrase);
+    await medCardStorage.applyPatient(encProfileHash, encPassphrase, '', privateKey);
+    dispatch(update());
 
-      // ContractService
-      //   .registerPatient(web3, account, contract, name, surname, passport, birthday, publicKey, encPassphrase)
-      //   .then(
-      //     res =>
-      //       dispatch(update())
-      //   )
-      //   .catch(console.log);
+  };
 
-    };
-
-//TODO move in utils
-const getBitPublicKey =
-  publicKey =>
+const getBitPublicKey = publicKey =>
     '04' + publicKey.substring(2);
 
-const generatePassphrase =
-  () =>
-    // "key" + Math.floor(Math.random() * 100000000000000000000000000000);
-    crypto.randomBytes(64).toString('hex');
+const generatePassphrase = (address) =>
+  address + crypto.randomBytes(64).toString('hex');
 
-const encryptedPassphrase =
-  (privateKey, publicKey, passphrase) => {
+const encrypt = (privateKey, publicKey, passphrase) => {
 
-    const cypherPrivateKey = new bitcore.PrivateKey(privateKey.substring(2));
-    const cypherPublicKey = new bitcore.PublicKey(getBitPublicKey(publicKey));
+  const cypherPrivateKey = new bitcore.PrivateKey(privateKey.substring(2));
+  const cypherPublicKey = new bitcore.PublicKey(getBitPublicKey(publicKey));
 
-    const cypher = ECIES().privateKey(cypherPrivateKey).publicKey(cypherPublicKey);
-    const encrypted = cypher.encrypt(Buffer.from(passphrase));
+  const cypher = ECIES().privateKey(cypherPrivateKey).publicKey(cypherPublicKey);
+  const encrypted = cypher.encrypt(Buffer.from(passphrase));
 
-    return Buffer.from(encrypted).toString('hex');
-  };
+  return Buffer.from(encrypted).toString('hex');
+};

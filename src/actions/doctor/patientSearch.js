@@ -5,7 +5,6 @@ import {
 // import ContractService from '../../utils/ContractService';
 
 const CryptoJS = require('crypto-js');
-
 const bitcore = require('bitcore-lib');
 const ECIES = require('bitcore-ecies');
 
