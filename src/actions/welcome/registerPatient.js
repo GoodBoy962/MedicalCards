@@ -4,6 +4,8 @@ import {
 } from '../../constants/welcome/actions';
 import medCardStorage from '../../rpc/medCardStorage';
 
+import AES from 'crypto-js/aes';
+
 const crypto = require('crypto');
 const bitcore = require('bitcore-lib');
 const ECIES = require('bitcore-ecies');
@@ -25,12 +27,14 @@ export const register = (name, surname, passport, birthday) =>
     const ipfs = getState().ipfs.instance;
 
     const passphrase = generatePassphrase(address);
+    console.log(passphrase);
     const encPassphrase = encrypt(privateKey, publicKey, passphrase);
 
     const profile = JSON.stringify({
       name, surname, passport, birthday
     });
-    const encProfile = encrypt(privateKey, publicKey, profile);
+    const encProfile = AES.encrypt(profile, passphrase).toString();
+    console.log(encProfile);
     const files = await ipfs.files.add(Buffer.from(encProfile));
     const encProfileHash = files[0].hash;
 

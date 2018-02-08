@@ -6,30 +6,29 @@ class Profile extends React.Component {
 
   render() {
     if (!this.props.fetching) {
-      const patient = this.props.account;
+      const profile = this.props.profile;
       const address = this.props.address;
-      if (patient) {
+      if (profile) {
         return (
           <div className='Profile'>
             <p>Профиль пациента</p>
-            <p>ФИО: { patient.name } { patient.surname }</p>
-            <p>Паспорт: { patient.passport }</p>
+            <p>ФИО: { profile.name } { profile.surname }</p>
+            <p>Паспорт: { profile.passport }</p>
             <p>Адрес: { address }</p>
           </div>
         )
-      } else {
-        return (null);
       }
-    } else {
-      return (
-        <CircularProgress size={ 50 }/>
-      )
+      return (null);
     }
+    return (
+      <CircularProgress size={ 50 }/>
+    )
   }
 }
 
 const mapStateToProps = state => ({
   account: state.account.account,
+  profile: state.account.profile,
   address: state.account.address,
   fetching: state.account.fetching
 });

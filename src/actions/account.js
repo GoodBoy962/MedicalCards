@@ -53,11 +53,7 @@ export const load = file =>
             const passphrase = decrypt(privateKey, user.publicKey, user.account.passphrases);
             const value = Buffer.concat(chunks).toString();
             const bytes = CryptoJS.AES.decrypt(value.toString(), passphrase);
-            console.log(bytes);
-            const encProfile = CryptoJS.enc.Utf8.stringify(bytes);
-            const profile = await JSON.parse(encProfile.toString());
-            console.log(profile);
-            //TODO decrypt profile
+            const profile = JSON.parse(CryptoJS.enc.Utf8.stringify(bytes));
             dispatch(update(user.account, profile, user.etherbase, user.type, privateKey, user.publicKey));
           });
         })
@@ -71,21 +67,16 @@ export const load = file =>
     }
   };
 
-const getBitPublicKey =
-  publicKey =>
-    '04' + publicKey.substring(2);
+const getBitPublicKey = publicKey =>
+  '04' + publicKey.substring(2);
 
-const decrypt =
-  (privateKey, publicKey, enc) => {
+const decrypt = (privateKey, publicKey, enc) => {
+  const passphrase = new Buffer(enc, 'hex');
 
-    const passphrase = new Buffer(enc, 'hex');
+  const cypherPrivateKey = new bitcore.PrivateKey(privateKey.substring(2));
+  const cypherPublicKey = new bitcore.PublicKey(getBitPublicKey(publicKey));
 
-    const cypherPrivateKey = new bitcore.PrivateKey(privateKey.substring(2));
-    const cypherPublicKey = new bitcore.PublicKey(getBitPublicKey(publicKey));
+  const deCypher = ECIES().privateKey(cypherPrivateKey).publicKey(cypherPublicKey);
+  return deCypher.decrypt(passphrase).toString();
 
-    // Decrypt data
-    const deCypher = ECIES().privateKey(cypherPrivateKey).publicKey(cypherPublicKey);
-
-    return deCypher.decrypt(passphrase).toString('hex');
-
-  };
+};
