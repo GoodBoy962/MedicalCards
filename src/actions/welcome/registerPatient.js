@@ -3,12 +3,12 @@ import {
   REGISTER_PATIENT_REQUEST
 } from '../../constants/welcome/actions';
 import medCardStorage from '../../rpc/medCardStorage';
-
-import AES from 'crypto-js/aes';
+import {
+  encrypt,
+  encryptAssymetrically
+} from '../../lib/cipher';
 
 const crypto = require('crypto');
-const bitcore = require('bitcore-lib');
-const ECIES = require('bitcore-ecies');
 
 const update = () => ({
   type: REGISTER_PATIENT_SUCCESS
@@ -27,14 +27,16 @@ export const register = (name, surname, passport, birthday) =>
     const ipfs = getState().ipfs.instance;
 
     const passphrase = generatePassphrase(address);
-    console.log(passphrase);
-    const encPassphrase = encrypt(privateKey, publicKey, passphrase);
+    const encPassphrase = encryptAssymetrically(privateKey, publicKey, passphrase);
 
     const profile = JSON.stringify({
-      name, surname, passport, birthday
+      name,
+      surname,
+      passport,
+      birthday
     });
-    const encProfile = AES.encrypt(profile, passphrase).toString();
-    console.log(encProfile);
+
+    const encProfile = encrypt(profile, passphrase);
     const files = await ipfs.files.add(Buffer.from(encProfile));
     const encProfileHash = files[0].hash;
 
@@ -43,19 +45,5 @@ export const register = (name, surname, passport, birthday) =>
 
   };
 
-const getBitPublicKey = publicKey =>
-    '04' + publicKey.substring(2);
-
 const generatePassphrase = (address) =>
   address + crypto.randomBytes(64).toString('hex');
-
-const encrypt = (privateKey, publicKey, passphrase) => {
-
-  const cypherPrivateKey = new bitcore.PrivateKey(privateKey.substring(2));
-  const cypherPublicKey = new bitcore.PublicKey(getBitPublicKey(publicKey));
-
-  const cypher = ECIES().privateKey(cypherPrivateKey).publicKey(cypherPublicKey);
-  const encrypted = cypher.encrypt(Buffer.from(passphrase));
-
-  return Buffer.from(encrypted).toString('hex');
-};

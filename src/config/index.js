@@ -1,5 +1,3 @@
-'use strict';
-
 const {
   NODE_ENV = 'development',
 

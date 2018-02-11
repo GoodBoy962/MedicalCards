@@ -19,14 +19,13 @@ export const register = (name, surname, passport, medClinic, category) =>
     const ipfs = getState().ipfs.instance;
 
     const files =
-      await ipfs.files.add(Buffer
-        .from(JSON.stringify({
-          name,
-          surname,
-          passport,
-          medClinic,
-          category
-        })));
+      await ipfs.files.add(Buffer.from(JSON.stringify({
+        name,
+        surname,
+        passport,
+        medClinic,
+        category
+      })));
     const profile = files[0].hash;
     await medCardStorage.applyDoctor(profile, privateKey);
     dispatch(update());

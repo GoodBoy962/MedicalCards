@@ -1,7 +1,13 @@
 import React from 'react';
-
-import { Router, Route, IndexRoute } from 'react-router';
+import {
+  Router,
+  Route,
+  IndexRoute
+} from 'react-router';
 import { History } from '../store/index';
+
+import { connect } from 'react-redux';
+
 import Patient from '../containers/Patient';
 import Doctor from '../containers/Doctor';
 import Welcome from '../containers/Welcome';
@@ -9,11 +15,9 @@ import PatientProfile from '../components/patient/Profile';
 import DoctorProfile from '../components/doctor/Profile';
 import DoctorSearchForm from '../components/patient/DoctorSearchForm';
 import SearchPatient from '../components/doctor/SearchPatient';
-import IncomingRequests from '../components/patient/IncomingRequests';
 import WelcomePage from '../components/welcome/WelcomePage';
 import Initial from './Initial';
 
-import { connect } from 'react-redux';
 
 class App extends React.Component{
 
@@ -32,7 +36,6 @@ class App extends React.Component{
               <IndexRoute component={PatientProfile}/>
               <Route path='profile' component={PatientProfile}/>
               <Route path='searchDoctor' component={DoctorSearchForm}/>
-              <Route path='requests' component={IncomingRequests}/>
               <Route path='*' component={PatientProfile}/>
             </Route>
           </Router>

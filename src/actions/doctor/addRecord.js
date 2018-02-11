@@ -57,13 +57,10 @@ export const add =
 
     };
 
-//TODO move in utils
-const getBitPublicKey =
-  publicKey =>
+const getBitPublicKey = publicKey =>
     '04' + publicKey.substring(2);
 
-const decryptPassphrase =
-  (privateKey, publicKey, encPassphrase) => {
+const decrypt = (privateKey, publicKey, encPassphrase) => {
 
     const passphrase = new Buffer(encPassphrase, 'hex');
 
