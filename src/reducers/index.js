@@ -5,7 +5,6 @@ import account from './account';
 import doctorSearch from './patient/doctorSearch';
 import approveDoctor from './patient/approveDoctor';
 import patientSearch from './doctor/patientSearch';
-import requestPatient from './doctor/requestPatient';
 import addRecord from './doctor/addRecord';
 import registerPatient from './welcome/registerPatient';
 import registerDoctor from './welcome/registerDoctor';
@@ -17,7 +16,6 @@ export default {
   doctorSearch,
   approveDoctor,
   patientSearch,
-  requestPatient,
   addRecord,
   registerPatient,
   registerDoctor,

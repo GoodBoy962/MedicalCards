@@ -14,7 +14,7 @@
         "type": "string"
       },
       {
-        "name": "passphrases",
+        "name": "passphrase",
         "type": "string"
       },
       {
@@ -190,7 +190,7 @@
         "type": "string"
       },
       {
-        "name": "_passphrases",
+        "name": "_passphrase",
         "type": "string"
       },
       {

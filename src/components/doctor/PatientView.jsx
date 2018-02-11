@@ -4,7 +4,6 @@ import dateFormat from 'dateformat'
 
 import { find } from '../../actions/doctor/patientSearch';
 
-import RequestPatientPermission from './RequestPatientPermission';
 import AddRecord from './AddRecord';
 
 class PatientView extends React.Component {
@@ -33,8 +32,7 @@ class PatientView extends React.Component {
       } else {
         return (
           <div>
-            <p>Запросить доступ</p>
-            <RequestPatientPermission/>
+            <p>Нет доступа</p>
           </div>
         )
       }

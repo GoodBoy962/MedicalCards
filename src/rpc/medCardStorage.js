@@ -95,6 +95,13 @@ class MedCardStorage {
     )(1000000);
   }
 
+  updatePermissions(permissions, privateKey) {
+    const account = web3.eth.accounts.privateKeyToAccount(privateKey);
+    return this.fromAccount('updatePermissions', account,
+      permissions
+    )(1000000);
+  }
+
 
 //TODO
 //add record

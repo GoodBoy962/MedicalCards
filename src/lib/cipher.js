@@ -13,8 +13,7 @@ export const decryptAssymetrically = (privateKey, publicKey, value) => {
 
   const deCypher = ECIES().privateKey(cypherPrivateKey).publicKey(cypherPublicKey);
 
-  return deCypher.decrypt(new Buffer(value, 'hex')).toString('hex');
-
+  return deCypher.decrypt(new Buffer(value, 'hex')).toString();
 };
 
 export const encryptAssymetrically = (privateKey, publicKey, value) => {
@@ -34,4 +33,5 @@ export const encrypt = (value, key) => {
 export const decrypt = (value, key) => {
   const bytes = CryptoJS.AES.decrypt(value.toString(), key);
   return CryptoJS.enc.Utf8.stringify(bytes);
+
 };

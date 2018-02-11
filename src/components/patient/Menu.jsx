@@ -17,9 +17,6 @@ class Menu extends React.Component {
         <ListItem buttom='true' onClick={ go.bind(null, '/searchDoctor') }>
           <ListItemText primary='Найти врача'/>
         </ListItem>
-        <ListItem buttom='true' onClick={ go.bind(null, '/requests') }>
-          <ListItemText primary='Запросы'/>
-        </ListItem>
         { /*records*/ }
       </List>
     );

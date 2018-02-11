@@ -3,10 +3,10 @@ import {
   GET_ACCOUNT_SUCCESS
 } from '../constants/actions';
 import medCadStorage from '../rpc/medCardStorage';
-
-const CryptoJS = require('crypto-js');
-const bitcore = require('bitcore-lib');
-const ECIES = require('bitcore-ecies');
+import {
+  decryptAssymetrically,
+  decrypt
+} from '../lib/cipher';
 
 const update = (account, profile, address, accountType, privateKey, publicKey) => ({
   type: GET_ACCOUNT_SUCCESS,
@@ -50,10 +50,9 @@ export const load = file =>
           const chunks = [];
           file.on('data', chunks.push.bind(chunks));
           file.on('end', async function () {
-            const passphrase = decrypt(privateKey, user.publicKey, user.account.passphrases);
+            const passphrase = decryptAssymetrically(privateKey, user.publicKey, user.account.passphrase);
             const value = Buffer.concat(chunks).toString();
-            const bytes = CryptoJS.AES.decrypt(value.toString(), passphrase);
-            const profile = JSON.parse(CryptoJS.enc.Utf8.stringify(bytes));
+            const profile = JSON.parse(decrypt(value.toString(), passphrase));
             dispatch(update(user.account, profile, user.etherbase, user.type, privateKey, user.publicKey));
           });
         })
@@ -66,17 +65,3 @@ export const load = file =>
       dispatch(update(null, null, null, null, privateKey, user.publicKey));
     }
   };
-
-const getBitPublicKey = publicKey =>
-  '04' + publicKey.substring(2);
-
-const decrypt = (privateKey, publicKey, enc) => {
-  const passphrase = new Buffer(enc, 'hex');
-
-  const cypherPrivateKey = new bitcore.PrivateKey(privateKey.substring(2));
-  const cypherPublicKey = new bitcore.PublicKey(getBitPublicKey(publicKey));
-
-  const deCypher = ECIES().privateKey(cypherPrivateKey).publicKey(cypherPublicKey);
-  return deCypher.decrypt(passphrase).toString();
-
-};

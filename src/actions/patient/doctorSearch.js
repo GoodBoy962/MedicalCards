@@ -4,17 +4,18 @@ import {
 } from '../../constants/patient/action';
 import medCardStorage from '../../rpc/medCardStorage';
 import {
-  decrypt,
-  decryptAssymetrically
+  decryptAssymetrically,
+  encryptAssymetrically
 } from '../../lib/cipher';
 
-const update = (doctorAddress, profile, doctor, accepted) => ({
-  type: FIND_DOCTOR_SUCCESS,
-  doctorAddress,
-  profile,
-  doctor,
-  accepted
-});
+const update = (doctorAddress, profile, doctor, accepted) =>
+  ({
+    type: FIND_DOCTOR_SUCCESS,
+    doctorAddress,
+    profile,
+    doctor,
+    accepted
+  });
 
 export const find = doctorAddress =>
   async function (dispatch, getState) {
@@ -35,31 +36,36 @@ export const find = doctorAddress =>
     const doctor = await medCardStorage.getDoctor(doctorAddress);
     const doctorPublicKey = await doctor.publicKey;
     const hash = doctor.profile;
-    const doctorProfile = await ipfs.files.cat(hash, (e, file) => {
-      const chunks = [];
-      file.on('data', chunks.push.bind(chunks));
-      file.on('end', async function () {
-        return await JSON.parse(Buffer.concat(chunks).toString());
-      });
-    });
 
-    const passphrase = decryptAssymetrically(privateKey, publicKey, patient.passphrases);
-
-    if (!!patient.permissions) {
-      await ipfs.files.cat(patient.permissions, (e, file) => {
+    if (hash) {
+      await ipfs.files.cat(hash, (e, file) => {
         const chunks = [];
         file.on('data', chunks.push.bind(chunks));
         file.on('end', async function () {
-          //TODO
-          //1)convert to array
-          //2)find if decrypt()
-          Buffer.concat(chunks).toString();
-          dispatch(update(doctorAddress, doctorProfile, doctor, true));
-          // const passphrase = decryptAssymetrically(privateKey, publicKey, patient.passphrases);
-          // return Buffer.concat(chunks).toString();
+          const doctorProfile = await JSON.parse(Buffer.concat(chunks).toString());
+
+          const passphrase = decryptAssymetrically(privateKey, publicKey, patient.passphrase);
+
+          if (!!patient.permissions) {
+            await ipfs.files.cat(patient.permissions, (e, file) => {
+              const chunks = [];
+              file.on('data', chunks.push.bind(chunks));
+              file.on('end', async function () {
+                const permissions = await JSON.parse(Buffer.concat(chunks).toString()).permissions;
+                const encPassphrase = encryptAssymetrically(privateKey, doctorPublicKey, passphrase);
+                if (permissions.indexOf(encPassphrase) > -1) {
+                  dispatch(update(doctorAddress, doctorProfile, doctor, true));
+                } else {
+                  dispatch(update(doctorAddress, doctorProfile, doctor, false));
+                }
+              });
+            });
+          } else {
+            dispatch(update(doctorAddress, doctorProfile, doctor, false));
+          }
         });
       });
     } else {
-      dispatch(update(doctorAddress, doctorProfile, doctor, false));
+      dispatch(update(doctorAddress))
     }
   };

@@ -1,19 +1,16 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
-import { approve } from "../../actions/patient/approveDoctor";
-
-class DoctorView extends React.Component {
+export default class DoctorView extends React.Component {
 
   handleApprove = (e) => {
-    this.props.approve(this.props.doctorProfile.address);
+    this.props.approve(this.props.doctorProfile.doctor.publicKey);
     e.preventDefault();
   };
 
   render() {
     const doctorProfile = this.props.doctorProfile;
     const verified = doctorProfile.doctor.accepted;
-    const doctor = doctorProfile.doctor;
+    const doctor = doctorProfile.profile;
     //check if doctor accepted in the system
     if (verified) {
       //check if patient accepted doctor
@@ -21,7 +18,7 @@ class DoctorView extends React.Component {
         return (
           <div>
             <p>Доктор: { doctor.name } { doctor.surname }</p>
-            <p>Учреждение: { doctor.workPlace }</p>
+            <p>Учреждение: { doctor.medClinic }</p>
             <p>Специальность: { doctor.category }</p>
             <p>Имеет доступ</p>
           </div>
@@ -30,7 +27,7 @@ class DoctorView extends React.Component {
         return (
           <div>
             <p>Доктор: { doctor.name } { doctor.surname }</p>
-            <p>Учреждение: { doctor.workPlace }</p>
+            <p>Учреждение: { doctor.medClinic }</p>
             <p>Специальность: { doctor.category }</p>
             <p>Не может просматривать ваши записи</p>
             <input type='button' value='Дать доступ' onClick={ this.handleApprove }/>
@@ -42,9 +39,3 @@ class DoctorView extends React.Component {
     }
   }
 }
-
-const mapDispatchToProps = dispatch => ({
-  approve: (doctorAddress) => dispatch(approve(doctorAddress))
-});
-
-export default connect(mapDispatchToProps)(DoctorView);
