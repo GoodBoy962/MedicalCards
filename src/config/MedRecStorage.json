@@ -7,6 +7,33 @@
         "type": "address"
       }
     ],
+    "name": "doctors",
+    "outputs": [
+      {
+        "name": "profile",
+        "type": "string"
+      },
+      {
+        "name": "accepted",
+        "type": "bool"
+      },
+      {
+        "name": "publicKey",
+        "type": "string"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
     "name": "patients",
     "outputs": [
       {
@@ -20,6 +47,10 @@
       {
         "name": "permissions",
         "type": "string"
+      },
+      {
+        "name": "publicKey",
+        "type": "string"
       }
     ],
     "payable": false,
@@ -27,21 +58,36 @@
     "type": "function"
   },
   {
-    "constant": false,
-    "inputs": [
+    "constant": true,
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
       {
-        "name": "_profile",
-        "type": "string"
-      },
-      {
-        "name": "_publicKey",
-        "type": "string"
+        "name": "",
+        "type": "address"
       }
     ],
-    "name": "applyDoctor",
-    "outputs": [],
     "payable": false,
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_patientEncAddress",
+        "type": "bytes"
+      }
+    ],
+    "name": "getRecordsLength",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -68,105 +114,21 @@
     "type": "function"
   },
   {
-    "constant": false,
+    "anonymous": false,
     "inputs": [
       {
-        "name": "_doctorAddress",
+        "indexed": true,
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "newOwner",
         "type": "address"
       }
     ],
-    "name": "approveDoctor",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_patientEncAddress",
-        "type": "bytes"
-      }
-    ],
-    "name": "getRecordsLength",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "doctors",
-    "outputs": [
-      {
-        "name": "profile",
-        "type": "string"
-      },
-      {
-        "name": "accepted",
-        "type": "bool"
-      },
-      {
-        "name": "publicKey",
-        "type": "string"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_address",
-        "type": "address"
-      }
-    ],
-    "name": "getPatient",
-    "outputs": [
-      {
-        "name": "",
-        "type": "string"
-      },
-      {
-        "name": "",
-        "type": "string"
-      },
-      {
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
+    "name": "OwnershipTransferred",
+    "type": "event"
   },
   {
     "constant": false,
@@ -177,28 +139,6 @@
       }
     ],
     "name": "updatePermissions",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_profile",
-        "type": "string"
-      },
-      {
-        "name": "_passphrase",
-        "type": "string"
-      },
-      {
-        "name": "_permissions",
-        "type": "string"
-      }
-    ],
-    "name": "applyPatient",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -226,6 +166,64 @@
     "constant": false,
     "inputs": [
       {
+        "name": "_profile",
+        "type": "string"
+      },
+      {
+        "name": "_publicKey",
+        "type": "string"
+      }
+    ],
+    "name": "applyDoctor",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_profile",
+        "type": "string"
+      },
+      {
+        "name": "_passphrase",
+        "type": "string"
+      },
+      {
+        "name": "_permissions",
+        "type": "string"
+      },
+      {
+        "name": "_publicKey",
+        "type": "string"
+      }
+    ],
+    "name": "applyPatient",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_doctorAddress",
+        "type": "address"
+      }
+    ],
+    "name": "approveDoctor",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
         "name": "newOwner",
         "type": "address"
       }
@@ -235,22 +233,5 @@
     "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "previousOwner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnershipTransferred",
-    "type": "event"
   }
 ]

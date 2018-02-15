@@ -3,79 +3,58 @@ import {
   FIND_PATIENT_SUCCESS
 } from '../../constants/doctor/action';
 import medCardStorage from '../../rpc/medCardStorage';
+import {
+  decrypt,
+  decryptAssymetrically,
+  encrypt
+} from '../../lib/cipher';
+import {
+  getFile
+} from '../../lib/ipfs';
 
-const update = (patientAddress, patient, available, records) => ({
+const update = (patientAddress, profile, patient, available, records) => ({
   type: FIND_PATIENT_SUCCESS,
   patientAddress,
+  profile,
   patient,
   available,
   records
 });
 
 export const find = patientAddress =>
-  async function (dispatch, getState) {
+  async (dispatch, getState) => {
 
     dispatch({
       type: FIND_PATIENT_REQUEST
     });
 
     const privateKey = getState().account.privateKey;
-    const ipfs = getState().ipfs.instance;
 
+    const patient = await medCardStorage.getPatient(patientAddress);
 
-    //TODO
-    //1)get patient profile
-    //2)check if have permissions
-    //3)if have -> get records
+    if (!!patient.permissions) {
+      const permissions = JSON.parse(await getFile(patient.permissions)).permissions;
+      let available = false, passphrase, records, profile;
+      for (let i in permissions) {
+        const decryptedPermission = decryptAssymetrically(privateKey, patient.publicKey, permissions[i]);
+        if (decryptedPermission.startsWith(patientAddress)) {
+          available = true;
+          passphrase = decryptedPermission;
+          break;
+        }
+      }
+      if (available) {
+        const encProfile = await getFile(patient.profile);
+        profile = JSON.parse(decrypt(encProfile, passphrase));
+        console.log(profile);
+        const encryptedAddress = encrypt(patientAddress, passphrase);
+        records = await medCardStorage.getRecords(encryptedAddress);
+        console.log(records);
+      }
+      dispatch(update(patientAddress, profile, patient, available, records))
 
-    // ContractService.getPatientProfile(web3, account, contract, doctorAddress, patientAddress)
-    //   .then(patientProfile => {
-    //     let promises = [];
-    //     if (patientProfile.records) {
-    //       for (let i = 0; i < patientProfile.records.length; i++) {
-    //         promises.push(
-    //           getValue(ipfs, patientProfile.records[i], web3, account, contract, patientAddress, patientProfile.patient.publicKey)
-    //         );
-    //       }
-    //     }
-    //     Promise.all(promises)
-    //       .then(records => {
-    //         setTimeout(() => dispatch(
-    //           update(patientAddress, patientProfile.patient, patientProfile.available, records)), 1000)
-    //       })
-    //   })
-    //   .catch(console.log);
+    } else {
+      dispatch(update(patientAddress, null, patient, false, null));
+    }
 
   };
-
-const getValue = (ipfs, hash, web3, account, contract, patientAddress, patientPublicKey) =>
-  new Promise((resolve, reject) => {
-
-    console.log(hash);
-
-    ipfs.files.cat(hash, (e, file) => {
-      const chunks = [];
-
-      file.on('data', chunks.push.bind(chunks));
-
-      file.on('end', () => {
-        const value = Buffer.concat(chunks).toString();
-        console.log(value);
-        // ContractService
-        //   .getPatientPassphrase(web3, account, contract, patientAddress)
-        //   .then(
-        //     encPassphrase => {
-        //       const passphrase = decryptPassphrase(account.privateKey, patientPublicKey, encPassphrase);
-        //       console.log(passphrase);
-        //
-        //       //TODO add doctorAddress inside the record
-        //       // record.doctorAddress = account.address;
-        //       const bytes = CryptoJS.AES.decrypt(value.toString(), passphrase);
-        //       console.log(bytes);
-        //       const record = CryptoJS.enc.Utf8.stringify(bytes);
-        //       console.log(record);
-        //       resolve(record);
-        //     })
-      });
-    })
-  });

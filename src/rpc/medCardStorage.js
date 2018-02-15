@@ -88,10 +88,12 @@ class MedCardStorage {
 
   applyPatient(profile, passphrase, permissions, privateKey) {
     const account = web3.eth.accounts.privateKeyToAccount(privateKey);
+    const publicKey = utils.bufferToHex(utils.privateToPublic(privateKey));
     return this.fromAccount('applyPatient', account,
       profile,
       passphrase,
-      permissions
+      permissions,
+      publicKey
     )(1000000);
   }
 
@@ -102,10 +104,23 @@ class MedCardStorage {
     )(1000000);
   }
 
+  addRecord(encAddress, record, privateKey) {
+    const account = web3.eth.accounts.privateKeyToAccount(privateKey);
+    return this.fromAccount('addRecord', account,
+      encAddress,
+      record
+    )(1000000);
+  }
 
-//TODO
-//add record
-//get records
+  async getRecords(encAddress) {
+    const address = web3.utils.fromAscii(encAddress);
+    const recordsLength = await this.contract.methods.getRecordsLength(address).call();
+    let records = [];
+    for (let i = 0; i < recordsLength; i++) {
+      records.push(await this.contract.methods.getRecord(address, i));
+    }
+    return records;
+  }
 
 }
 

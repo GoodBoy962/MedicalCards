@@ -26,7 +26,6 @@ export const approve = doctorPublicKey =>
     const privateKey = getState().account.privateKey;
     const publicKey = getState().account.publicKey;
 
-    console.log(patient);
     if (!!patient.permissions) {
       await ipfs.files.cat(patient.permissions, (e, file) => {
         const chunks = [];
@@ -39,8 +38,6 @@ export const approve = doctorPublicKey =>
           const perms = JSON.stringify({permissions});
           const files = await ipfs.files.add(Buffer.from(perms));
           const hash = files[0].hash;
-          console.log(privateKey);
-          console.log(hash);
           await medCardStorage.updatePermissions(hash, privateKey);
           dispatch(update());
         });
@@ -53,8 +50,6 @@ export const approve = doctorPublicKey =>
       const perms = JSON.stringify({permissions});
       const files = await ipfs.files.add(Buffer.from(perms));
       const hash = files[0].hash;
-      console.log(privateKey);
-      console.log(hash);
       await medCardStorage.updatePermissions(hash, privateKey);
       dispatch(update());
     }

@@ -1,16 +1,13 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import dateFormat from 'dateformat'
-
-import { find } from '../../actions/doctor/patientSearch';
 
 import AddRecord from './AddRecord';
 
-class PatientView extends React.Component {
+export default class PatientView extends React.Component {
 
   render() {
     const patientProfile = this.props.patientProfile;
-    const patient = patientProfile.patient;
+    const patient = patientProfile.profile;
     if (patient.name) {
       if (patientProfile.available) {
         return (
@@ -43,13 +40,3 @@ class PatientView extends React.Component {
     }
   }
 }
-
-const mapStateToProps = state => ({
-  web3: state.web3.instance
-});
-
-const mapDispatchToProps = dispatch => ({
-  find: (patientAddress) => dispatch(find(patientAddress))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(PatientView);

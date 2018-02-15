@@ -38,7 +38,7 @@ const mapStateToProp = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  add: (patientAddress, patientPublicKey, file,) => dispatch(add(patientAddress, patientPublicKey, file))
+  add: (file) => dispatch(add(file))
 });
 
 export default connect(mapStateToProp, mapDispatchToProps)(AddRecord);

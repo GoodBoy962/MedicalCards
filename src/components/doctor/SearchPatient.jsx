@@ -12,8 +12,7 @@ class SearchForm extends React.Component {
 
   handleSubmit = (e) => {
     const patientAddress = this.refs.address.value;
-    const doctorAddress = this.props.address;
-    this.props.find(doctorAddress, patientAddress);
+    this.props.find(patientAddress);
     e.preventDefault();
   };
 
@@ -51,7 +50,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  find: (doctorAddress, patientAddress) => dispatch(find(doctorAddress, patientAddress)),
+  find: (patientAddress) => dispatch(find(patientAddress)),
   load: () => dispatch(load())
 });
 

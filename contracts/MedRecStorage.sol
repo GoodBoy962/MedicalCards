@@ -86,14 +86,6 @@ contract MedRecStorage is Ownable {
         doctors[_doctorAddress].accepted = true;
     }
 
-    // check if doctor can get patient records
-    function getPatient (
-        address _address
-    ) public constant returns (string, string, string) {
-        Patient memory patient = patients[_address];
-        return (patient.profile, patient.passphrases, patient.permissions);
-    }
-
     // add new record in medical card
     function addRecord(
         bytes _patientEncAddress,
