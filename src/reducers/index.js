@@ -1,6 +1,5 @@
 import { routerReducer } from 'react-router-redux';
 
-import ipfs from './ipfs';
 import account from './account';
 import doctorSearch from './patient/doctorSearch';
 import approveDoctor from './patient/approveDoctor';
@@ -11,7 +10,6 @@ import registerDoctor from './welcome/registerDoctor';
 
 export default {
   routing: routerReducer,
-  ipfs,
   account,
   doctorSearch,
   approveDoctor,

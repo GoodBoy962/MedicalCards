@@ -19,15 +19,13 @@ const update = (account, profile, address, accountType, privateKey, publicKey) =
 });
 
 export const load = file =>
-
-  async function (dispatch, getState) {
+  async dispatch => {
 
     dispatch({
       type: GET_ACCOUNT_REQUEST
     });
 
     const privateKey = JSON.parse(file).pkey;
-    const ipfs = getState().ipfs.instance;
 
     const user = await medCadStorage.getAccount(privateKey);
     if (user) {

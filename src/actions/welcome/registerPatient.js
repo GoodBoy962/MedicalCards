@@ -18,7 +18,7 @@ const update = () => ({
 });
 
 export const register = (name, surname, passport, birthday) =>
-  async function (dispatch, getState) {
+  async (dispatch, getState) => {
 
     dispatch({
       type: REGISTER_PATIENT_REQUEST

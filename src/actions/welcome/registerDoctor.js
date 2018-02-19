@@ -12,7 +12,7 @@ const update = () => ({
 });
 
 export const register = (name, surname, passport, medClinic, category) =>
-  async function (dispatch, getState) {
+  async (dispatch, getState) => {
 
     dispatch({
       type: REGISTER_DOCTOR_REQUEST

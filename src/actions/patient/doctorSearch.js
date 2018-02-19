@@ -11,14 +11,13 @@ import {
   getFile
 } from '../../lib/ipfs';
 
-const update = (doctorAddress, profile, doctor, accepted) =>
-  ({
-    type: FIND_DOCTOR_SUCCESS,
-    doctorAddress,
-    profile,
-    doctor,
-    accepted
-  });
+const update = (doctorAddress, profile, doctor, accepted) => ({
+  type: FIND_DOCTOR_SUCCESS,
+  doctorAddress,
+  profile,
+  doctor,
+  accepted
+});
 
 export const find = doctorAddress =>
   async function (dispatch, getState) {
