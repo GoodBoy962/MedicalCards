@@ -7,6 +7,9 @@ import {
   encrypt,
   encryptAssymetrically
 } from '../../lib/cipher';
+import {
+  addFile
+} from '../../lib/ipfs';
 
 const crypto = require('crypto');
 
@@ -24,7 +27,6 @@ export const register = (name, surname, passport, birthday) =>
     const privateKey = getState().account.privateKey;
     const publicKey = getState().account.publicKey;
     const address = getState().account.address;
-    const ipfs = getState().ipfs.instance;
 
     const passphrase = generatePassphrase(address);
     const encPassphrase = encryptAssymetrically(privateKey, publicKey, passphrase);
@@ -37,8 +39,7 @@ export const register = (name, surname, passport, birthday) =>
     });
 
     const encProfile = encrypt(profile, passphrase);
-    const files = await ipfs.files.add(Buffer.from(encProfile));
-    const encProfileHash = files[0].hash;
+    const encProfileHash = addFile(Buffer.from(encProfile));
 
     await medCardStorage.applyPatient(encProfileHash, encPassphrase, '', privateKey);
     dispatch(update());

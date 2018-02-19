@@ -104,19 +104,22 @@ class MedCardStorage {
     )(1000000);
   }
 
-  addRecord(encAddress, record, privateKey) {
+  addRecord(address, record, privateKey) {
+    console.log(address);
     const account = web3.eth.accounts.privateKeyToAccount(privateKey);
     return this.fromAccount('addRecord', account,
-      encAddress,
+      address,
       record
     )(1000000);
   }
 
-  async getRecords(encAddress) {
-    const address = web3.utils.fromAscii(encAddress);
+  async getRecords(address) {
+    console.log(address);
     const recordsLength = await this.contract.methods.getRecordsLength(address).call();
+    console.log(recordsLength);
     let records = [];
     for (let i = 0; i < recordsLength; i++) {
+      console.log(i);
       records.push(await this.contract.methods.getRecord(address, i));
     }
     return records;

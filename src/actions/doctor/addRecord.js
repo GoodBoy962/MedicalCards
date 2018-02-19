@@ -2,8 +2,15 @@ import {
   ADD_RECORD_REQUEST,
   ADD_RECORD_SUCCESS
 } from '../../constants/doctor/action';
-import { decryptAssymetrically } from "../../lib/cipher";
-import { getFile } from "../../lib/ipfs";
+import {
+  encrypt,
+  decryptAssymetrically
+} from '../../lib/cipher';
+import {
+  addFile,
+  getFile
+} from '../../lib/ipfs';
+import medCardStorage from '../../rpc/medCardStorage';
 
 const update =
   () =>
@@ -32,30 +39,11 @@ export const add = record =>
       }
     }
 
-    // ContractService
-    //   .getPatientPassphrase(web3, account, contract, patientAddress)
-    //   .then(
-    //     encPassphrase => {
-    //       const passphrase = decryptPassphrase(privateKey, patientPublicKey, encPassphrase);
-    //       console.log(passphrase);
-    //       console.log(record);
-    //       //TODO add doctorAddress inside the record
-    //       // record.doctorAddress = account.address;
-    //       const encryptedRecord = AES.encrypt(record, passphrase).toString();
-    //       console.log(encryptedRecord);
-    //       const encryptedRecordBuf = Buffer.from(encryptedRecord);
-    //       console.log(encryptedRecordBuf);
-    //
-    //       ipfs.files.add(encryptedRecordBuf, (err, files) => {
-    //         console.log(files[0].hash);
-    //         ContractService
-    //           .addRecord(web3, account, contract, patientAddress, files[0].hash)
-    //           .then((err, res) => dispatch(update()))
-    //           .catch(console.log);
-    //       })
-    //
-    //     }
-    //   )
-    //   .catch(console.log);
+    const encRecord = Buffer.from(encrypt(record, passphrase));
+    const hash = await addFile(encRecord);
+    const encAddress = encrypt(patientAddress, passphrase);
+
+    await medCardStorage.addRecord(encAddress, hash, privateKey);
+    dispatch(update());
 
   };

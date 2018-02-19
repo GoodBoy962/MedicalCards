@@ -3,6 +3,9 @@ import {
   REGISTER_DOCTOR_REQUEST
 } from '../../constants/welcome/actions';
 import medCardStorage from '../../rpc/medCardStorage';
+import {
+  addFile
+} from '../../lib/ipfs';
 
 const update = () => ({
   type: REGISTER_DOCTOR_SUCCESS
@@ -16,17 +19,13 @@ export const register = (name, surname, passport, medClinic, category) =>
     });
 
     const privateKey = getState().account.privateKey;
-    const ipfs = getState().ipfs.instance;
-
-    const files =
-      await ipfs.files.add(Buffer.from(JSON.stringify({
-        name,
-        surname,
-        passport,
-        medClinic,
-        category
-      })));
-    const profile = files[0].hash;
+    const profile = addFile(Buffer.from(JSON.stringify({
+      name,
+      surname,
+      passport,
+      medClinic,
+      category
+    })));
     await medCardStorage.applyDoctor(profile, privateKey);
     dispatch(update());
   }

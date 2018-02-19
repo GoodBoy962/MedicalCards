@@ -46,10 +46,11 @@ export const find = patientAddress =>
       if (available) {
         const encProfile = await getFile(patient.profile);
         profile = JSON.parse(decrypt(encProfile, passphrase));
-        console.log(profile);
+        console.log('Pat address: ', patientAddress);
+        console.log('Passphrase: ', passphrase);
         const encryptedAddress = encrypt(patientAddress, passphrase);
+        console.log('Enc address: ', encryptedAddress);
         records = await medCardStorage.getRecords(encryptedAddress);
-        console.log(records);
       }
       dispatch(update(patientAddress, profile, patient, available, records))
 
