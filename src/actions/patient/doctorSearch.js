@@ -37,7 +37,7 @@ export const find = doctorAddress =>
 
     const doctor = await medCardStorage.getDoctor(doctorAddress);
 
-    if (doctor) {
+    if (doctor.profile) {
       const doctorPublicKey = doctor.publicKey;
       const doctorProfile = JSON.parse(await getFile(doctor.profile));
       const passphrase = decryptAssymetrically(privateKey, publicKey, patient.passphrase);

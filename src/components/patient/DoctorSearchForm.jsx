@@ -18,11 +18,13 @@ class SearchForm extends React.Component {
   };
 
   render() {
-    return (<form onSubmit={ this.handleSubmit }>
-      <p><label>Введите адрес врача</label></p>
-      <input type='text' ref='address' placeholder='адрес'/>
-      <input type='submit' value='Найти'/>
-    </form>)
+    return (
+      <form onSubmit={ this.handleSubmit }>
+        <p><label>Введите адрес врача</label></p>
+        <input type='text' ref='address' placeholder='адрес'/>
+        <input type='submit' value='Найти'/>
+      </form>
+    )
   }
 }
 
@@ -32,11 +34,11 @@ const DoctorSearchForm = ({doctorProfile, address, find, load, approve}) => {
     <div>
       <SearchForm find={ find } address={ address }/>
       <div>
-        { doctorProfile.fetching ?
-          <CircularProgress size={ 50 }/>
-          : (!!doctorProfile.doctor) ?
-            <DoctorView doctorProfile={ doctorProfile } approve={ approve }/> :
-            null
+        {
+          doctorProfile.fetching ?
+            <CircularProgress size={ 50 }/>
+            :
+            <DoctorView doctorProfile={ doctorProfile } approve={ approve }/>
         }
       </div>
     </div>

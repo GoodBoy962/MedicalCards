@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { CircularProgress } from 'material-ui/Progress';
+
 import { add } from '../../actions/doctor/addRecord';
 
 class AddRecord extends React.Component {
@@ -23,17 +25,23 @@ class AddRecord extends React.Component {
   };
 
   render() {
-    return (
-      <div className='AddRecordForm'>
-        <p>Добавьте файл с записью</p>
-        <input type='file' onChange={ this.handleUpload }/><br/>
-      </div>
-    );
+    if (!this.props.fetching) {
+      return (
+        <div className='AddRecordForm'>
+          <p>Добавьте файл с записью</p>
+          <input type='file' onChange={ this.handleUpload }/><br/>
+        </div>
+      );
+    } return <CircularProgress/>
   }
 }
+
+const mapStateToProps = state => ({
+  fetching: state.addRecord.fetching
+});
 
 const mapDispatchToProps = dispatch => ({
   add: file => dispatch(add(file))
 });
 
-export default connect(null, mapDispatchToProps)(AddRecord);
+export default connect(mapStateToProps, mapDispatchToProps)(AddRecord);
