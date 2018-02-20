@@ -1,5 +1,3 @@
-import AES from 'crypto-js/aes';
-
 const bitcore = require('bitcore-lib');
 const ECIES = require('bitcore-ecies');
 const CryptoJS = require('crypto-js');
@@ -26,12 +24,12 @@ export const encryptAssymetrically = (privateKey, publicKey, value) => {
   return Buffer.from(encrypted).toString('hex');
 };
 
-export const encrypt = (value, key) => {
-  return AES.encrypt(value, key).toString();
-};
+export const encrypt = (value, key) => CryptoJS.AES.encrypt(value, key).toString();
+
 
 export const decrypt = (value, key) => {
   const bytes = CryptoJS.AES.decrypt(value.toString(), key);
   return CryptoJS.enc.Utf8.stringify(bytes);
-
 };
+
+export const sha3 = value =>CryptoJS.SHA3(value).toString();

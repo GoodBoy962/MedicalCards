@@ -1,7 +1,7 @@
 const {
   NODE_ENV = 'development',
 
-  CONTRACT_ADDR = '0xfe0cf8a31bb94789a300f95d9411174721549321',
+  CONTRACT_ADDR = '0x6ab56877822fbc6c724360740bd134fb09b4ee1d',
 
   ETHEREUM_RPC = 'https://ropsten.infura.io/oI5puXL7bMnaY7Dv9AzF',
 

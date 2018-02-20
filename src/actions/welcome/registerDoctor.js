@@ -19,7 +19,7 @@ export const register = (name, surname, passport, medClinic, category) =>
     });
 
     const privateKey = getState().account.privateKey;
-    const profile = addFile(Buffer.from(JSON.stringify({
+    const profile = await addFile(Buffer.from(JSON.stringify({
       name,
       surname,
       passport,

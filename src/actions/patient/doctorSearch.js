@@ -30,15 +30,16 @@ export const find = doctorAddress =>
       accepted: null
     });
 
-    const patient = getState().account.account;
-    const privateKey = getState().account.privateKey;
-    const publicKey = getState().account.publicKey;
+    const account = getState().account;
+    const patient = account.account;
+    const privateKey = account.privateKey;
+    const publicKey = account.publicKey;
 
     const doctor = await medCardStorage.getDoctor(doctorAddress);
-    const doctorPublicKey = await doctor.publicKey;
 
-    if (doctor.profile) {
-      const doctorProfile = await getFile(doctor.profile);
+    if (doctor) {
+      const doctorPublicKey = doctor.publicKey;
+      const doctorProfile = JSON.parse(await getFile(doctor.profile));
       const passphrase = decryptAssymetrically(privateKey, publicKey, patient.passphrase);
 
       if (!!patient.permissions) {

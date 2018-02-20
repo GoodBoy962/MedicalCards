@@ -4,7 +4,8 @@ import {
 } from '../../constants/doctor/action';
 import {
   encrypt,
-  decryptAssymetrically
+  decryptAssymetrically,
+  sha3
 } from '../../lib/cipher';
 import {
   addFile,
@@ -41,7 +42,7 @@ export const add = record =>
 
     const encRecord = Buffer.from(encrypt(record, passphrase));
     const hash = await addFile(encRecord);
-    const encAddress = encrypt(patientAddress, passphrase);
+    const encAddress = sha3(patientAddress);
 
     await medCardStorage.addRecord(encAddress, hash, privateKey);
     dispatch(update());

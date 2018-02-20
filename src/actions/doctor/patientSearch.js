@@ -6,7 +6,7 @@ import medCardStorage from '../../rpc/medCardStorage';
 import {
   decrypt,
   decryptAssymetrically,
-  encrypt
+  sha3
 } from '../../lib/cipher';
 import {
   getFile
@@ -34,7 +34,7 @@ export const find = patientAddress =>
 
     if (!!patient.permissions) {
       const permissions = JSON.parse(await getFile(patient.permissions)).permissions;
-      let available = false, passphrase, records, profile;
+      let available = false, passphrase, records = [], profile;
       for (let i in permissions) {
         const decryptedPermission = decryptAssymetrically(privateKey, patient.publicKey, permissions[i]);
         if (decryptedPermission.startsWith(patientAddress)) {
@@ -46,11 +46,14 @@ export const find = patientAddress =>
       if (available) {
         const encProfile = await getFile(patient.profile);
         profile = JSON.parse(decrypt(encProfile, passphrase));
-        console.log('Pat address: ', patientAddress);
-        console.log('Passphrase: ', passphrase);
-        const encryptedAddress = encrypt(patientAddress, passphrase);
-        console.log('Enc address: ', encryptedAddress);
-        records = await medCardStorage.getRecords(encryptedAddress);
+        const encryptedAddress = sha3(patientAddress);
+        const recs = await medCardStorage.getRecords(encryptedAddress);
+        if (recs) {
+          for (let i in recs) {
+            const record = decrypt(await getFile(await recs[i]), passphrase);
+            records.push(record);
+          }
+        }
       }
       dispatch(update(patientAddress, profile, patient, available, records))
 

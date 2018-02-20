@@ -39,7 +39,7 @@ export const register = (name, surname, passport, birthday) =>
     });
 
     const encProfile = encrypt(profile, passphrase);
-    const encProfileHash = addFile(Buffer.from(encProfile));
+    const encProfileHash = await addFile(Buffer.from(encProfile));
 
     await medCardStorage.applyPatient(encProfileHash, encPassphrase, '', privateKey);
     dispatch(update());

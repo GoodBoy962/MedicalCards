@@ -13,7 +13,7 @@ class AddRecord extends React.Component {
   componentWillMount() {
     this.reader.onload = event => {
       const record = event.target.result;
-      this.props.add(this.props.patientAddress, this.props.patientPublicKey, record);
+      this.props.add(record);
     };
   }
 
@@ -32,13 +32,8 @@ class AddRecord extends React.Component {
   }
 }
 
-const mapStateToProp = state => ({
-  patientAddress: state.patientSearch.patientAddress,
-  patientPublicKey: state.patientSearch.patient.publicKey
-});
-
 const mapDispatchToProps = dispatch => ({
-  add: (file) => dispatch(add(file))
+  add: file => dispatch(add(file))
 });
 
-export default connect(mapStateToProp, mapDispatchToProps)(AddRecord);
+export default connect(null, mapDispatchToProps)(AddRecord);

@@ -7,6 +7,9 @@ import {
   decryptAssymetrically,
   decrypt
 } from '../lib/cipher';
+import {
+  getFile
+} from '../lib/ipfs';
 
 const update = (account, profile, address, accountType, privateKey, publicKey) => ({
   type: GET_ACCOUNT_SUCCESS,
@@ -28,36 +31,25 @@ export const load = file =>
     const privateKey = JSON.parse(file).pkey;
 
     const user = await medCadStorage.getAccount(privateKey);
+    console.log(user);
     if (user) {
 
-      if (user.type === 'doctor') {
-        const hash = user.account.profile;
-        await ipfs.files.cat(hash, (e, file) => {
-          const chunks = [];
-          file.on('data', chunks.push.bind(chunks));
-          file.on('end', async function () {
-            const profile = await JSON.parse(Buffer.concat(chunks).toString());
-            dispatch(update(user.account, profile, user.etherbase, user.type, privateKey, user.publicKey));
-          });
-        })
-      }
+      if (user.account) {
+        let profile = await getFile(user.account.profile);
+        if (user.type === 'doctor') {
+          profile = JSON.parse(profile);
+          dispatch(update(user.account, profile, user.etherbase, user.type, privateKey, user.publicKey));
+        }
 
-      if (user.type === 'patient') {
-        const hash = user.account.profile;
-        await ipfs.files.cat(hash, (e, file) => {
-          const chunks = [];
-          file.on('data', chunks.push.bind(chunks));
-          file.on('end', async function () {
-            const passphrase = decryptAssymetrically(privateKey, user.publicKey, user.account.passphrase);
-            const value = Buffer.concat(chunks).toString();
-            const profile = JSON.parse(decrypt(value.toString(), passphrase));
-            dispatch(update(user.account, profile, user.etherbase, user.type, privateKey, user.publicKey));
-          });
-        })
-      }
-
-      if (user.type === 'new') {
-        dispatch(update(user.account, null, user.etherbase, user.type, privateKey, user.publicKey));
+        if (user.type === 'patient') {
+          const passphrase = decryptAssymetrically(privateKey, user.publicKey, user.account.passphrase);
+          profile = JSON.parse(decrypt(profile, passphrase));
+          dispatch(update(user.account, profile, user.etherbase, user.type, privateKey, user.publicKey));
+        }
+      } else {
+        if (user.type === 'new') {
+          dispatch(update(user.account, null, user.etherbase, user.type, privateKey, user.publicKey));
+        }
       }
     } else {
       dispatch(update(null, null, null, null, privateKey, user.publicKey));
