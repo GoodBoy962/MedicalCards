@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { CircularProgress } from 'material-ui/Progress';
 
-import { add } from '../../actions/doctor/addRecord';
+import { add } from '../../../actions/doctor/addRecord';
 
 class AddRecord extends React.Component {
 

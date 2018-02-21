@@ -1,14 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Screen from '../lib/screen';
+import Screen from '../../lib/screen';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
-import PrivateKeyInput from '../components/PrivateKeyInput';
 
 import { withStyles } from 'material-ui/styles';
 
-const Initial = ({classes}) => (
+const Welcome = ({classes, children}) => (
   <div className={ classes.root }>
     <div className={ classes.appFrame }>
       <AppBar className={ classes.appBar }>
@@ -19,13 +18,13 @@ const Initial = ({classes}) => (
         </Toolbar>
       </AppBar>
       <main className={ classes.content }>
-        <PrivateKeyInput />
+        { children }
       </main>
     </div>
   </div>
 );
 
-Initial.propTypes = {
+Welcome.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
@@ -65,4 +64,4 @@ const styleSheet = theme => ({
   }
 });
 
-export default withStyles(styleSheet)(Initial);
+export default withStyles(styleSheet)(Welcome);

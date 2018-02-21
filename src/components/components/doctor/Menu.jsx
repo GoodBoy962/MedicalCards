@@ -1,7 +1,7 @@
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import List, { ListItem, ListItemText } from 'material-ui/List';
-import { History } from '../../store/index';
+import { History } from '../../../store/index';
 
 class Menu extends React.Component {
 

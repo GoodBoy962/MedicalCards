@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { load } from '../actions/account';
+import { load } from '../../actions/account';
 
 class PrivateKeyInput extends React.Component {
 

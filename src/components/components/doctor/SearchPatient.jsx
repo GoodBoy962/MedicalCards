@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { load } from '../../actions/account';
-import { find } from '../../actions/doctor/patientSearch';
+import { load } from '../../../actions/account';
+import { find } from '../../../actions/doctor/patientSearch';
 
 import { CircularProgress } from 'material-ui';
 

@@ -4,9 +4,9 @@ import { CircularProgress } from 'material-ui/Progress';
 import DoctorView from './DoctorView';
 
 import { connect } from 'react-redux';
-import { load } from '../../actions/account';
-import { find } from '../../actions/patient/doctorSearch';
-import { approve } from '../../actions/patient/approveDoctor';
+import { load } from '../../../actions/account';
+import { find } from '../../../actions/patient/doctorSearch';
+import { approve } from '../../../actions/patient/approveDoctor';
 
 class SearchForm extends React.Component {
 

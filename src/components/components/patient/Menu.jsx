@@ -1,7 +1,7 @@
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import List, { ListItem, ListItemText } from 'material-ui/List';
-import { History } from '../../store/index';
+import { History } from '../../../store/index';
 
 class Menu extends React.Component {
 
@@ -17,7 +17,9 @@ class Menu extends React.Component {
         <ListItem buttom='true' onClick={ go.bind(null, '/searchDoctor') }>
           <ListItemText primary='Найти врача'/>
         </ListItem>
-        { /*records*/ }
+        <ListItem buttom='true' onClick={ go.bind(null, '/records') }>
+          <ListItemText primary='Просмотр записей'/>
+        </ListItem>
       </List>
     );
   }

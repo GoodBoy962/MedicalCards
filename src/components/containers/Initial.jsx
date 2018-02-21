@@ -1,15 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Screen from '../lib/screen';
-import Drawer from 'material-ui/Drawer';
+import Screen from '../../lib/screen';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
-import Menu from '../components/doctor/Menu';
+import PrivateKeyInput from '../components/PrivateKeyInput';
 
 import { withStyles } from 'material-ui/styles';
 
-const Doctor = ({classes, children}) => (
+const Initial = ({classes}) => (
   <div className={ classes.root }>
     <div className={ classes.appFrame }>
       <AppBar className={ classes.appBar }>
@@ -19,23 +18,14 @@ const Doctor = ({classes, children}) => (
           </Typography>
         </Toolbar>
       </AppBar>
-      <Drawer
-        type="permanent"
-        classes={ {
-          paper: classes.drawerPaper,
-        } }
-      >
-        <div className={ classes.drawerHeader }/>
-        <Menu/>
-      </Drawer>
       <main className={ classes.content }>
-        { children }
+        <PrivateKeyInput />
       </main>
     </div>
   </div>
 );
 
-Doctor.propTypes = {
+Initial.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
@@ -54,15 +44,10 @@ const styleSheet = theme => ({
   },
   appBar: {
     position: 'absolute',
-    width: `calc(100% - ${drawerWidth}px)`,
+    width: `100%`,
     marginLeft: drawerWidth,
+    justifyContent: 'center',
   },
-  drawerPaper: {
-    position: 'relative',
-    height: '100%',
-    width: drawerWidth,
-  },
-  drawerHeader: theme.mixins.toolbar,
   content: {
     backgroundColor: theme.palette.background.default,
     display: 'flex',
@@ -80,4 +65,4 @@ const styleSheet = theme => ({
   }
 });
 
-export default withStyles(styleSheet)(Doctor);
+export default withStyles(styleSheet)(Initial);
