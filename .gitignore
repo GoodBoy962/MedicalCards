@@ -20,3 +20,5 @@
 
 /.idea
 *-pk.json
+
+package-lock.json
