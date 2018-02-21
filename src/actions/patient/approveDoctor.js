@@ -1,25 +1,42 @@
 import {
   APPROVE_DOCTOR_SUCCESS,
   APPROVE_DOCTOR_REQUEST
-} from "../../constants/patient/action";
-import ContractService from '../../utils/ContractService';
+} from '../../constants/patient/action';
+import medCardStorage from '../../rpc/medCardStorage';
+import {
+  encryptAssymetrically,
+  decryptAssymetrically
+} from '../../lib/cipher';
+import {
+  getFile,
+  addFile
+} from '../../lib/ipfs';
 
-const update =
-  () =>
-    ({
-      type: APPROVE_DOCTOR_SUCCESS
+const update = () => ({
+  type: APPROVE_DOCTOR_SUCCESS
+});
+
+export const approve = doctorPublicKey =>
+  async function (dispatch, getState) {
+
+    dispatch({
+      type: APPROVE_DOCTOR_REQUEST
     });
 
-export const approve =
-  (doctorAddress) =>
-    (dispatch, getState) => {
+    const patient = getState().account.account;
+    const privateKey = getState().account.privateKey;
+    const publicKey = getState().account.publicKey;
 
-      dispatch({
-        type: APPROVE_DOCTOR_REQUEST
-      });
+    let permissions = [];
+    const passphrase = decryptAssymetrically(privateKey, publicKey, patient.passphrase);
 
-      ContractService
-        .acceptDoctorForPatient(getState().web3.instance, doctorAddress)
-        .then((err, res) => dispatch(update()))
-        .catch(console.log)
-    };
+    if (!!patient.permissions) {
+      permissions = JSON.parse(await getFile(patient.permissions)).permissions;
+    }
+
+    permissions.push(encryptAssymetrically(privateKey, doctorPublicKey, passphrase));
+    const hash = await addFile(Buffer.from(JSON.stringify({permissions})));
+    await medCardStorage.updatePermissions(hash, privateKey);
+    dispatch(update());
+
+  };

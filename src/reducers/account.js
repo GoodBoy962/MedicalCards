@@ -6,6 +6,7 @@ import {
 
 const DState = {
   account: null,
+  profile: null,
   address: null,
   privateKey: null,
   publicKey: null,
@@ -15,10 +16,11 @@ const DState = {
 
 const Actions = {
 
-  [GET_ACCOUNT_SUCCESS]: (state, {account, address, accountType, privateKey, publicKey}) =>
+  [GET_ACCOUNT_SUCCESS]: (state, {account, profile, address, accountType, privateKey, publicKey}) =>
     ({
       ...state,
       account: account,
+      profile: profile,
       address: address,
       accountType: accountType,
       privateKey: privateKey,

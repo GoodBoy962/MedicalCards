@@ -1,50 +1,41 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
-import { approve } from "../../actions/patient/approveDoctor";
-
-class DoctorView extends React.Component {
+export default class DoctorView extends React.Component {
 
   handleApprove = (e) => {
-    this.props.approve(this.props.doctorProfile.address);
+    this.props.approve(this.props.doctorProfile.doctor.publicKey);
     e.preventDefault();
   };
 
   render() {
     const doctorProfile = this.props.doctorProfile;
-    const verified = doctorProfile.doctor.accepted;
-    const doctor = doctorProfile.doctor;
-    //check if doctor accepted in the system
-    if (verified) {
-      //check if patient accepted doctor
+    const doctor = doctorProfile.profile;
+    if (doctor && doctorProfile.doctor.accepted) {
       if (doctorProfile.accepted) {
         return (
           <div>
             <p>Доктор: { doctor.name } { doctor.surname }</p>
-            <p>Учреждение: { doctor.workPlace }</p>
+            <p>Учреждение: { doctor.medClinic }</p>
             <p>Специальность: { doctor.category }</p>
             <p>Имеет доступ</p>
           </div>
         )
-      } else {
-        return (
-          <div>
-            <p>Доктор: { doctor.name } { doctor.surname }</p>
-            <p>Учреждение: { doctor.workPlace }</p>
-            <p>Специальность: { doctor.category }</p>
-            <p>Не может просматривать ваши записи</p>
-            <input type='button' value='Дать доступ' onClick={ this.handleApprove }/>
-          </div>
-        )
       }
-    } else {
-      return (<p>Нет такого врача</p>)
+      return (
+        <div>
+          <p>Доктор: { doctor.name } { doctor.surname }</p>
+          <p>Учреждение: { doctor.medClinic }</p>
+          <p>Специальность: { doctor.category }</p>
+          <p>Не может просматривать ваши записи</p>
+          <input type='button' value='Дать доступ' onClick={ this.handleApprove }/>
+        </div>
+      )
+
     }
+    if (doctorProfile.doctorAddress) {
+      return (
+        <div>Нет такого врача</div>
+      )
+    } return null;
   }
 }
-
-const mapDispatchToProps = dispatch => ({
-  approve: (doctorAddress) => dispatch(approve(doctorAddress))
-});
-
-export default connect(mapDispatchToProps)(DoctorView);

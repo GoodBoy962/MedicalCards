@@ -1,43 +1,59 @@
 import {
   FIND_DOCTOR_REQUEST,
   FIND_DOCTOR_SUCCESS
-} from "../../constants/patient/action";
-import ContractService from '../../utils/ContractService';
+} from '../../constants/patient/action';
+import medCardStorage from '../../rpc/medCardStorage';
+import {
+  decryptAssymetrically,
+  encryptAssymetrically
+} from '../../lib/cipher';
+import {
+  getFile
+} from '../../lib/ipfs';
 
-const update =
-  (doctorAddress, doctor, accepted) =>
-    ({
-      type: FIND_DOCTOR_SUCCESS,
+const update = (doctorAddress, profile, doctor, accepted) => ({
+  type: FIND_DOCTOR_SUCCESS,
+  doctorAddress,
+  profile,
+  doctor,
+  accepted
+});
+
+export const find = doctorAddress =>
+  async function (dispatch, getState) {
+
+    dispatch({
+      type: FIND_DOCTOR_REQUEST,
       doctorAddress: doctorAddress,
-      doctor: doctor,
-      accepted: accepted
+      profile: null,
+      doctor: null,
+      accepted: null
     });
 
-export const find =
-  (doctorAddress, patientAddress) =>
-    (dispatch, getState) => {
+    const account = getState().account;
+    const patient = account.account;
+    const privateKey = account.privateKey;
+    const publicKey = account.publicKey;
 
-      dispatch({
-        type: FIND_DOCTOR_REQUEST,
-        doctorAddress: doctorAddress,
-        doctor: null,
-        accepted: null
-      });
+    const doctor = await medCardStorage.getDoctor(doctorAddress);
 
-      const web3 = getState().web3.instance;
-      const contract = getState().web3.contract;
+    if (doctor.profile) {
+      const doctorPublicKey = doctor.publicKey;
+      const doctorProfile = JSON.parse(await getFile(doctor.profile));
+      const passphrase = decryptAssymetrically(privateKey, publicKey, patient.passphrase);
 
-      ContractService.getDoctor(web3, contract, doctorAddress)
-        .then(
-          doctor =>
-            Promise.all([
-              Promise.resolve(ContractService.isPatientAvailableForDoctor(web3, contract, patientAddress, doctorAddress)),
-              Promise.resolve(doctor)
-            ]))
-        .then(
-          ([accepted, doctor]) => {
-            setTimeout(() =>
-              dispatch(update(doctorAddress, doctor, accepted)), 1000);
-          })
-        .catch(console.log);
-    };
+      if (!!patient.permissions) {
+        const permissions = JSON.parse(await getFile(patient.permissions)).permissions;
+        const encPassphrase = encryptAssymetrically(privateKey, doctorPublicKey, passphrase);
+        if (permissions.indexOf(encPassphrase) > -1) {
+          dispatch(update(doctorAddress, doctorProfile, doctor, true));
+        } else {
+          dispatch(update(doctorAddress, doctorProfile, doctor, false));
+        }
+      } else {
+        dispatch(update(doctorAddress, doctorProfile, doctor, false));
+      }
+    } else {
+      dispatch(update(doctorAddress))
+    }
+  };

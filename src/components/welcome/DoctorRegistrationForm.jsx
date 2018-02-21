@@ -21,30 +21,28 @@ class DoctorRegistrationForm extends React.Component {
         return (
           <div>Регистрация завершена! Менее чем через минуту врач появится в системе</div>
         )
-      } else {
-        return (
-          <div className='DoctorRegistrationForm'>
-            <form onSubmit={ this.handleSubmit }>
-              <label>Имя</label><br/>
-              <input type='text' ref='name'/><br/>
-              <label>Фамилия</label><br/>
-              <input type='text' ref="surname"/><br/>
-              <label>Серия и номер паспорта</label><br/>
-              <input type='number' ref='passport'/><br/>
-              <label>Место работы</label><br/>
-              <input type='text' ref='medClinic'/><br/>
-              <label>Специальность</label><br/>
-              <input type='text' ref='category'/><br/>
-              <input type='submit' value='Зарегестрироваться'/>
-            </form>
-          </div>
-        );
       }
-    } else {
       return (
-        <CircularProgress/>
-      )
+        <div className='DoctorRegistrationForm'>
+          <form onSubmit={ this.handleSubmit }>
+            <label>Имя</label><br/>
+            <input type='text' ref='name'/><br/>
+            <label>Фамилия</label><br/>
+            <input type='text' ref="surname"/><br/>
+            <label>Серия и номер паспорта</label><br/>
+            <input type='number' ref='passport'/><br/>
+            <label>Место работы</label><br/>
+            <input type='text' ref='medClinic'/><br/>
+            <label>Специальность</label><br/>
+            <input type='text' ref='category'/><br/>
+            <input type='submit' value='Зарегестрироваться'/>
+          </form>
+        </div>
+      );
     }
+    return (
+      <CircularProgress/>
+    )
   }
 }
 
