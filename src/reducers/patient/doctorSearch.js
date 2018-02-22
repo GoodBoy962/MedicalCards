@@ -16,11 +16,11 @@ const Actions = {
 
   [FIND_DOCTOR_REQUEST]:
     (state = DState, {doctor, profile, address, accepted}) =>
-      ({...state, doctor: doctor, profile: profile, address: address, accepted: accepted, fetching: true}),
+      ({...state, doctor, profile, address, accepted, fetching: true}),
 
   [FIND_DOCTOR_SUCCESS]:
     (state = DState, {doctor, profile, address, accepted}) =>
-      ({...state, doctor: doctor, profile: profile, address: address, accepted: accepted, fetching: false})
+      ({...state, doctor, profile, address, accepted, fetching: false})
 
 };
 

@@ -12,16 +12,16 @@ import {
   getFile
 } from '../../lib/ipfs';
 
-const update = (patientAddress, profile, patient, available, records) => ({
+const update = (address, profile, patient, available, records) => ({
   type: FIND_PATIENT_SUCCESS,
-  patientAddress,
+  address,
   profile,
   patient,
   available,
   records
 });
 
-export const find = patientAddress =>
+export const find = address =>
   async (dispatch, getState) => {
 
     dispatch({
@@ -30,24 +30,22 @@ export const find = patientAddress =>
 
     const privateKey = getState().account.privateKey;
 
-    const patient = await medCardStorage.getPatient(patientAddress);
+    const patient = await medCardStorage.getPatient(address);
 
     if (!!patient.permissions) {
       const permissions = JSON.parse(await getFile(patient.permissions)).permissions;
       let available = false, passphrase, records = [], profile;
       for (let i in permissions) {
         const decryptedPermission = decryptAssymetrically(privateKey, patient.publicKey, permissions[i]);
-        if (decryptedPermission.startsWith(patientAddress)) {
+        if (decryptedPermission.startsWith(address)) {
           available = true;
           passphrase = decryptedPermission;
           break;
         }
       }
       if (available) {
-        const encProfile = await getFile(patient.profile);
-        profile = JSON.parse(decrypt(encProfile, passphrase));
-        const passphraseHash = sha3(passphrase);
-        const recs = await medCardStorage.getRecords(passphraseHash);
+        profile = JSON.parse(decrypt(await getFile(patient.profile), passphrase));
+        const recs = await medCardStorage.getRecords(sha3(passphrase));
         if (recs) {
           for (let i in recs) {
             const record = decrypt(await getFile(await recs[i]), passphrase);
@@ -55,10 +53,10 @@ export const find = patientAddress =>
           }
         }
       }
-      dispatch(update(patientAddress, profile, patient, available, records))
+      dispatch(update(address, profile, patient, available, records))
 
     } else {
-      dispatch(update(patientAddress, null, patient, false, null));
+      dispatch(update(address, null, patient, false, null));
     }
 
   };

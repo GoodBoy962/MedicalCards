@@ -71,7 +71,6 @@ class MedCardStorage {
     }
     return {
       type: 'new',
-      account: null,
       etherbase: address,
       publicKey
     };

@@ -39,11 +39,8 @@ export const add = record =>
         break;
       }
     }
-
     const hash = await addFile(encrypt(record, passphrase));
-    const passphraseHash = sha3(passphrase);
-
-    await medCardStorage.addRecord(passphraseHash, hash, privateKey);
+    await medCardStorage.addRecord(sha3(passphrase), hash, privateKey);
     dispatch(update());
 
   };

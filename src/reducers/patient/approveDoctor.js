@@ -11,10 +11,10 @@ const DState = {
 const Actions = {
 
   [APPROVE_DOCTOR_REQUEST]:
-    state => ({ ...state, pending: true }),
+    state => ({...state, pending: true}),
 
   [APPROVE_DOCTOR_SUCCESS]:
-    state => ({ ...state, pending: false })
+    state => ({...state, pending: false})
 
 };
 

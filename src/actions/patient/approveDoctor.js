@@ -34,7 +34,6 @@ export const approve = doctorPublicKey =>
     if (!!patient.permissions) {
       permissions = JSON.parse(await getFile(patient.permissions)).permissions;
     }
-
     permissions.push(encryptAssymetrically(privateKey, doctorPublicKey, passphrase));
     const hash = await addFile(JSON.stringify({permissions}));
     await medCardStorage.updatePermissions(hash, privateKey);

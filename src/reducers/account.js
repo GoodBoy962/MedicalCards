@@ -17,16 +17,7 @@ const DState = {
 const Actions = {
 
   [GET_ACCOUNT_SUCCESS]: (state, {account, profile, address, accountType, privateKey, publicKey}) =>
-    ({
-      ...state,
-      account: account,
-      profile: profile,
-      address: address,
-      accountType: accountType,
-      privateKey: privateKey,
-      publicKey: publicKey,
-      fetching: false
-    }),
+    ({...state, account, profile, address, accountType, privateKey, publicKey, fetching: false}),
 
   [GET_ACCOUNT_REQUEST]: state =>
     ({...state, fetching: true})

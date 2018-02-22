@@ -45,8 +45,7 @@ export const find = address =>
 
       if (!!patient.permissions) {
         const permissions = JSON.parse(await getFile(patient.permissions)).permissions;
-        const encPassphrase = encryptAssymetrically(privateKey, doctorPublicKey, passphrase);
-        if (permissions.indexOf(encPassphrase) > -1) {
+        if (permissions.indexOf(encryptAssymetrically(privateKey, doctorPublicKey, passphrase)) > -1) {
           accepted = true;
         }
       }

@@ -7,7 +7,7 @@ import {
 const DState = {
   patient: null,
   profile: null,
-  patientAddress: null,
+  address: null,
   available: null,
   records: [],
   fetching: false
@@ -23,14 +23,14 @@ const Actions = {
       }),
 
   [FIND_PATIENT_SUCCESS]:
-    (state = DState, {patient, profile, patientAddress, available, records}) =>
+    (state = DState, {patient, profile, address, available, records}) =>
       ({
         ...state,
-        patient: patient,
-        profile: profile,
-        patientAddress: patientAddress,
-        available: available,
-        records: records,
+        patient,
+        profile,
+        address,
+        available,
+        records,
         fetching: false
       })
 
