@@ -16,7 +16,7 @@ const Actions = {
       ({...state, fetching: true}),
 
   [GET_RECORDS_SUCCESS]:
-    (state = DState, list) =>
+    (state = DState, {list}) =>
       ({...state, list: list, fetching: false})
 
 };
