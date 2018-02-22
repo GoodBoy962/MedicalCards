@@ -112,11 +112,11 @@ class MedCardStorage {
     )(1000000);
   }
 
-  async getRecords(address) {
-    const recordsLength = await this.contract.methods.getRecordsLength(address).call();
+  async getRecords(hash) {
+    const recordsLength = await this.contract.methods.getRecordsLength(hash).call();
     let records = [];
     for (let i = 0; i < recordsLength; i++) {
-      records.push(this.contract.methods.getRecord(address, i).call());
+      records.push(this.contract.methods.getRecord(hash, i).call());
     }
     return await Promise.all(records);
   }

@@ -9,9 +9,11 @@ import ReactDOM from 'react-dom';
 import registerServiceWorker from 'registerServiceWorker';
 
 import { Provider } from 'react-redux';
-import { Store } from 'store/index';
+import { Store, History } from 'store/index';
 
 import App from './components/App';
+
+History.push('/');
 
 ReactDOM.render(
   <Provider store={ Store }>

@@ -42,9 +42,9 @@ export const add = record =>
 
     const encRecord = Buffer.from(encrypt(record, passphrase));
     const hash = await addFile(encRecord);
-    const encAddress = sha3(patientAddress);
+    const passphraseHash = sha3(passphrase);
 
-    await medCardStorage.addRecord(encAddress, hash, privateKey);
+    await medCardStorage.addRecord(passphraseHash, hash, privateKey);
     dispatch(update());
 
   };

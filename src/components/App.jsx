@@ -14,6 +14,7 @@ import Welcome from './containers/Welcome';
 import PatientProfile from './components/patient/Profile';
 import DoctorProfile from './components/doctor/Profile';
 import DoctorSearchForm from './components/patient/DoctorSearchForm';
+import Records from './components/patient/Records';
 import SearchPatient from './components/doctor/SearchPatient';
 import WelcomePage from './components/welcome/WelcomePage';
 import Initial from './containers/Initial';
@@ -36,7 +37,7 @@ class App extends React.Component{
               <IndexRoute component={PatientProfile}/>
               <Route path='profile' component={PatientProfile}/>
               <Route path='searchDoctor' component={DoctorSearchForm}/>
-              <Route path='records' component={DoctorSearchForm}/>
+              <Route path='records' component={Records}/>
               <Route path='*' component={PatientProfile}/>
             </Route>
           </Router>

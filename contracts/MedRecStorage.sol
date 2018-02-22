@@ -1,4 +1,4 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.20;
 
 
 import './lib/Ownable.sol';
@@ -14,7 +14,7 @@ contract MedRecStorage is Ownable {
 
     mapping (address => Patient) public patients;
 
-    mapping (bytes => string[]) private records;
+    mapping (string => string[]) private records;
 
     // check if _address corresponds to any Doctor
     modifier isDoctor(address _address) {
@@ -50,21 +50,24 @@ contract MedRecStorage is Ownable {
     // This is a type for a single patient identity
     struct Patient {
         string profile;
-        string passphrases;
+        string passphrase;
         string permissions;
+        string publicKey;
     }
 
     //apply for a Patient
     function applyPatient (
         string _profile,
-        string _passphrases,
-        string _permissions
+        string _passphrase,
+        string _permissions,
+        string _publicKey
     ) public isNotPatient(msg.sender) {
         patients[msg.sender] = Patient({
                 profile: _profile,
-                passphrases: _passphrases,
-                permissions: _permissions
-            });
+                passphrase: _passphrase,
+                permissions: _permissions,
+                publicKey: _publicKey
+        });
     }
 
     // apply for a Docotor rights
@@ -81,32 +84,33 @@ contract MedRecStorage is Ownable {
 
     // Approve the address to work as a Doctor in system
     function approveDoctor (
-        address _doctorAddress
-    ) public isNotDoctor(_doctorAddress) onlyOwner {
-        doctors[_doctorAddress].accepted = true;
+        address _address
+    ) public isNotDoctor(_address) onlyOwner {
+        require(bytes(doctors[_address].profile).length != 0);
+        doctors[_address].accepted = true;
     }
 
     // add new record in medical card
     function addRecord(
-        bytes _patientEncAddress,
+        string _hash,
         string _value
     ) public isDoctor(msg.sender) {
-        records[_patientEncAddress].push(_value);
+        records[_hash].push(_value);
     }
 
     // get length of array with patient records
     function getRecordsLength (
-        bytes _patientEncAddress
+        string _hash
     ) public constant returns (uint) {
-        return records[_patientEncAddress].length;
+        return records[_hash].length;
     }
 
     // get patient record by his index
     function getRecord (
-        bytes _patientEncAddress,
+        string _hash,
         uint _index
     ) public constant returns (string) {
-        return records[_patientEncAddress][_index];
+        return records[_hash][_index];
     }
 
     function updatePermissions (

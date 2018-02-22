@@ -46,8 +46,8 @@ export const find = patientAddress =>
       if (available) {
         const encProfile = await getFile(patient.profile);
         profile = JSON.parse(decrypt(encProfile, passphrase));
-        const encryptedAddress = sha3(patientAddress);
-        const recs = await medCardStorage.getRecords(encryptedAddress);
+        const passphraseHash = sha3(passphrase);
+        const recs = await medCardStorage.getRecords(passphraseHash);
         if (recs) {
           for (let i in recs) {
             const record = decrypt(await getFile(await recs[i]), passphrase);

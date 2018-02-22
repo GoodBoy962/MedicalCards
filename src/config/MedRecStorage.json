@@ -52,7 +52,7 @@
     "constant": false,
     "inputs": [
       {
-        "name": "_doctorAddress",
+        "name": "_address",
         "type": "address"
       }
     ],
@@ -133,7 +133,7 @@
     "constant": true,
     "inputs": [
       {
-        "name": "_encAddress",
+        "name": "_hash",
         "type": "string"
       },
       {
@@ -170,7 +170,7 @@
     "constant": true,
     "inputs": [
       {
-        "name": "_encAddress",
+        "name": "_hash",
         "type": "string"
       }
     ],
@@ -189,7 +189,7 @@
     "constant": false,
     "inputs": [
       {
-        "name": "_encAddress",
+        "name": "_hash",
         "type": "string"
       },
       {
