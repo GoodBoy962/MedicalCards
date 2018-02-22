@@ -1,12 +1,14 @@
+require('dotenv').config();
+
 const {
   NODE_ENV = 'development',
 
-  CONTRACT_ADDR = '0x6ab56877822fbc6c724360740bd134fb09b4ee1d',
+  REACT_APP_CONTRACT_ADDR = '',
 
-  ETHEREUM_RPC = 'https://ropsten.infura.io/oI5puXL7bMnaY7Dv9AzF',
+  REACT_APP_ETHEREUM_RPC = '',
 
-  IPFS_URL = 'localhost',
-  IPFS_PORT = '5001'
+  REACT_APP_IPFS_URL = '',
+  REACT_APP_IPFS_PORT = ''
 
 } = process.env;
 
@@ -14,16 +16,16 @@ module.exports = {
   env: NODE_ENV,
 
   contract: {
-    address: CONTRACT_ADDR
+    address: REACT_APP_CONTRACT_ADDR.toString('hex')
   },
 
   rpc: {
-    ethereum: ETHEREUM_RPC
+    ethereum: REACT_APP_ETHEREUM_RPC
   },
 
   ipfs: {
-    ipfsUrl: IPFS_URL,
-    ipfsPort: IPFS_PORT
+    ipfsUrl: REACT_APP_IPFS_URL,
+    ipfsPort: REACT_APP_IPFS_PORT
   }
 
 };

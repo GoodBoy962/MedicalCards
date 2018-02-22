@@ -11,7 +11,7 @@ import registerServiceWorker from 'registerServiceWorker';
 import { Provider } from 'react-redux';
 import { Store } from 'store/index';
 
-import App from './components/containers/App';
+import App from './components/App';
 
 ReactDOM.render(
   <Provider store={ Store }>

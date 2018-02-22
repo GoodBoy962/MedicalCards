@@ -4,19 +4,19 @@ import {
   Route,
   IndexRoute
 } from 'react-router';
-import { History } from '../../store/index';
+import { History } from '../store/index';
 
 import { connect } from 'react-redux';
 
-import Patient from './Patient';
-import Doctor from './Doctor';
-import Welcome from './Welcome';
-import PatientProfile from '../components/patient/Profile';
-import DoctorProfile from '../components/doctor/Profile';
-import DoctorSearchForm from '../components/patient/DoctorSearchForm';
-import SearchPatient from '../components/doctor/SearchPatient';
-import WelcomePage from '../components/welcome/WelcomePage';
-import Initial from './Initial';
+import Patient from './containers/Patient';
+import Doctor from './containers/Doctor';
+import Welcome from './containers/Welcome';
+import PatientProfile from './components/patient/Profile';
+import DoctorProfile from './components/doctor/Profile';
+import DoctorSearchForm from './components/patient/DoctorSearchForm';
+import SearchPatient from './components/doctor/SearchPatient';
+import WelcomePage from './components/welcome/WelcomePage';
+import Initial from './containers/Initial';
 
 
 class App extends React.Component{
