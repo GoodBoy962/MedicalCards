@@ -1,8 +1,8 @@
-import { ReducerFactory } from "../../lib/util";
+import { ReducerFactory } from '../../lib/util';
 import {
   CONSIDER_REQUEST,
   CONSIDER_SUCCESS
-} from "../../constants/patient/action";
+} from '../../constants/patient/action';
 
 const DState = {
   pending: false

@@ -1,4 +1,5 @@
 import React from 'react';
+import DoctorProfile from '../../views/DoctorProfile';
 
 export default class DoctorView extends React.Component {
 
@@ -14,25 +15,21 @@ export default class DoctorView extends React.Component {
       if (doctorProfile.accepted) {
         return (
           <div>
-            <p>Доктор: { doctor.name } { doctor.surname }</p>
-            <p>Учреждение: { doctor.medClinic }</p>
-            <p>Специальность: { doctor.category }</p>
+            <DoctorProfile profile={doctor} address={doctorProfile.address}/>
             <p>Имеет доступ</p>
           </div>
         )
       }
       return (
         <div>
-          <p>Доктор: { doctor.name } { doctor.surname }</p>
-          <p>Учреждение: { doctor.medClinic }</p>
-          <p>Специальность: { doctor.category }</p>
+          <DoctorProfile profile={doctor} address={doctorProfile.address}/>
           <p>Не может просматривать ваши записи</p>
           <input type='button' value='Дать доступ' onClick={ this.handleApprove }/>
         </div>
       )
 
     }
-    if (doctorProfile.doctorAddress) {
+    if (doctorProfile.address) {
       return (
         <div>Нет такого врача</div>
       )

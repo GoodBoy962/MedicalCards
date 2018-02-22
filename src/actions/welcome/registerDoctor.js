@@ -19,13 +19,13 @@ export const register = (name, surname, passport, medClinic, category) =>
     });
 
     const privateKey = getState().account.privateKey;
-    const profile = await addFile(Buffer.from(JSON.stringify({
+    const profile = await addFile(JSON.stringify({
       name,
       surname,
       passport,
       medClinic,
       category
-    })));
+    }));
     await medCardStorage.applyDoctor(profile, privateKey);
     dispatch(update());
   }

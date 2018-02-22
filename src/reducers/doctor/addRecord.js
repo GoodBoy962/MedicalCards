@@ -1,8 +1,8 @@
-import { ReducerFactory } from "../../lib/util";
+import { ReducerFactory } from '../../lib/util';
 import {
   ADD_RECORD_REQUEST,
   ADD_RECORD_SUCCESS
-} from "../../constants/doctor/action";
+} from '../../constants/doctor/action';
 
 const DState = {
   fetching: false

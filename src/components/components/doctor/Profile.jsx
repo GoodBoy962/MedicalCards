@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { CircularProgress } from 'material-ui/Progress';
+import DoctorProfile from '../../views/DoctorProfile';
 
 import { connect } from 'react-redux';
 
@@ -11,16 +12,9 @@ class Profile extends React.Component {
       const profile = this.props.profile;
       const address = this.props.address;
       if (profile) {
-        return (
-          <div className='Profile'>
-            <p>Профиль доктора</p>
-            <p>ФИО: { profile.name } { profile.surname }</p>
-            <p>Паспорт: { profile.passport }</p>
-            <p>Адрес: { address }</p>
-          </div>
-        )
+        return <DoctorProfile profile={ profile } address={ address }/>
       }
-      return (null);
+      return null;
     }
     return (
       <CircularProgress size={ 50 }/>

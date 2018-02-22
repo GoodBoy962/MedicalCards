@@ -20,7 +20,7 @@ export const getFile = hash =>
 export const addFile = file =>
   new Promise(
     resolve => {
-      ipfs.files.add(file, (err, files) => {
+      ipfs.files.add(Buffer.from(file), (err, files) => {
         resolve(files[0].hash);
       })
     }

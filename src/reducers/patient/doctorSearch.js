@@ -7,7 +7,7 @@ import {
 const DState = {
   doctor: null,
   profile: null,
-  doctorAddress: null,
+  address: null,
   accepted: null,
   fetching: false
 };
@@ -15,12 +15,12 @@ const DState = {
 const Actions = {
 
   [FIND_DOCTOR_REQUEST]:
-    (state = DState, {doctor, profile, doctorAddress, accepted}) =>
-      ({...state, doctor: doctor, profile: profile, doctorAddress: doctorAddress, accepted: accepted, fetching: true}),
+    (state = DState, {doctor, profile, address, accepted}) =>
+      ({...state, doctor: doctor, profile: profile, address: address, accepted: accepted, fetching: true}),
 
   [FIND_DOCTOR_SUCCESS]:
-    (state = DState, {doctor, profile, doctorAddress, accepted}) =>
-      ({...state, doctor: doctor, profile: profile, doctorAddress: doctorAddress, accepted: accepted, fetching: false})
+    (state = DState, {doctor, profile, address, accepted}) =>
+      ({...state, doctor: doctor, profile: profile, address: address, accepted: accepted, fetching: false})
 
 };
 

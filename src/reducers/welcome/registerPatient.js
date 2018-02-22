@@ -1,8 +1,8 @@
-import { ReducerFactory } from "../../lib/util";
+import { ReducerFactory } from '../../lib/util';
 import {
   REGISTER_PATIENT_REQUEST,
   REGISTER_PATIENT_SUCCESS
-} from "../../constants/welcome/actions";
+} from '../../constants/welcome/actions';
 
 const DState = {
   pending: false,

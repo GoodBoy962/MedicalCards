@@ -45,7 +45,6 @@ const DoctorSearchForm = ({doctorProfile, address, find, load, approve}) => {
   )
 };
 
-
 const mapStateToProps = state => ({
   account: state.account.account,
   address: state.account.address,

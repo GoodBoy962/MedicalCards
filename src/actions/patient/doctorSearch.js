@@ -11,20 +11,20 @@ import {
   getFile
 } from '../../lib/ipfs';
 
-const update = (doctorAddress, profile, doctor, accepted) => ({
+const update = (address, profile, doctor, accepted) => ({
   type: FIND_DOCTOR_SUCCESS,
-  doctorAddress,
+  address,
   profile,
   doctor,
   accepted
 });
 
-export const find = doctorAddress =>
+export const find = address =>
   async function (dispatch, getState) {
 
     dispatch({
       type: FIND_DOCTOR_REQUEST,
-      doctorAddress: doctorAddress,
+      address,
       profile: null,
       doctor: null,
       accepted: null
@@ -35,25 +35,23 @@ export const find = doctorAddress =>
     const privateKey = account.privateKey;
     const publicKey = account.publicKey;
 
-    const doctor = await medCardStorage.getDoctor(doctorAddress);
+    const doctor = await medCardStorage.getDoctor(address);
 
     if (doctor.profile) {
       const doctorPublicKey = doctor.publicKey;
       const doctorProfile = JSON.parse(await getFile(doctor.profile));
       const passphrase = decryptAssymetrically(privateKey, publicKey, patient.passphrase);
+      let accepted = false;
 
       if (!!patient.permissions) {
         const permissions = JSON.parse(await getFile(patient.permissions)).permissions;
         const encPassphrase = encryptAssymetrically(privateKey, doctorPublicKey, passphrase);
         if (permissions.indexOf(encPassphrase) > -1) {
-          dispatch(update(doctorAddress, doctorProfile, doctor, true));
-        } else {
-          dispatch(update(doctorAddress, doctorProfile, doctor, false));
+          accepted = true;
         }
-      } else {
-        dispatch(update(doctorAddress, doctorProfile, doctor, false));
       }
+      dispatch(update(address, doctorProfile, doctor, accepted));
     } else {
-      dispatch(update(doctorAddress))
+      dispatch(update(address))
     }
   };

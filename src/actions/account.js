@@ -31,7 +31,6 @@ export const load = file =>
     const privateKey = JSON.parse(file).pkey;
 
     const user = await medCadStorage.getAccount(privateKey);
-    console.log(user);
     if (user) {
 
       if (user.account) {

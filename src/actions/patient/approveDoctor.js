@@ -23,9 +23,10 @@ export const approve = doctorPublicKey =>
       type: APPROVE_DOCTOR_REQUEST
     });
 
-    const patient = getState().account.account;
-    const privateKey = getState().account.privateKey;
-    const publicKey = getState().account.publicKey;
+    const account = getState().account;
+    const patient = account.account;
+    const privateKey = account.privateKey;
+    const publicKey = account.publicKey;
 
     let permissions = [];
     const passphrase = decryptAssymetrically(privateKey, publicKey, patient.passphrase);
@@ -35,7 +36,7 @@ export const approve = doctorPublicKey =>
     }
 
     permissions.push(encryptAssymetrically(privateKey, doctorPublicKey, passphrase));
-    const hash = await addFile(Buffer.from(JSON.stringify({permissions})));
+    const hash = await addFile(JSON.stringify({permissions}));
     await medCardStorage.updatePermissions(hash, privateKey);
     dispatch(update());
 

@@ -24,9 +24,10 @@ export const load = () =>
       type: GET_RECORDS_REQUEST
     });
 
-    const privateKey = getState().account.privateKey;
-    const publicKey = getState().account.account.publicKey;
-    const passphrase = decryptAssymetrically(privateKey, publicKey, getState().account.account.passphrase);
+    const account = getState().account;
+    const privateKey = account.privateKey;
+    const publicKey = account.account.publicKey;
+    const passphrase = decryptAssymetrically(privateKey, publicKey, account.account.passphrase);
 
     const recs = await medCardStorage.getRecords(sha3(passphrase));
     const records = [];
