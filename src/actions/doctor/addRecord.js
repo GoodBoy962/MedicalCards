@@ -28,13 +28,13 @@ export const add = record =>
 
     const privateKey = getState().account.privateKey;
     const patient = getState().patientSearch.patient;
-    const patientAddress = getState().patientSearch.patientAddress;
+    const address = getState().patientSearch.address;
 
     let passphrase;
     const permissions = JSON.parse(await getFile(patient.permissions)).permissions;
     for (let i in permissions) {
       const decryptedPermission = decryptAssymetrically(privateKey, patient.publicKey, permissions[i]);
-      if (decryptedPermission.startsWith(patientAddress)) {
+      if (decryptedPermission.startsWith(address)) {
         passphrase = decryptedPermission;
         break;
       }
