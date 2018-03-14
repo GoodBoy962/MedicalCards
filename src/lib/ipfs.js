@@ -4,16 +4,11 @@ const ipfsConf = require('../config').ipfs;
 
 const ipfs = ipfsAPI(ipfsConf.ipfsUrl, ipfsConf.ipfsPort);
 
-export const getFile = hash =>
+export const getFile = path =>
   new Promise(
     resolve => {
-      ipfs.files.cat(hash, (e, file) => {
-        const chunks = [];
-        file.on('data', chunks.push.bind(chunks));
-        file.on('end', async function () {
-          const value = Buffer.concat(chunks).toString();
-          resolve(value);
-        });
+      ipfs.files.cat(path, (e, file) => {
+        resolve(file.toString('utf8'));
       });
     });
 
