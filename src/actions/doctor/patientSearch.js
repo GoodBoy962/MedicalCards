@@ -10,7 +10,7 @@ import {
 } from '../../lib/cipher';
 import {
   getFile
-} from '../../lib/ipfs';
+} from '../../rpc/ipfs';
 
 const update = (address, profile, patient, available, records) => ({
   type: FIND_PATIENT_SUCCESS,

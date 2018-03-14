@@ -10,7 +10,7 @@ import {
 import {
   addFile,
   getFile
-} from '../../lib/ipfs';
+} from '../../rpc/ipfs';
 import medCardStorage from '../../rpc/medCardStorage';
 
 const update =

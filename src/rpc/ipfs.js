@@ -1,6 +1,6 @@
 import ipfsAPI from 'ipfs-api';
 
-const ipfsConf = require('../config').ipfs;
+const ipfsConf = require('../config/index').ipfs;
 
 const ipfs = ipfsAPI(ipfsConf.ipfsUrl, ipfsConf.ipfsPort);
 

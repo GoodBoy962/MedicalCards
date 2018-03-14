@@ -10,7 +10,7 @@ import {
 import {
   getFile,
   addFile
-} from '../../lib/ipfs';
+} from '../../rpc/ipfs';
 
 const update = () => ({
   type: APPROVE_DOCTOR_SUCCESS

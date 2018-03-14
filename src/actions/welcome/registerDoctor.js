@@ -5,7 +5,7 @@ import {
 import medCardStorage from '../../rpc/medCardStorage';
 import {
   addFile
-} from '../../lib/ipfs';
+} from '../../rpc/ipfs';
 
 const update = () => ({
   type: REGISTER_DOCTOR_SUCCESS

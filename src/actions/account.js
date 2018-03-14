@@ -9,7 +9,7 @@ import {
 } from '../lib/cipher';
 import {
   getFile
-} from '../lib/ipfs';
+} from '../rpc/ipfs';
 
 const update = (account, profile, address, accountType, privateKey, publicKey) => ({
   type: GET_ACCOUNT_SUCCESS,

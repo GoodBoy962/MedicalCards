@@ -9,7 +9,7 @@ import {
 } from '../../lib/cipher';
 import {
   addFile
-} from '../../lib/ipfs';
+} from '../../rpc/ipfs';
 
 const crypto = require('crypto');
 

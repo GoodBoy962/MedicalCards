@@ -10,7 +10,7 @@ import {
 } from '../../lib/cipher';
 import {
   getFile
-} from '../../lib/ipfs';
+} from '../../rpc/ipfs';
 
 const update = list => ({
   type: GET_RECORDS_SUCCESS,
