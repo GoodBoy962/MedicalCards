@@ -16,38 +16,54 @@ contract MedRecStorage is Ownable {
 
     mapping (string => string[]) private records;
 
-    // check if _address corresponds to any Doctor
+    /**
+     * @dev Throws if _address doesn't corresponds to any Doctor
+     * @param _address
+     */
     modifier isDoctor(address _address) {
         require(doctors[_address].accepted);
         _;
     }
 
-    // check if _address doesn't correspond to any Doctor
+    /**
+     * @dev Throws if _address corresponds to any Doctor
+     * @param _address
+     */
     modifier isNotDoctor(address _address) {
         require(!doctors[_address].accepted);
         _;
     }
 
-    // check if _address corresponds to any Patient
+    /**
+     * @dev Throws if _address doesn't corresponds to any Patient
+     * @param _address
+     */
     modifier isPatient(address _address) {
         require(bytes(patients[_address].profile).length != 0);
         _;
     }
 
-    // check if _address doesn't correspond to any Patient
+    /**
+     * @dev Throws if _address corresponds to any Patient
+     * @param _address
+     */
     modifier isNotPatient(address _address) {
         require(bytes(patients[_address].profile).length == 0);
         _;
     }
 
-    // This is a type for a single doctor identity
+    /**
+     * @dev This is a type for a single doctor identity
+     */
     struct Doctor {
         string profile;
         bool accepted;
         string publicKey;
     }
 
-    // This is a type for a single patient identity
+    /**
+     * @dev This is a type for a single doctor identity
+     */
     struct Patient {
         string profile;
         string passphrase;
@@ -55,7 +71,13 @@ contract MedRecStorage is Ownable {
         string publicKey;
     }
 
-    //apply for a Patient
+    /**
+     * @dev Creates new patient identity
+     * @param _profile hash for the IPFS file with encrypted profile data
+     * @param _passphrase encrypted passphrase
+     * @param _permissions hash for the IPFS file with list of encrypted passphrases for doctors
+     * @param _publicKey ethereum public key
+     */
     function applyPatient (
         string _profile,
         string _passphrase,
@@ -70,7 +92,11 @@ contract MedRecStorage is Ownable {
         });
     }
 
-    // apply for a Docotor rights
+    /**
+     * @dev Creates new doctor identity
+     * @param _profile hash for the IPFS file with profile data
+     * @param _publicKey ethereum public key
+     */
     function applyDoctor (
         string _profile,
         string _publicKey
@@ -82,7 +108,10 @@ contract MedRecStorage is Ownable {
             });
     }
 
-    // Approve the address to work as a Doctor in system
+    /**
+     * @dev Approves doctor identity
+     * @param _address doctor's address to be approved
+     */
     function approveDoctor (
         address _address
     ) public isNotDoctor(_address) onlyOwner {
@@ -90,7 +119,11 @@ contract MedRecStorage is Ownable {
         doctors[_address].accepted = true;
     }
 
-    // add new record in medical card
+    /**
+     * @dev Adds new record's hash
+     * @param _hash sha3 hash of the patient passphrase
+     * @param _value hash for the IPFS encrypted file
+     */
     function addRecord(
         string _hash,
         string _value
@@ -98,14 +131,21 @@ contract MedRecStorage is Ownable {
         records[_hash].push(_value);
     }
 
-    // get length of array with patient records
+    /**
+     * @dev Get length of array with patient records
+     * @param _hash sha3 hash of the patient passphrase
+     */
     function getRecordsLength (
         string _hash
     ) public constant returns (uint) {
         return records[_hash].length;
     }
 
-    // get patient record by his index
+    /**
+     * @dev Get patient record by his index
+     * @param _hash sha3 hash of the patient passphrase
+     * @param _index index of records hash in array
+     */
     function getRecord (
         string _hash,
         uint _index
@@ -113,6 +153,10 @@ contract MedRecStorage is Ownable {
         return records[_hash][_index];
     }
 
+    /**
+     * @dev Updates hash of the permissions IPFS file
+     * @param _permissions new IPFS hash
+     */
     function updatePermissions (
         string _permissions
     ) public isPatient(msg.sender) {
